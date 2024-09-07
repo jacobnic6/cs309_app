@@ -3,7 +3,7 @@ package coms309.users;
 
 public class User {
 
-    private int id;
+
     private String firstName;
     private String lastName;
     private String email;
@@ -20,13 +20,7 @@ public class User {
         this.address = address;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -71,7 +65,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
