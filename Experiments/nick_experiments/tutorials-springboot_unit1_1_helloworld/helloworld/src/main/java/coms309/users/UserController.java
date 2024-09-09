@@ -44,7 +44,9 @@ public class UserController {
     @GetMapping("/users/{firstName}")
     public User getUser(@PathVariable String firstName) {
 
-        return userList.get(firstName);
+        User user = userList.get(firstName);
+        System.out.println(user.toString());
+        return user;
     }
 
     // THIS IS THE UPDATE OPERATION
