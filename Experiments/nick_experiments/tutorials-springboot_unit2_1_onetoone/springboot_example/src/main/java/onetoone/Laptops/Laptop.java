@@ -11,7 +11,7 @@ import onetoone.Users.User;
  * @author Vivek Bengre
  */ 
 
-@Table(name="laptops")
+
 @Entity
 public class Laptop {
     

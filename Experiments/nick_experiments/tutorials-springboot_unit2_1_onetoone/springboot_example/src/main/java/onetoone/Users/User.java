@@ -10,7 +10,7 @@ import onetoone.Laptops.Laptop;
  * 
  */ 
 
-@Table(name = "users")
+
 @Entity
 public class User {
 
