@@ -1,21 +1,23 @@
 package onetoone.Laptops;
 
-import jakarta.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import onetoone.Users.User;
 
 /**
- * 
  * @author Vivek Bengre
- */ 
+ */
 
 
+@Setter
+@Getter
 @Entity
 public class Laptop {
-    
-    /* 
+
+    /*
      * The annotation @ID marks the field below as the primary key for the table created by springboot
      * The @GeneratedValue generates a value if not already present, The strategy in this case is to start from 1 and increment for each table
      */
@@ -36,7 +38,7 @@ public class Laptop {
     @JsonIgnore
     private User user;
 
-    public Laptop( double cpuClock, int cpuCores, int ram, String manufacturer, int cost) {
+    public Laptop(double cpuClock, int cpuCores, int ram, String manufacturer, int cost) {
         this.cpuClock = cpuClock;
         this.cpuCores = cpuCores;
         this.ram = ram;
@@ -48,61 +50,5 @@ public class Laptop {
     }
 
     // =============================== Getters and Setters for each field ================================== //
-
-    public int getId(){
-        return id;
-    }
-
-    public void setId(int id){
-        this.id = id;
-    }
-
-    public double getCpuClock(){
-        return cpuClock;
-    }
-
-    public void setCpuClock(double cpuClock){
-        this.cpuClock = cpuClock;
-    }
-
-    public int getCpuCores(){
-        return cpuCores;
-    }
-
-    public void setCpuCores(int cpuCores){
-        this.cpuCores = cpuCores;
-    }
-
-    public String getManufacturer(){
-        return manufacturer;
-    }
-
-    public void setManufacturer(String manufacturer){
-        this.manufacturer = manufacturer;
-    }
-
-    public int getCost(){
-        return cost;
-    }
-
-    public void setCost(int cost){
-        this.cost = cost;
-    }
-
-    public User getUser(){
-        return user;
-    }
-
-    public void setUser(User user){
-        this.user = user;
-    }
-
-    public int getRam(){
-        return ram;
-    }
-
-    public void setRam(int ram){
-        this.ram = ram;
-    }
 
 }
