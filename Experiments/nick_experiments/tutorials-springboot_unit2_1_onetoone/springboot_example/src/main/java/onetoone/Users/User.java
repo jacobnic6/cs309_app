@@ -1,20 +1,21 @@
 package onetoone.Users;
 
 import jakarta.persistence.*;
-
+import lombok.Getter;
+import lombok.Setter;
 import onetoone.Laptops.Laptop;
 
 /**
- * 
  * @author Vivek Bengre
- * 
- */ 
+ */
 
 
+@Setter
+@Getter
 @Entity
 public class User {
 
-     /* 
+    /*
      * The annotation @ID marks the field below as the primary key for the table created by springboot
      * The @GeneratedValue generates a value if not already present, The strategy in this case is to start from 1 and increment for each table
      */
@@ -46,44 +47,5 @@ public class User {
 
     // =============================== Getters and Setters for each field ================================== //
 
-    public int getId(){
-        return id;
-    }
 
-    public void setId(int id){
-        this.id = id;
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public void setName(String name){
-        this.name = name;
-    }
-
-    public String getEmailId(){
-        return emailId;
-    }
-
-    public void setEmailId(String emailId){
-        this.emailId = emailId;
-    }
-
-    public boolean getIsActive(){
-        return ifActive;
-    }
-
-    public void setIfActive(boolean ifActive){
-        this.ifActive = ifActive;
-    }
-
-    public Laptop getLaptop(){
-        return laptop;
-    }
-
-    public void setLaptop(Laptop laptop){
-        this.laptop = laptop;
-    }
-    
 }
