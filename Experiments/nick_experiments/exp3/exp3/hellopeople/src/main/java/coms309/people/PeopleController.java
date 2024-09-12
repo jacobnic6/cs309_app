@@ -2,6 +2,7 @@ package coms309.people;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Id;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,8 @@ import java.util.HashMap;
 @RestController
 public class PeopleController {
 
-
+@Autowired
+PersonRepository personRepository;
     // Note that there is only ONE instance of PeopleController in 
     // Springboot system.
     HashMap<String, Person> peopleList = new  HashMap<>();
@@ -54,6 +56,7 @@ public class PeopleController {
         System.out.println(person);
         peopleList.put(person.getFirstName(), person);
 
+        personRepository.saveAndFlush(person);
         return "New person "+ person.getFirstName() + " Saved";
     }
 
