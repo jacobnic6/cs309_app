@@ -36,9 +36,9 @@ public class PersonService
                 return personRepository.findByFirstAndLast(p.getFirstName(), p.getLastName());
             }
 
-        public Person findPerson(String firstName)
+        public Person findPerson(String firstName, String lastName)
             {
-                return personRepository.findByFirstName(firstName);
+                return personRepository.findByFirstAndLast(firstName, lastName);
             }
 
         public List<Person> deletePerson(String firstName, String lastName)

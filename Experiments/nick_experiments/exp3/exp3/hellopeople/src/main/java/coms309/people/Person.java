@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 /**
  * Provides the Definition/Structure for the people row
  *
@@ -11,6 +14,9 @@ import jakarta.persistence.Id;
  */
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Person
     {
 
@@ -25,17 +31,6 @@ public class Person
 
         private String telephone;
 
-        public Person()
-            {
-            }
-
-        public Person(String firstName, String lastName, String address, String telephone)
-            {
-                this.firstName = firstName;
-                this.lastName = lastName;
-                this.address = address;
-                this.telephone = telephone;
-            }
 
         public Integer getPersonId()
             {
@@ -47,15 +42,7 @@ public class Person
                 this.personId = personId;
             }
 
-        @Override
-        public boolean equals(Object o)
-            {
-                Person person = (Person) o;
-                return person.getFirstName().compareToIgnoreCase(firstName) == 0 && person.getLastName()
-                        .compareToIgnoreCase(lastName) == 0
-                        && person.getAddress().compareToIgnoreCase(address) == 0 && person.getTelephone()
-                        .compareToIgnoreCase(telephone) == 0;
-            }
+
 
         public String getFirstName()
             {

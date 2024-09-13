@@ -57,10 +57,10 @@ public class PeopleController
         // springboot automatically converts Person to JSON format when we return it
         // in this case because of @ResponseBody
         // Note: To READ we use GET method
-        @GetMapping("/people/{firstName}")
-        public Person getPerson(@PathVariable String firstName)
+        @GetMapping("/people/{firstName}/{lastName}")
+        public Person getPerson(@PathVariable String firstName, @PathVariable String lastName)
             {
-                return personService.findPerson(firstName);
+                return personService.findPerson(firstName, lastName);
             }
 
         // THIS IS THE UPDATE OPERATION
