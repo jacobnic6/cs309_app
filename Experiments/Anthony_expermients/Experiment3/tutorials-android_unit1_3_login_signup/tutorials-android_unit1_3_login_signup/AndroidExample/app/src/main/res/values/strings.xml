@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">AndroidExample</string>
-    <string name="pass_leng">Password Must Be More Than 12 Charecters Long</string>
+    <string name="pass_leng">Password must be more than 12 charecters long, contain a letter, and contain a number</string>
 
 </resources>

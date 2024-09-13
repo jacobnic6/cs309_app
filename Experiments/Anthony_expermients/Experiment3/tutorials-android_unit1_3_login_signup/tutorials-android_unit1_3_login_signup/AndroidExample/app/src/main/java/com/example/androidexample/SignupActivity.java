@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -50,7 +52,7 @@ public class SignupActivity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString();
                 String confirm = confirmEditText.getText().toString();
 
-                if (password.length() > 12) {
+                if ((password.length() > 12) && setPattern(password)) {
 
                     if (password.equals(confirm)) {
                         Toast.makeText(getApplicationContext(), "Signing up", Toast.LENGTH_LONG).show();
@@ -59,9 +61,16 @@ public class SignupActivity extends AppCompatActivity {
                     }
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Password is not long enough", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Password is not long enough or does not contain a letter or number", Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
+
+public boolean setPattern(String password) {
+     Pattern pattern = Pattern.compile("(?=.*[a-z])(?=.*[0-9])", Pattern.CASE_INSENSITIVE);
+     Matcher matcher = pattern.matcher(password);
+     return matcher.find();
+
     }
 }

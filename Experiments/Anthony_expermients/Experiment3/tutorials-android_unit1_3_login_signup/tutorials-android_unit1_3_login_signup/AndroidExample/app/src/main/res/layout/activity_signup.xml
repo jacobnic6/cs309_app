@@ -95,8 +95,9 @@
         android:orientation="horizontal">
 
         <TextView
+            android:gravity="center"
             android:id="@+id/textView6"
-            android:layout_width="400dp"
+            android:layout_width="match_parent"
             android:layout_height="35dp"
             android:text="@string/pass_leng"></TextView>
     </LinearLayout>
