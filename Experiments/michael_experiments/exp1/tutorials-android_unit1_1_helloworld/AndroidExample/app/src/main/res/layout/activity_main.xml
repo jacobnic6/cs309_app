@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context=".MainActivity"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <!-- EditText for password input -->
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter password"
+        android:inputType="textPassword"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Button to check the password -->
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_below="@id/passwordEditText"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true" />
+
+    <!--"Hello, World!" -->
+    <TextView
+        android:id="@+id/helloTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello, World!"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        android:layout_below="@id/submitButton"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"
+        tools:ignore="ExtraText" />
+
+    <!--existing TextView, if needed -->
+    <TextView
+        android:id="@+id/main_msg_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="50dp"
+        android:textColor="#CE2B2B"
+        android:textSize="50sp"
+        android:visibility="visible"
+        tools:visibility="visible" />
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/helloTextView"
+        android:layout_centerHorizontal="true"
+        android:rotation="0"
+        android:text="finally" />
+
+</RelativeLayout>
+
