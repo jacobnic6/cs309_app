@@ -10,99 +10,77 @@ import jakarta.persistence.Id;
  * @author Nicholas Jacobs
  */
 
+
 @Entity
-public class Person
-    {
+public class Person {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Integer personId;
-        private String firstName;
 
-        private String lastName;
 
-        private String address;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer personId;
+    private String firstName;
 
-        private String telephone;
+    private String lastName;
 
-        public Person()
-            {
-            }
+    private String address;
 
-        public Person(String firstName, String lastName, String address, String telephone)
-            {
-                this.firstName = firstName;
-                this.lastName = lastName;
-                this.address = address;
-                this.telephone = telephone;
-            }
+    private String telephone;
 
-        public Integer getPersonId()
-            {
-                return personId;
-            }
+    public Person(){}
 
-        public void setPersonId(Integer personId)
-            {
-                this.personId = personId;
-            }
-
-        @Override
-        public boolean equals(Object o)
-            {
-                Person person = (Person) o;
-                return person.getFirstName().compareToIgnoreCase(firstName) == 0 && person.getLastName()
-                        .compareToIgnoreCase(lastName) == 0
-                        && person.getAddress().compareToIgnoreCase(address) == 0 && person.getTelephone()
-                        .compareToIgnoreCase(telephone) == 0;
-            }
-
-        public String getFirstName()
-            {
-                return this.firstName;
-            }
-
-        public void setFirstName(String firstName)
-            {
-                this.firstName = firstName;
-            }
-
-        public String getLastName()
-            {
-                return this.lastName;
-            }
-
-        public void setLastName(String lastName)
-            {
-                this.lastName = lastName;
-            }
-
-        public String getAddress()
-            {
-                return this.address;
-            }
-
-        public void setAddress(String address)
-            {
-                this.address = address;
-            }
-
-        public String getTelephone()
-            {
-                return this.telephone;
-            }
-
-        public void setTelephone(String telephone)
-            {
-                this.telephone = telephone;
-            }
-
-        @Override
-        public String toString()
-            {
-                return firstName + " "
-                        + lastName + " "
-                        + address + " "
-                        + telephone;
-            }
+    public Person(String firstName, String lastName, String address, String telephone){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.telephone = telephone;
     }
+
+    public String getFirstName() {
+        return this.firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getAddress() {
+        return this.address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getTelephone() {
+        return this.telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+    public Integer getPersonId()
+        {
+            return personId;
+        }
+
+    public void setPersonId(Integer personId)
+        {
+            this.personId = personId;
+        }
+    @Override
+    public String toString() {
+        return firstName + " " 
+               + lastName + " "
+               + address + " "
+               + telephone;
+    }
+}
