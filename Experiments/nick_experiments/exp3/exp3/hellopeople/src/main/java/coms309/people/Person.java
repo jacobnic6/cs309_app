@@ -7,8 +7,10 @@ import jakarta.persistence.Id;
 /**
  * Provides the Definition/Structure for the people row
  *
- * @author Vivek Bengre
+ * @author Nicholas Jacobs
  */
+
+
 @Entity
 public class Person {
 
@@ -16,7 +18,7 @@ public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Integer personId;
     private String firstName;
 
     private String lastName;
@@ -25,9 +27,7 @@ public class Person {
 
     private String telephone;
 
-    public Person(){
-        
-    }
+    public Person(){}
 
     public Person(String firstName, String lastName, String address, String telephone){
         this.firstName = firstName;
@@ -67,14 +67,14 @@ public class Person {
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
-    public long getId()
+    public Integer getPersonId()
         {
-            return id;
+            return personId;
         }
 
-    public void setId(long id)
+    public void setPersonId(Integer personId)
         {
-            this.id = id;
+            this.personId = personId;
         }
     @Override
     public String toString() {

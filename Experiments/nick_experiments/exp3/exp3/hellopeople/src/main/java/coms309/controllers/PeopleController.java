@@ -1,7 +1,7 @@
-package coms309.people;
+package coms309.controllers;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Id;
+import coms309.people.Person;
+import coms309.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -18,17 +17,20 @@ import java.util.HashMap;
 /**
  * Controller used to showcase Create and Read from a LIST
  *
- * @author Vivek Bengre
+ * @author Nicholas Jacobs
  */
+
+//Interacts with client
 
 @RestController
 public class PeopleController {
 
-@Autowired
-PersonRepository personRepository;
+
     // Note that there is only ONE instance of PeopleController in 
     // Springboot system.
-    HashMap<String, Person> peopleList = new  HashMap<>();
+    @Autowired
+    PersonService personService;
+   // HashMap<String, Person> peopleList = new  HashMap<>();
 
     //CRUDL (create/read/update/delete/list)
     // use POST, GET, PUT, DELETE, GET methods for CRUDL
@@ -40,8 +42,8 @@ PersonRepository personRepository;
     // in this case because of @ResponseBody
     // Note: To LIST, we use the GET method
     @GetMapping("/people")
-    public  HashMap<String,Person> getAllPersons() {
-        return peopleList;
+    public  HashMap<String, Person> getAllPersons() {
+        return personService.getPeopleList();
     }
 
     // THIS IS THE CREATE OPERATION
@@ -53,11 +55,11 @@ PersonRepository personRepository;
     @PostMapping("/people")
     public  String createPerson(@RequestBody Person person) {
 
-        System.out.println(person);
-        peopleList.put(person.getFirstName(), person);
 
-        personRepository.saveAndFlush(person);
-        return "New person "+ person.getFirstName() + " Saved";
+       // peopleList.put(person.getFirstName(), person);
+       // personRepository.saveAndFlush(person);
+
+        return personService.createPerson(person);
     }
 
     // THIS IS THE READ OPERATION
@@ -68,8 +70,10 @@ PersonRepository personRepository;
     // Note: To READ we use GET method
     @GetMapping("/people/{firstName}")
     public Person getPerson(@PathVariable String firstName) {
-        Person p = peopleList.get(firstName);
-        return p;
+
+
+
+        return  personService.findPerson(firstName);
     }
 
     // THIS IS THE UPDATE OPERATION
@@ -81,8 +85,10 @@ PersonRepository personRepository;
     // Note: To UPDATE we use PUT method
     @PutMapping("/people/{firstName}")
     public Person updatePerson(@PathVariable String firstName, @RequestBody Person p) {
-        peopleList.replace(firstName, p);
-        return peopleList.get(firstName);
+
+        return personService.updatePerson(firstName, p);
+
+
     }
 
     // THIS IS THE DELETE OPERATION
@@ -93,8 +99,8 @@ PersonRepository personRepository;
     
     @DeleteMapping("/people/{firstName}")
     public HashMap<String, Person> deletePerson(@PathVariable String firstName) {
-        peopleList.remove(firstName);
-        return peopleList;
+      return   personService.deletePerson(firstName);
+
     }
 }
 
