@@ -1,4 +1,4 @@
-package coms309;
+package coms309.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Simple Hello World Controller to display the string returned
  *
- * @author Vivek Bengre
+ * @author Nicholas Jacobs
  */
 
 @RestController

@@ -1,4 +1,4 @@
-package coms309;
+package coms309.controllers;
 
 /**
  * Controller used to showcase what happens when an exception is thrown
