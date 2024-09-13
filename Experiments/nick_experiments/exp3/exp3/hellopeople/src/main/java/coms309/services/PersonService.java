@@ -5,9 +5,7 @@ import coms309.repos.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-
 //connects controller and repo. Responsible for logic
 
 @Service
@@ -16,42 +14,41 @@ public class PersonService
         @Autowired
         PersonRepository personRepository;
 
-        HashMap<String, Person> peopleList = new  HashMap<>();
-
-
-
-        public HashMap<String, Person> getPeopleList()
-            {
-                return peopleList;
-            }
-
         public String createPerson(Person person)
             {
-
-                peopleList.put(person.getFirstName(), person);
-               // personRepository.saveAndFlush(person);
-                return "New person "+ person.getFirstName() + " created";
-            }
-
-        public Person findPerson(String firstName)
-            {
-               // personRepository.findByFirstName(firstName);
-                return peopleList.get(firstName);
+                if (personRepository.findByFirstAndLast(person.getFirstName(), person.getLastName()) == null)
+                    {
+                        personRepository.saveAndFlush(person);
+                        return "New person " + person.getFirstName() + " created";
+                    } else
+                    {
+                        updatePerson(person.getFirstName(), person);
+                        return person.getFirstName() + " already exists";
+                    }
             }
 
         public Person updatePerson(String firstName, Person p)
             {
-                List<Person> list = personRepository.findByFirstName(firstName);
-
-               // peopleList.replace(firstName, p);
-
-                return peopleList.get(firstName);
+                personRepository.updatePersonByFullName(p.getAddress(),
+                                                        p.getTelephone(),
+                                                        p.getFirstName(),
+                                                        p.getLastName());
+                return personRepository.findByFirstAndLast(p.getFirstName(), p.getLastName());
             }
 
-        public HashMap<String, Person>  deletePerson(String firstName)
+        public Person findPerson(String firstName)
             {
-                //personRepository.deletePerson(firstName);
-                peopleList.remove(firstName);
-                return peopleList;
+                return personRepository.findByFirstName(firstName);
+            }
+
+        public List<Person> deletePerson(String firstName, String lastName)
+            {
+                personRepository.delete(personRepository.findByFirstAndLast(firstName, lastName));
+                return getPeopleList();
+            }
+
+        public List<Person> getPeopleList()
+            {
+                return personRepository.findAll();
             }
     }
