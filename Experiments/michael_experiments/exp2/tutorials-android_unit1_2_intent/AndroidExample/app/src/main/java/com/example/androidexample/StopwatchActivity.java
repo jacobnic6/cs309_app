@@ -68,7 +68,7 @@ public class StopwatchActivity extends AppCompatActivity {
             int minutes = seconds / 60;
             seconds = seconds % 60;
 
-            // Format and display time as MM:SS:MS
+
             timeDisplay.setText(String.format("%02d:%02d:%02d", minutes, seconds, (elapsedTime % 1000) / 10));
             handler.postDelayed(this, 50); // Update every 50 milliseconds
         }
