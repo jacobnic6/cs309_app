@@ -29,4 +29,12 @@
         android:textColor="#ffffff">
     </Button>
 
+    <Button
+        android:id="@+id/openStopwatchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open Stopwatch"
+        android:layout_centerInParent="true"/>
+
+
 </androidx.appcompat.widget.LinearLayoutCompat>
