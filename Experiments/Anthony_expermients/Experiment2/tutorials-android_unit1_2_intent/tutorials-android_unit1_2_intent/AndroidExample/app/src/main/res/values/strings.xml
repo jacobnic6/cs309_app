@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AndroidExample</string>
+    <string name="reset_counter">Reset</string>
+</resources>
