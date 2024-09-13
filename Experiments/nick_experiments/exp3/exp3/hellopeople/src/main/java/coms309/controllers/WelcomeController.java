@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-class WelcomeController {
+class WelcomeController
+    {
 
-    @GetMapping("/")
-    public String welcome() {
-        return "Hello and welcome to COMS 309";
+        @GetMapping("/")
+        public String welcome()
+            {
+                return "Hello and welcome to COMS 309";
+            }
     }
-}
