@@ -13,10 +13,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import onetomany.Laptops.Laptop;
 import onetomany.Phones.Phone;
 
 @Entity
+@Getter @Setter
+@AllArgsConstructor
 public class User {
 
     /* 
@@ -26,7 +32,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
+    private String firstName;
+
+
+
+    private String lastName;
     private String emailId;
     private Date joiningDate;
     private boolean ifActive;
@@ -49,8 +59,9 @@ public class User {
      // =============================== Constructors ================================== //
 
 
-    public User(String name, String emailId, Date joiningDate) {
-        this.name = name;
+    public User(String firstName, String lastName, String emailId, Date joiningDate) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.emailId = emailId;
         this.joiningDate = joiningDate;
         this.ifActive = true;
@@ -73,12 +84,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName(){
-        return name;
+    public String getFirstName(){
+        return firstName;
     }
 
-    public void setName(String name){
-        this.name = name;
+    public void setFirstName(String name){
+        this.firstName = name;
     }
 
     public String getEmailId(){
@@ -128,5 +139,11 @@ public class User {
     public void addPhones(Phone phone){
         this.phones.add(phone);
     }
-    
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 }

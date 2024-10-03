@@ -27,9 +27,9 @@ class Main {
     @Bean
     CommandLineRunner initUser(UserRepository userRepository, LaptopRepository laptopRepository, PhoneRepository phoneRepository) {
         return args -> {
-            User user1 = new User("John", "john@somemail.com", new Date());
-            User user2 = new User("Jane", "jane@somemail.com", new Date());
-            User user3 = new User("Justin", "justin@somemail.com", new Date());
+            User user1 = new User("John", "Smith", "john@somemail.com", new Date());
+            User user2 = new User("Jane","Anderson" , "jane@somemail.com", new Date());
+            User user3 = new User("Justin", "Jefferson" ,"justin@somemail.com", new Date());
             Laptop laptop1 = new Laptop( 2.5, 4, 8, "Lenovo", 300);
             Laptop laptop2 = new Laptop( 4.1, 8, 16, "Hp", 800);
             Laptop laptop3 = new Laptop( 3.5, 32, 32, "Dell", 2300); 
