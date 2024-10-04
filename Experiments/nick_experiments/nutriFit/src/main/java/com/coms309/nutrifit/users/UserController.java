@@ -20,7 +20,7 @@ public class UserController {
     //CREATE
     @PostMapping(path = "/users")
     String createUser(@RequestBody User user) {
-        if (user == null){
+        if (user == null || userRepository.existsUserByIdOrEmailOrUsername(user.getId(), user.getEmail(), user.getUsername()) ){
             return failure;
         }
         userRepository.save(user);

@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.users;
 
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,4 +9,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
   User findById(int id);
 
   void deleteById(int id);
+
+boolean existsUserByIdOrEmailOrUsername(int id, String email, String username);
 }

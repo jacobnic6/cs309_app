@@ -6,16 +6,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.type.descriptor.java.LocalDateTimeJavaType;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity(name = "user")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class User {
+
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -34,5 +37,15 @@ public class User {
     private String password;
 
     @DateTimeFormat
-    private Date lastLogin;
+    private LocalDateTime lastLogin;
+
+    public User(String firstName, String lastName, String email, String username, String password)
+        {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+            this.username = username;
+            this.password = password;
+            this.lastLogin =  LocalDateTime.now();
+        }
 }
