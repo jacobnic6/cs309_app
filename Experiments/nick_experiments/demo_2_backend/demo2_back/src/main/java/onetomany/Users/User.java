@@ -35,7 +35,7 @@ public class User {
     private String firstName;
 
 
-
+private String username;
     private String lastName;
     private String emailId;
     private Date joiningDate;
