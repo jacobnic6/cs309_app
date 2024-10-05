@@ -1,0 +1,35 @@
+ssh to serv
+ssh "isu id"@coms-3090-058.class.las.iastate.edu
+fingerprint (Y/N) y
+Password: "isu pw"
+
+To run jar
+java –jar "name of jar".jar
+
+Springboot Port # on server
+:8080
+
+Db Port # on server
+:3306/DB309?useSSL=false
+
+App URL 
+http://coms-3090-058.class.las.iastate.edu:8080
+
+
+"users" Url
+http://coms-3090-058.class.las.iastate.edu:8080/users
+
+
+
+
+
+ssh ndjacobs@coms-3090-058.class.las.iastate.edu
+cd app
+java –jar nutriFit-0.0.1-SNAPSHOT.jar
+ 
+path
+/home/ndjacobs/app
+
+
+
+java –jar nutriFit-0.0.1-SNAPSHOT.jar
