@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.type.descriptor.java.LocalDateTimeJavaType;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -23,10 +24,13 @@ public class User {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(nullable = false)
     private String firstName;
+
     @Column(nullable = false)
     private String lastName;
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -36,8 +40,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @DateTimeFormat
+    @LastModifiedDate
     private LocalDateTime lastLogin;
+
 
     public User(String firstName, String lastName, String email, String username, String password)
         {
@@ -46,6 +51,7 @@ public class User {
             this.email = email;
             this.username = username;
             this.password = password;
-            this.lastLogin =  LocalDateTime.now();
+
+            this.lastLogin = LocalDateTime.now();
         }
 }
