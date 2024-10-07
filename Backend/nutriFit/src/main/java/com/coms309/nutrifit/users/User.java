@@ -6,9 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.type.descriptor.java.LocalDateTimeJavaType;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -19,15 +23,15 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class User {
-//
+
 
     @Id
-    @JoinColumn
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private int userId;
+    private int id;
 
-    @OneToOne
-    @PrimaryKeyJoinColumn
+
+
+    @OneToOne(cascade = CascadeType.ALL)
     private UserSettings settings;
 
     @Column(nullable = false)
@@ -60,8 +64,11 @@ public class User {
             this.password = password;
 
             this.lastLogin = LocalDateTime.now();
-            settings = new UserSettings();
+
+
+
 
 
         }
+
 }

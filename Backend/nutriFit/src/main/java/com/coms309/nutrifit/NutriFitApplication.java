@@ -1,13 +1,10 @@
 package com.coms309.nutrifit;
 
-import com.coms309.nutrifit.users.User;
-import com.coms309.nutrifit.users.UserRepository;
+import com.coms309.nutrifit.repo.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import java.util.Date;
 
 @SpringBootApplication
 public class NutriFitApplication {
