@@ -1,5 +1,10 @@
-package com.coms309.nutrifit.users;
+package com.coms309.nutrifit.controller;
 
+import com.coms309.nutrifit.service.UserSettingsServiceHandler;
+import com.coms309.nutrifit.users.User;
+import com.coms309.nutrifit.service.UserServiceHandler;
+import com.coms309.nutrifit.users.UserSettings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,11 +14,13 @@ public class UserController {
 
 
 
-    private final UserServiceHandler userServiceHandler;
+    @Autowired
+    private UserServiceHandler userServiceHandler;
 
-    public UserController(UserServiceHandler userServiceHandler) {
-        this.userServiceHandler = userServiceHandler;
-    }
+    @Autowired
+    private UserSettingsServiceHandler settingsServiceHandler;
+
+
 
 
     //CREATE
@@ -21,9 +28,6 @@ public class UserController {
     String createUser(@RequestBody User user) {
 
        return userServiceHandler.createUser(user);
-
-
-
     }
 
 
@@ -33,8 +37,9 @@ public class UserController {
     public User getUserById(@PathVariable int id) {
 
         //return userRepository.findById(id);
-                return userServiceHandler.readUser(id);
+                return userServiceHandler.getUserById(id);
     }
+
     //UPDATE
     @PutMapping(path = "/users/{id}")
     User updateUser(@PathVariable int id, @RequestBody User user) {
@@ -57,5 +62,15 @@ public class UserController {
     public List<User> getAllUsers() {
        // return userRepository.findAll();
         return  userServiceHandler.listAllUsers();
+    }
+
+
+
+    //update settings
+    @PutMapping(path = "users/{userId}/settings/{settingsId}")
+    public String updateUserSettings(@PathVariable int userId, @PathVariable int settingsId, @RequestBody UserSettings userSettings) {
+
+
+        return userServiceHandler.updateUserSettings(userId, settingsId, userSettings);
     }
 }
