@@ -76,4 +76,18 @@ public class UserServiceHandler
         }
 
 
+        public String updateUserSettings(int userId, int settingsId, UserSettings userSettings) {
+            User u = userRepository.findById(userId);
+            UserSettings settings = userSettingsRepository.findById(settingsId);
+            if (u == null || settings == null) {
+                return failure;
+            }
+            u.setSettings(userSettings);
+
+            userRepository.saveAndFlush(u);
+
+
+            return success;
+
+        }
     }

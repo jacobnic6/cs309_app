@@ -32,6 +32,7 @@ public class User {
 
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_settings_id")
     private UserSettings settings;
 
     @Column(nullable = false)

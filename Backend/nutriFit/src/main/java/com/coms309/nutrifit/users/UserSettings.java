@@ -17,7 +17,7 @@ public class UserSettings {
         private int id;
 
 
-        @OneToOne(mappedBy = "settings", optional = false, orphanRemoval = true)
+        @OneToOne(mappedBy = "settings", optional = false)
         @JsonIgnore
         private User user;
 

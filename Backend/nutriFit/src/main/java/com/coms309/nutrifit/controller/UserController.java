@@ -1,7 +1,9 @@
 package com.coms309.nutrifit.controller;
 
+import com.coms309.nutrifit.service.UserSettingsServiceHandler;
 import com.coms309.nutrifit.users.User;
 import com.coms309.nutrifit.service.UserServiceHandler;
+import com.coms309.nutrifit.users.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,9 @@ public class UserController {
 
     @Autowired
     private UserServiceHandler userServiceHandler;
+
+    @Autowired
+    private UserSettingsServiceHandler settingsServiceHandler;
 
 
 
@@ -34,6 +39,7 @@ public class UserController {
         //return userRepository.findById(id);
                 return userServiceHandler.getUserById(id);
     }
+
     //UPDATE
     @PutMapping(path = "/users/{id}")
     User updateUser(@PathVariable int id, @RequestBody User user) {
@@ -56,5 +62,15 @@ public class UserController {
     public List<User> getAllUsers() {
        // return userRepository.findAll();
         return  userServiceHandler.listAllUsers();
+    }
+
+
+
+    //update settings
+    @PutMapping(path = "users/{userId}/settings/{settingsId}")
+    public String updateUserSettings(@PathVariable int userId, @PathVariable int settingsId, @RequestBody UserSettings userSettings) {
+
+
+        return userServiceHandler.updateUserSettings(userId, settingsId, userSettings);
     }
 }
