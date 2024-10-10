@@ -21,6 +21,9 @@ import org.json.JSONObject;
 
 public class SignupActivity extends AppCompatActivity {
 
+    private EditText firstNameEditText;
+    private EditText lastNameEditText;
+    private EditText emailEditText;
     private EditText usernameEditText;
     private EditText passwordEditText;
     private EditText confirmEditText;
@@ -32,12 +35,17 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        // Initialize UI elements
+        firstNameEditText = findViewById(R.id.signup_firstname_edt);
+        lastNameEditText = findViewById(R.id.signup_lastname_edt);
+        emailEditText = findViewById(R.id.signup_email_edt);
         usernameEditText = findViewById(R.id.signup_username_edt);
         passwordEditText = findViewById(R.id.signup_password_edt);
         confirmEditText = findViewById(R.id.signup_confirm_edt);
         loginButton = findViewById(R.id.signup_login_btn);
         signupButton = findViewById(R.id.signup_signup_btn);
 
+        // Navigate to LoginActivity on login button click
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,15 +54,20 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+        // Signup button click listener
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Retrieve input values
+                String firstName = firstNameEditText.getText().toString().trim();
+                String lastName = lastNameEditText.getText().toString().trim();
+                String email = emailEditText.getText().toString().trim();
                 String username = usernameEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
                 String confirm = confirmEditText.getText().toString().trim();
 
                 // Check for empty fields
-                if (username.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
+                if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
                     Toast.makeText(SignupActivity.this, "All fields are required", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -66,13 +79,13 @@ public class SignupActivity extends AppCompatActivity {
                 }
 
                 // Proceed with signup request
-                signupUser(username, password);
+                signupUser(firstName, lastName, email, username, password);
             }
         });
     }
 
-    private void signupUser(final String username, final String password) {
-        String url = "https://95a8640b-10a2-4678-9bec-684852e61883.mock.pstmn.io/users/signup";  // Replace with server
+    private void signupUser(final String firstName, final String lastName, final String email, final String username, final String password) {
+        String url = "http://coms-3090-058.class.las.iastate.edu:8080/users";  // find correct url
         RequestQueue queue = Volley.newRequestQueue(this);
 
         // Create JSON request body
@@ -80,6 +93,9 @@ public class SignupActivity extends AppCompatActivity {
         try {
             jsonBody.put("username", username);
             jsonBody.put("password", password);
+            jsonBody.put("email", email);
+            jsonBody.put("firstName", firstName);
+            jsonBody.put("lastName", lastName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -91,7 +107,7 @@ public class SignupActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         // Handle successful signup
                         Toast.makeText(SignupActivity.this, "Signup successful!", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(SignupActivity.this, DeleteUserActivity.class);
                         startActivity(intent);
                         finish();
                     }
@@ -118,7 +134,3 @@ public class SignupActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 }
-
-
-
-
