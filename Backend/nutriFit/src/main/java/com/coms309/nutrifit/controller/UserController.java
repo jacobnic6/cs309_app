@@ -1,9 +1,10 @@
 package com.coms309.nutrifit.controller;
 
+import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.service.UserSettingsServiceHandler;
-import com.coms309.nutrifit.users.User;
+import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.service.UserServiceHandler;
-import com.coms309.nutrifit.users.UserSettings;
+import com.coms309.nutrifit.entity.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,12 @@ public class UserController {
 
     @Autowired
     private UserSettingsServiceHandler settingsServiceHandler;
-
-
+    @Autowired
+    private UserRepository userRepository;
 
 
     //CREATE
-    @PostMapping(path = "/users")
+    @PostMapping("/users")
     String createUser(@RequestBody User user) {
 
        return userServiceHandler.createUser(user);
@@ -36,9 +37,20 @@ public class UserController {
     @GetMapping(path = "/users/{id}")
     public User getUserById(@PathVariable int id) {
 
-        //return userRepository.findById(id);
+
                 return userServiceHandler.getUserById(id);
     }
+
+
+
+    @RequestMapping(path = "/users/username/{username}")
+    public User getUserByUsername(@PathVariable String username) {
+
+        return userServiceHandler.getByUsername(username);
+    }
+
+
+
 
     //UPDATE
     @PutMapping(path = "/users/{id}")

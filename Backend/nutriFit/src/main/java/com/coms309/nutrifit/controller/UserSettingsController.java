@@ -1,8 +1,7 @@
 package com.coms309.nutrifit.controller;
 
 import com.coms309.nutrifit.service.UserSettingsServiceHandler;
-import com.coms309.nutrifit.users.User;
-import com.coms309.nutrifit.users.UserSettings;
+import com.coms309.nutrifit.entity.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +28,11 @@ public class UserSettingsController {
     }
 
 
+    @PutMapping(path = "/settings/{id}")
+    public UserSettings updateUserSettings(@PathVariable int id, @RequestBody UserSettings settings) {
 
+        return settingsServiceHandler.updateSettings(id, settings);
+    }
 
 
     //LIST
@@ -38,4 +41,10 @@ public class UserSettingsController {
 
         return  settingsServiceHandler.listAllUserSettings();
     }
+    @DeleteMapping("/settings/{id}")
+    public String deleteUserSettings(@PathVariable int id){
+
+        return settingsServiceHandler.deleteSettings(id);
+    }
+
 }
