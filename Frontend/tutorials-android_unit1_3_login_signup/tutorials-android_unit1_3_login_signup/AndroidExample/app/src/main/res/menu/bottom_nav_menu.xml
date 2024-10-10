@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/social"
+        android:title="Social"
+        android:icon="@drawable/social"/>
+
+    <item
+        android:id="@+id/workouts"
+        android:title="Workouts"
+        android:icon="@drawable/workouts"/>
+
+    <item
+        android:id="@+id/profile"
+        android:title="Profile"
+        android:icon="@drawable/profile"/>
+
+    <item
+        android:id="@+id/nutrition"
+        android:title="Nutrition"
+        android:icon="@drawable/nutrition"/>
+
+
+    <item
+        android:id="@+id/settings"
+        android:title="Settings"
+        android:icon="@drawable/settings"/>
+
+</menu>
