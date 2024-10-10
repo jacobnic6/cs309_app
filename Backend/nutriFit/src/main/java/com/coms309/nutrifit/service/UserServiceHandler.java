@@ -1,10 +1,9 @@
 package com.coms309.nutrifit.service;
 
-import com.coms309.nutrifit.users.User;
+import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.repo.UserRepository;
-import com.coms309.nutrifit.users.UserSettings;
+import com.coms309.nutrifit.entity.UserSettings;
 import com.coms309.nutrifit.repo.UserSettingsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,6 +29,7 @@ public class UserServiceHandler
 
 
         //CREATE
+        //Creates a user with a default settings entity
         public String createUser(User user) {
             if (user == null || userRepository.existsUserByIdOrEmailOrUsername(user.getId(), user.getEmail(), user.getUsername()) ){
                 return failure;
@@ -46,6 +46,10 @@ public class UserServiceHandler
         }
         //READ
         public User getUserById(int id) {
+            if (!userRepository.existsById(id)){
+                return null;
+            }
+
             return userRepository.findById(id);
 
         }
@@ -65,6 +69,9 @@ public class UserServiceHandler
 
         //DELETE
         public String deleteUser(int id) {
+            if (userRepository.findById(id) == null) {
+                return "User " + id + " does not exist";
+            }
             String deleteMessage = "User " + id + " has been deleted";
             userRepository.deleteById(id);
 
@@ -76,18 +83,24 @@ public class UserServiceHandler
         }
 
 
-        public String updateUserSettings(int userId, int settingsId, UserSettings userSettings) {
+        public String updateUserSettings(int userId, int settingsId, UserSettings settings) {
             User u = userRepository.findById(userId);
-            UserSettings settings = userSettingsRepository.findById(settingsId);
-            if (u == null || settings == null) {
+            UserSettings existingSettings = userSettingsRepository.findById(settingsId);
+            if (u == null || existingSettings == null) {
                 return failure;
             }
-            u.setSettings(userSettings);
+            u.setSettings(settings);
 
             userRepository.saveAndFlush(u);
 
 
             return success;
 
+        }
+
+
+
+        public User getByUsername(String username) {
+            return  userRepository.findByUsername(username);
         }
     }

@@ -1,10 +1,10 @@
-package com.coms309.nutrifit.users;
+package com.coms309.nutrifit.entity;
 
+import com.coms309.nutrifit.util.MeasurementUnits;
+import com.coms309.nutrifit.util.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.stereotype.Component;
 
 @Entity
 @Getter

@@ -1,21 +1,12 @@
-package com.coms309.nutrifit.users;
+package com.coms309.nutrifit.entity;
 
 import jakarta.persistence.*;
-import jdk.jfr.Timestamp;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.type.descriptor.java.LocalDateTimeJavaType;
-import org.springframework.context.annotation.Primary;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
 @Entity

@@ -1,4 +1,4 @@
-package com.coms309.nutrifit.users;
+package com.coms309.nutrifit.util;
 
 public enum Visibility
     {
