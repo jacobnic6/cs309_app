@@ -91,7 +91,7 @@ public class DeleteUserActivity extends AppCompatActivity {
     // Method to delete a user using their ID
     private void deleteUser(final int userId) {
         // Update this URL with your actual endpoint (this example assumes a REST endpoint using the User ID)
-        String url = "http://coms-3090-058.class.las.iastate.edu:8080/users" + userId;
+        String url = "http://coms-3090-058.class.las.iastate.edu:8080/users/" + userId;
 
         // Create a DELETE request using Volley
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,

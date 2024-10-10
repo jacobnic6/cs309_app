@@ -1,5 +1,6 @@
 package com.example.androidexample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,11 +21,10 @@ import org.json.JSONObject;
 
 public class WorkoutActivity extends AppCompatActivity {
 
-    private EditText startTimeEditText, workoutLengthEditText, totalWeightEditText, exercisesPerformedEditText;
     private EditText editWorkoutIdEditText, deleteWorkoutIdEditText;
-    private Button logWorkoutButton, viewWorkoutsButton, editWorkoutButton, deleteWorkoutButton;
+    private Button viewWorkoutsButton, editWorkoutButton, deleteWorkoutButton, navigateLogWorkoutButton;
 
-    private final String BASE_URL = "http://coms-3090-058.class.las.iastate.edu:8080/";  // Base URL for all requests
+    private final String BASE_URL = "https://2765ffc4-ba07-4af7-8713-26293f0065d9.mock.pstmn.io/workouts";  // Base URL for all requests
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,22 +32,20 @@ public class WorkoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_workout);
 
         // Initialize UI elements
-        startTimeEditText = findViewById(R.id.workout_start_time_edt);
-        workoutLengthEditText = findViewById(R.id.workout_length_edt);
-        totalWeightEditText = findViewById(R.id.total_weight_edt);
-        exercisesPerformedEditText = findViewById(R.id.exercises_performed_edt);
         editWorkoutIdEditText = findViewById(R.id.edit_workout_id_edt);
         deleteWorkoutIdEditText = findViewById(R.id.delete_workout_id_edt);
-        logWorkoutButton = findViewById(R.id.log_workout_btn);
         viewWorkoutsButton = findViewById(R.id.view_workouts_btn);
         editWorkoutButton = findViewById(R.id.edit_workout_btn);
         deleteWorkoutButton = findViewById(R.id.delete_workout_btn);
+        navigateLogWorkoutButton = findViewById(R.id.navigate_log_workout_btn);
 
         // Set up click listeners
-        logWorkoutButton.setOnClickListener(new View.OnClickListener() {
+        navigateLogWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logNewWorkout();
+                // Navigate to LogWorkoutActivity to log a new workout
+                Intent intent = new Intent(WorkoutActivity.this, LogWorkoutActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -73,39 +71,7 @@ public class WorkoutActivity extends AppCompatActivity {
         });
     }
 
-    private void logNewWorkout() {
-        String url = BASE_URL;
-
-        try {
-            JSONObject workoutDetails = new JSONObject();
-            workoutDetails.put("userId", 1);  // Replace with the actual user ID
-            workoutDetails.put("startTime", startTimeEditText.getText().toString());
-            workoutDetails.put("workoutLength", Integer.parseInt(workoutLengthEditText.getText().toString()));
-            workoutDetails.put("totalWeight", Double.parseDouble(totalWeightEditText.getText().toString()));
-            workoutDetails.put("exercisesPerformed", new JSONObject(exercisesPerformedEditText.getText().toString()));
-
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, workoutDetails,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Toast.makeText(WorkoutActivity.this, "Workout logged successfully!", Toast.LENGTH_SHORT).show();
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("WorkoutActivity", "Failed to log workout: " + error.getMessage());
-                    Toast.makeText(WorkoutActivity.this, "Failed to log workout: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
-
-            RequestQueue queue = Volley.newRequestQueue(this);
-            queue.add(jsonObjectRequest);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
+    // View all workouts
     private void viewWorkouts() {
         String url = BASE_URL;
 
@@ -148,16 +114,19 @@ public class WorkoutActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
+    // Edit a workout based on its ID (using integer ID)
     private void editWorkout() {
-        String workoutId = editWorkoutIdEditText.getText().toString().trim();
+        int workoutId = getValidatedWorkoutId(editWorkoutIdEditText);
+        if (workoutId == -1) return;  // Return if the ID is invalid
+
         String url = BASE_URL + "/" + workoutId;
 
         try {
             JSONObject updatedWorkoutDetails = new JSONObject();
-            updatedWorkoutDetails.put("startTime", startTimeEditText.getText().toString());
-            updatedWorkoutDetails.put("workoutLength", Integer.parseInt(workoutLengthEditText.getText().toString()));
-            updatedWorkoutDetails.put("totalWeight", Double.parseDouble(totalWeightEditText.getText().toString()));
-            updatedWorkoutDetails.put("exercisesPerformed", new JSONObject(exercisesPerformedEditText.getText().toString()));
+            updatedWorkoutDetails.put("startTime", "2023-10-12 09:00:00");
+            updatedWorkoutDetails.put("workoutLength", 60);
+            updatedWorkoutDetails.put("totalWeight", 300.5);
+            updatedWorkoutDetails.put("exercisesPerformed", new JSONObject("{ \"Squats\": { \"sets\": 3, \"reps\": 10, \"weight\": 150 } }"));
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, updatedWorkoutDetails,
                     new Response.Listener<JSONObject>() {
@@ -180,8 +149,11 @@ public class WorkoutActivity extends AppCompatActivity {
         }
     }
 
+    // Delete a workout based on its ID (using integer ID)
     private void deleteWorkout() {
-        String workoutId = deleteWorkoutIdEditText.getText().toString().trim();
+        int workoutId = getValidatedWorkoutId(deleteWorkoutIdEditText);
+        if (workoutId == -1) return;  // Return if the ID is invalid
+
         String url = BASE_URL + "/" + workoutId;
 
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
@@ -200,5 +172,21 @@ public class WorkoutActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(stringRequest);
+    }
+
+    // Helper method to validate the ID input and convert to integer
+    private int getValidatedWorkoutId(EditText editText) {
+        String input = editText.getText().toString().trim();
+        if (input.isEmpty()) {
+            Toast.makeText(this, "Workout ID cannot be empty", Toast.LENGTH_SHORT).show();
+            return -1;
+        }
+
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Invalid Workout ID. Please enter a numeric value.", Toast.LENGTH_SHORT).show();
+            return -1;
+        }
     }
 }
