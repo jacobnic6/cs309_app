@@ -1,79 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".WorkoutActivity">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Section: Create a Workout -->
-        <Button
-            android:id="@+id/create_workout_btn"
+        <!-- Section: Log a New Workout -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create a Workout"
-            android:backgroundTint="#6A5ACD"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="16dp" />
+            android:paddingBottom="10dp"
+            android:text="Log a New Workout"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black" />
 
-        <!-- Section: Workout Templates (future feature) -->
-        <Button
-            android:id="@+id/workout_templates_btn"
+        <EditText
+            android:id="@+id/workout_start_time_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Workout Templates"
-            android:backgroundTint="#6A5ACD"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="16dp" />
+            android:hint="Start Time (yyyy-MM-dd HH:mm:ss)"
+            android:inputType="datetime" />
 
-        <!-- Section: View Your Workouts -->
+        <EditText
+            android:id="@+id/workout_length_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Workout Length (in minutes)"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/total_weight_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Total Weight Lifted"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/exercises_performed_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Exercises Performed (JSON format)"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/log_workout_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Log Workout"
+            android:layout_marginTop="10dp" />
+
+        <!-- Section: Retrieve and Display Workouts -->
         <Button
             android:id="@+id/view_workouts_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Your Workouts"
-            android:backgroundTint="#6A5ACD"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="16dp" />
+            android:text="View Past Workouts"
+            android:layout_marginTop="16dp" />
 
-        <!-- Placeholder for displaying workout list -->
-        <TextView
-            android:id="@+id/workout_list_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:text="List of Workouts will appear here..."
-            android:textColor="#000000"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Section: Update/Delete -->
+        <!-- Section: Edit Workout -->
         <EditText
-            android:id="@+id/workout_id_edt"
+            android:id="@+id/edit_workout_id_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Workout ID to Edit/Delete"
+            android:hint="Enter Workout ID to Edit"
             android:inputType="number"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginTop="16dp" />
 
         <Button
             android:id="@+id/edit_workout_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Edit Workout"
-            android:backgroundTint="#FF8C00"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginTop="10dp" />
+
+        <!-- Section: Delete Workout -->
+        <EditText
+            android:id="@+id/delete_workout_id_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Workout ID to Delete"
+            android:inputType="number"
+            android:layout_marginTop="16dp" />
 
         <Button
             android:id="@+id/delete_workout_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Delete Workout"
+            android:layout_marginTop="10dp"
             android:backgroundTint="#FF6347"
             android:textColor="#FFFFFF" />
 
