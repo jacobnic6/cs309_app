@@ -31,6 +31,9 @@
             android:exported="false"/>
         <activity
             android:name=".WorkoutActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".UserProfileActivity"
             android:exported="true">
 
             <intent-filter>

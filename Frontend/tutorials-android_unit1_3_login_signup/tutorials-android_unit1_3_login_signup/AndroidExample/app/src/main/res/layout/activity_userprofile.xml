@@ -6,21 +6,45 @@
     android:layout_height="match_parent">
 
     // Upper Section (Specific Page Content)
+
+    // Guideline for separating sections
+
     <FrameLayout
         android:id="@+id/page_content_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         // Specific page content layout here
         // This is where all the content for the specific page will be placed
 
+        <EditText
+            android:id="@+id/input_weight"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_vertical" />
+
+        <Button
+            android:id="@+id/submit_input_weight"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:text="Submit" />
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/graph"
+            android:layout_width="195dp"
+            android:layout_height="159dp"
+            android:layout_gravity="center" />
+
+
     </FrameLayout>
 
-    // Guideline for separating sections
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
