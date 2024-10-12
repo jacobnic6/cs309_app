@@ -27,7 +27,7 @@ public class UserSettingsController {
         return settingsServiceHandler.getSettingsById(id);
     }
 
-
+    //UPDATE
     @PutMapping(path = "/settings/{id}")
     public UserSettings updateUserSettings(@PathVariable int id, @RequestBody UserSettings settings) {
 
@@ -41,6 +41,7 @@ public class UserSettingsController {
 
         return  settingsServiceHandler.listAllUserSettings();
     }
+    //DELETE
     @DeleteMapping("/settings/{id}")
     public String deleteUserSettings(@PathVariable int id){
 

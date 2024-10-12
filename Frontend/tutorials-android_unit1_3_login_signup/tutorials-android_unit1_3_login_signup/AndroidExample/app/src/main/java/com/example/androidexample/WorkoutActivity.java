@@ -59,7 +59,13 @@ public class WorkoutActivity extends AppCompatActivity {
         editWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editWorkout();
+                // Navigate to EditWorkoutActivity and pass the workout ID
+                int workoutId = getValidatedWorkoutId(editWorkoutIdEditText);
+                if (workoutId != -1) {
+                    Intent intent = new Intent(WorkoutActivity.this, EditWorkoutActivity.class);
+                    intent.putExtra("WORKOUT_ID", workoutId);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -112,41 +118,6 @@ public class WorkoutActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(stringRequest);
-    }
-
-    // Edit a workout based on its ID (using integer ID)
-    private void editWorkout() {
-        int workoutId = getValidatedWorkoutId(editWorkoutIdEditText);
-        if (workoutId == -1) return;  // Return if the ID is invalid
-
-        String url = BASE_URL + "/" + workoutId;
-
-        try {
-            JSONObject updatedWorkoutDetails = new JSONObject();
-            updatedWorkoutDetails.put("startTime", "2023-10-12 09:00:00");
-            updatedWorkoutDetails.put("workoutLength", 60);
-            updatedWorkoutDetails.put("totalWeight", 300.5);
-            updatedWorkoutDetails.put("exercisesPerformed", new JSONObject("{ \"Squats\": { \"sets\": 3, \"reps\": 10, \"weight\": 150 } }"));
-
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, updatedWorkoutDetails,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Toast.makeText(WorkoutActivity.this, "Workout updated successfully!", Toast.LENGTH_SHORT).show();
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("WorkoutActivity", "Failed to update workout: " + error.getMessage());
-                }
-            });
-
-            RequestQueue queue = Volley.newRequestQueue(this);
-            queue.add(jsonObjectRequest);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     // Delete a workout based on its ID (using integer ID)

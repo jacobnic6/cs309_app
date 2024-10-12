@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.controller;
 
+import com.coms309.nutrifit.entity.UserWeightDto;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.service.UserSettingsServiceHandler;
 import com.coms309.nutrifit.entity.User;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
 
@@ -25,7 +27,7 @@ public class UserController {
 
 
     //CREATE
-    @PostMapping("/users")
+    @PostMapping
     String createUser(@RequestBody User user) {
 
        return userServiceHandler.createUser(user);
@@ -34,7 +36,7 @@ public class UserController {
 
 
     //READ
-    @GetMapping(path = "/users/{id}")
+    @GetMapping(path = "/{id}")
     public User getUserById(@PathVariable int id) {
 
 
@@ -43,7 +45,7 @@ public class UserController {
 
 
 
-    @RequestMapping(path = "/users/username/{username}")
+    @GetMapping(path = "/username/{username}")
     public User getUserByUsername(@PathVariable String username) {
 
         return userServiceHandler.getByUsername(username);
@@ -52,15 +54,18 @@ public class UserController {
 
 
 
+
+
+
     //UPDATE
-    @PutMapping(path = "/users/{id}")
+    @PutMapping(path = "/{id}")
     User updateUser(@PathVariable int id, @RequestBody User user) {
 
         return userServiceHandler.updateUser(id, user);
     }
 
     //DELETE
-    @DeleteMapping(path = "/users/{id}")
+    @DeleteMapping(path = "/{id}")
     String deleteUser(@PathVariable int id) {
        // userRepository.deleteById(id);
 
@@ -70,7 +75,7 @@ public class UserController {
 
 
     //LIST
-    @GetMapping(path = "/users")
+    @GetMapping()
     public List<User> getAllUsers() {
        // return userRepository.findAll();
         return  userServiceHandler.listAllUsers();
@@ -79,7 +84,7 @@ public class UserController {
 
 
     //update settings
-    @PutMapping(path = "users/{userId}/settings/{settingsId}")
+    @PutMapping(path = "/{userId}/settings/{settingsId}")
     public String updateUserSettings(@PathVariable int userId, @PathVariable int settingsId, @RequestBody UserSettings userSettings) {
 
 
