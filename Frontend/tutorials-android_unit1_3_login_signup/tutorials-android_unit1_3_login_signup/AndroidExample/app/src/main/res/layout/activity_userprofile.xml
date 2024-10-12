@@ -5,31 +5,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    // Upper Section (Specific Page Content)
-    <FrameLayout
-        android:id="@+id/page_content_container"
+    <LinearLayout
+        android:id="@+id/upper_section"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        // Specific page content layout here
-        // This is where all the content for the specific page will be placed
+    <EditText
+        android:id="@+id/weight_input"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Enter weight"
+        android:inputType="numberDecimal" />
 
-    </FrameLayout>
+    <Button
+        android:id="@+id/post_weight_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Post Weight" />
 
-    // Guideline for separating sections
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/weight_chart"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.85" />
-    // Adjust percentage as needed
 
-    // Bottom Navigation
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
