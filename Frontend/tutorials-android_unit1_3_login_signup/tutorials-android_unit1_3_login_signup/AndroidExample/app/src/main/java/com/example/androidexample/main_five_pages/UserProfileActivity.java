@@ -1,26 +1,32 @@
-package com.example.androidexample;
+package com.example.androidexample.main_five_pages;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 
+import com.example.androidexample.R;
+import com.example.androidexample.VolleySingleton;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 
 import org.json.JSONArray;
@@ -37,8 +43,6 @@ public class UserProfileActivity extends AppCompatActivity {
     private String url = "http://3a3a3fa2-d4e1-4281-8a26-1ee024d50f35.mock.pstmn.io";
     private String username;
     private float xValue = 0;
-
-
 
 
     @Override
@@ -61,6 +65,33 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
         getWeightData();
+
+        // The following is for switching to the other four "main pages of the app" - social, exercise, nutrition, and settings
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    int itemId = item.getItemId();
+
+                    if (itemId == R.id.social) {
+                        startActivity(new Intent(UserProfileActivity.this, SocialActivity.class));
+                        return true;
+                    } else if (itemId == R.id.workouts) {
+                        startActivity(new Intent(UserProfileActivity.this, WorkoutActivity.class));
+                        return true;
+                    } else if (itemId == R.id.profile) {
+                        startActivity(new Intent(UserProfileActivity.this, UserProfileActivity.class));
+                        return true;
+                    } else if (itemId == R.id.nutrition) {
+                        startActivity(new Intent(UserProfileActivity.this, NutritionActivity.class));
+                        return true;
+                    } else if (itemId == R.id.settings) {
+                        startActivity(new Intent(UserProfileActivity.this, SettingsActivity.class));
+                        return true;
+                    }
+                    return false;
+                }
+        });
     }
 
     private void postWeight() {
@@ -105,7 +136,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             JSONArray jsonArray = new JSONArray(response);
-                             ArrayList<Entry> entries = new ArrayList<>();
+                            ArrayList<Entry> entries = new ArrayList<>();
 
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject dataPoint = jsonArray.getJSONObject(i);
@@ -139,72 +170,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
+
+
 }
-
-    /* The Following buttons will be used to switch the intent to the respective page
-    private Button SocialButton;      // Define Social button variable
-    private Button ExerciseButton;    // Define Exercise button variable
-    private Button NutritionButton;   // Define Nutrition button variable
-    private Button SettingsButton;    // Define Settings button variable
-
-
-    /* The following is for switching to the other four "main pages of the app" - social, exercise, nutrition, and settings
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_userprofile);            // link to Login activity XML
-
-        // initialize UI elements
-        usernameEditText = findViewById(R.id.login_username_edt);
-        passwordEditText = findViewById(R.id.login_password_edt);
-        loginButton = findViewById(R.id.login_login_btn);    // link to login button in the Login activity XML
-        signupButton = findViewById(R.id.login_signup_btn);  // link to signup button in the Login activity XML
-
-        // click listener on Social button pressed
-        SocialButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // when signup button is pressed, use intent to switch to Signup Activity
-                Intent intent = new Intent(UserProfileActivity.this, SocialActivity.class);
-                startActivity(intent);  // go to SocialActivity
-            }
-        });
-
-        // click listener on Social button pressed
-        ExerciseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-        // when signup button is pressed, use intent to switch to Signup Activity
-        Intent intent = new Intent(UserProfileActivity.this, SocialActivity.class);
-                startActivity(intent);  // go to SocialActivity
-            }
-        });
-
-        // click listener on Social button pressed
-        NutritionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // when signup button is pressed, use intent to switch to Signup Activity
-                Intent intent = new Intent(UserProfileActivity.this, SocialActivity.class);
-                startActivity(intent);  // go to SocialActivity
-            }
-        });
-
-        // click listener on Social button pressed
-        SettingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // when signup button is pressed, use intent to switch to Signup Activity
-                Intent intent = new Intent(UserProfileActivity.this, SocialActivity.class);
-                startActivity(intent);  // go to SocialActivity
-            }
-        });
-    }
-
-     */
-
-

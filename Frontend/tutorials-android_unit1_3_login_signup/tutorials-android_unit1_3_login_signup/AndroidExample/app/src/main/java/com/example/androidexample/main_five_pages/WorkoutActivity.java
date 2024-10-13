@@ -1,4 +1,4 @@
-package com.example.androidexample;
+package com.example.androidexample.main_five_pages;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,14 +7,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.androidexample.EditWorkoutActivity;
+import com.example.androidexample.LogWorkoutActivity;
+import com.example.androidexample.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+import android.view.MenuItem;
+
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +47,33 @@ public class WorkoutActivity extends AppCompatActivity {
         editWorkoutButton = findViewById(R.id.edit_workout_btn);
         deleteWorkoutButton = findViewById(R.id.delete_workout_btn);
         navigateLogWorkoutButton = findViewById(R.id.navigate_log_workout_btn);
+
+        // The following is for switching to the other four "main pages of the app" - social, exercise, nutrition, and settings
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.social) {
+                    startActivity(new Intent(WorkoutActivity.this, SocialActivity.class));
+                    return true;
+                } else if (itemId == R.id.workouts) {
+                    startActivity(new Intent(WorkoutActivity.this, WorkoutActivity.class));
+                    return true;
+                } else if (itemId == R.id.profile) {
+                    startActivity(new Intent(WorkoutActivity.this, UserProfileActivity.class));
+                    return true;
+                } else if (itemId == R.id.nutrition) {
+                    startActivity(new Intent(WorkoutActivity.this, NutritionActivity.class));
+                    return true;
+                } else if (itemId == R.id.settings) {
+                    startActivity(new Intent(WorkoutActivity.this, SettingsActivity.class));
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // Set up click listeners
         navigateLogWorkoutButton.setOnClickListener(new View.OnClickListener() {

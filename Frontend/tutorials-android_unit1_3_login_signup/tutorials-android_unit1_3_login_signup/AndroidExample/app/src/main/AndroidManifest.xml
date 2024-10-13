@@ -19,9 +19,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"/>
+
 
         <activity
             android:name=".DeleteUserActivity"
@@ -32,12 +30,16 @@
         <activity android:name=".EditWorkoutActivity"
             android:exported="false"/>
         <activity
-            android:name=".WorkoutActivity"
+            android:name=".main_five_pages.WorkoutActivity"
             android:exported="false"/>
 
         <activity
-            android:name=".UserProfileActivity"
-            android:exported="true">
+            android:name=".main_five_pages.UserProfileActivity"
+            android:exported="false"/>
+
+            <activity
+                android:name=".MainActivity"
+                android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
