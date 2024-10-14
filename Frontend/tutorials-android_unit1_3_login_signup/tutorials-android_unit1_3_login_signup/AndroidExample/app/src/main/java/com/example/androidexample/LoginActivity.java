@@ -18,14 +18,16 @@ import com.example.androidexample.main_five_pages.UserProfileActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-    public class LoginActivity extends AppCompatActivity {
+import java.util.Objects;
+
+public class LoginActivity extends AppCompatActivity {
 
         private EditText usernameEditText;
         private EditText passwordEditText;
         private Button loginButton;
         private Button signupButton;
 
-        private String loginUrl = "http://coms-3090-058.class.las.iastate.edu:8080/users/"; // Replace with your API endpoint
+        private String loginUrl = "http://coms-3090-058.class.las.iastate.edu:8080/users"; // Replace with your API endpoint
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +66,12 @@ import org.json.JSONObject;
                         public void onResponse(String response) {
                             try {
                                 JSONObject jsonResponse = new JSONObject(response);
-                                boolean success = jsonResponse.getBoolean("success");
+                                String passwordDB = jsonResponse.getString("password");
 
-                                if (success) {
+                                if (password.equals(passwordDB)) {
                                     Intent intent = new Intent(com.example.androidexample.LoginActivity.this, UserProfileActivity.class);
                                     intent.putExtra("Username", username);
+                                    intent.putExtra("Password", password);
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(com.example.androidexample.LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();

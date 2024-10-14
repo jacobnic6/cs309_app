@@ -20,6 +20,7 @@ import com.android.volley.toolbox.StringRequest;
 
 import com.example.androidexample.R;
 import com.example.androidexample.VolleySingleton;
+import com.example.androidexample.main_five_pages.SettingsActivity;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
