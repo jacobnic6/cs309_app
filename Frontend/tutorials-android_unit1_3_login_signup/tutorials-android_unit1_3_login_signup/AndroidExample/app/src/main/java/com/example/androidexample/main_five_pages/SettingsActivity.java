@@ -20,6 +20,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 
+import com.example.androidexample.DeleteUserActivity;
 import com.example.androidexample.R;
 import com.example.androidexample.VolleySingleton;
 import com.example.androidexample.editUserActivity;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 public class SettingsActivity extends AppCompatActivity {
 
     private Button editUserButton;
+    private Button deleteUserButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +49,22 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         editUserButton = findViewById(R.id.edit_user_btn);
-
+        deleteUserButton = findViewById(R.id.delete_user_btn);
 
         editUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsActivity.this, editUserActivity.class);
-                startActivity(intent);            }
+                startActivity(intent);
+            }
         });
+        deleteUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, DeleteUserActivity.class);
+                startActivity(intent);
+                }
+            });
 
         // The following is for switching to the other four "main pages of the app" - social, exercise, nutrition, and settings
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);

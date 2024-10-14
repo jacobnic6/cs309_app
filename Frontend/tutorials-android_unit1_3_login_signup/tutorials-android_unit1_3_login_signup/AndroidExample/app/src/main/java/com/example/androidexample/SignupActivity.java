@@ -107,7 +107,7 @@ public class SignupActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         // Handle successful signup
                         Toast.makeText(SignupActivity.this, "Signup successful!", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(SignupActivity.this, DeleteUserActivity.class);
+                        Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     }
