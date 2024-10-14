@@ -23,72 +23,6 @@
             android:backgroundTint="#888888"
             android:layout_marginBottom="16dp" />
 
-        <!-- Date Input Fields (MM, DD, YYYY) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            android:layout_marginBottom="16dp">
-
-            <EditText
-                android:id="@+id/edit_month_edt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="MM"
-                android:inputType="number"
-                android:padding="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#888888"
-                android:backgroundTint="#888888" />
-
-            <View
-                android:layout_width="8dp"
-                android:layout_height="wrap_content" />
-
-            <EditText
-                android:id="@+id/edit_day_edt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="DD"
-                android:inputType="number"
-                android:padding="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#888888"
-                android:backgroundTint="#888888" />
-
-            <View
-                android:layout_width="8dp"
-                android:layout_height="wrap_content" />
-
-            <EditText
-                android:id="@+id/edit_year_edt"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="YYYY"
-                android:inputType="number"
-                android:padding="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#888888"
-                android:backgroundTint="#888888" />
-        </LinearLayout>
-
-        <!-- Workout Length Input -->
-        <EditText
-            android:id="@+id/edit_workout_length_edt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Workout Length (in minutes)"
-            android:inputType="number"
-            android:padding="12dp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:backgroundTint="#888888"
-            android:layout_marginBottom="16dp" />
-
         <!-- Total Weight Input -->
         <EditText
             android:id="@+id/edit_total_weight_edt"
@@ -104,29 +38,16 @@
 
         <!-- Exercises Performed Input -->
         <EditText
-            android:id="@+id/edit_exercises_performed_edt"
+            android:id="@+id/edit_exercise_name_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Exercises Performed (JSON format)"
-            android:inputType="textMultiLine"
+            android:hint="Exercise Name"
+            android:inputType="text"
             android:padding="12dp"
             android:textColor="#FFFFFF"
             android:textColorHint="#888888"
             android:backgroundTint="#888888"
             android:layout_marginBottom="16dp" />
-
-        <!-- Additional Notes Input -->
-        <EditText
-            android:id="@+id/edit_notes_edt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Additional Notes"
-            android:inputType="textMultiLine"
-            android:padding="12dp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:backgroundTint="#888888"
-            android:layout_marginBottom="24dp" />
 
         <!-- Fetch Workout Button -->
         <Button
