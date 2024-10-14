@@ -25,7 +25,7 @@ import org.json.JSONObject;
         private Button loginButton;
         private Button signupButton;
 
-        private String loginUrl = "http://coms-3090-058.class.las.iastate.edu:8080/users"; // Replace with your API endpoint
+        private String loginUrl = "http://coms-3090-058.class.las.iastate.edu:8080/users/"; // Replace with your API endpoint
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ import org.json.JSONObject;
         }
 
         private void checkLoginCredentials(String username, String password) {
-            String url = loginUrl + "?username=" + username + "&password=" + password;
+            String url = loginUrl + "/username/?username=" + username;
 
             StringRequest request = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
