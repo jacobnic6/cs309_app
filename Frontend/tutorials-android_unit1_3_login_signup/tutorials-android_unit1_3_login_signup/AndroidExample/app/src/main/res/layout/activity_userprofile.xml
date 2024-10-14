@@ -30,11 +30,19 @@
         android:text="Post Weight" />
 
 
+        <TextView
+            android:id="@+id/past_weights_textview"
+            android:layout_width="match_parent"
+            android:layout_height="104dp"
+            android:text="" />
+
+        <!--
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/weight_chart"
             android:layout_width="match_parent"
             android:layout_height="200dp" />
 
+        -->
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

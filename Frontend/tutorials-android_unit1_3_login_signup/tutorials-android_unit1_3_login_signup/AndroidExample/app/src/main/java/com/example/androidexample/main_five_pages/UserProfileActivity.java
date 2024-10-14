@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -39,11 +40,12 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private EditText weightInput;
     private Button postWeightButton;
-    private LineChart weightChart;
-    //private String url = "http://coms-3090-058.class.las.iastate.edu:8080/users";
-    private String url = "http://3a3a3fa2-d4e1-4281-8a26-1ee024d50f35.mock.pstmn.io";
+    private TextView pastWeightsTextView;
+    //private LineChart weightChart;
+    private String url = "http://coms-3090-058.class.las.iastate.edu:8080/users";
+    // private String url = "http://3a3a3fa2-d4e1-4281-8a26-1ee024d50f35.mock.pstmn.io";
     private String username;
-    private float xValue = 0;
+    //private float xValue = 0;
 
 
     @Override
@@ -55,7 +57,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
         weightInput = findViewById(R.id.weight_input);
         postWeightButton = findViewById(R.id.post_weight_button);
-        weightChart = findViewById(R.id.weight_chart);
+        //weightChart = findViewById(R.id.weight_chart);
+        pastWeightsTextView = findViewById(R.id.past_weights_textview);
 
 
         postWeightButton.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +119,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         Toast.makeText(UserProfileActivity.this, "Weight posted successfully", Toast.LENGTH_SHORT).show();
                         getWeightData();
+                        weightInput.setText("");
                     }
                 },
                 new Response.ErrorListener() {
@@ -128,49 +132,42 @@ public class UserProfileActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
 
-    private void getWeightData() {
-        String getUrl = url + "?username=" + username;
+        private void getWeightData() {
+            String getUrl = url + "/username/username" + username;
 
-        StringRequest request = new StringRequest(Request.Method.GET, getUrl,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONArray jsonArray = new JSONArray(response);
-                            ArrayList<Entry> entries = new ArrayList<>();
+            StringRequest request = new StringRequest(Request.Method.GET, getUrl,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONArray jsonArray = new JSONArray(response);
+                                StringBuilder weightsBuilder = new StringBuilder();
 
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject dataPoint = jsonArray.getJSONObject(i);
-                                float weight = (float) dataPoint.getDouble("weight");
-                                entries.add(new Entry(xValue++, weight));
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject dataPoint = jsonArray.getJSONObject(i);
+                                    float weight = (float) dataPoint.getDouble("weight");
+                                    weightsBuilder.append(weight);
+
+                                    if (i < jsonArray.length() - 1) {
+                                        weightsBuilder.append(", ");
+                                    }
+                                }
+
+                                pastWeightsTextView.setText(weightsBuilder.toString()); // Set text to TextView
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(com.example.androidexample.main_five_pages.UserProfileActivity.this, "Error parsing weight data", Toast.LENGTH_SHORT).show();
                             }
-
-                            LineDataSet dataSet = new LineDataSet(entries, "Weight");
-                            dataSet.setColor(Color.BLUE);
-                            dataSet.setCircleColor(Color.RED);
-
-                            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-                            dataSets.add(dataSet);
-
-                            LineData lineData = new LineData(dataSets);
-                            weightChart.setData(lineData);
-                            weightChart.invalidate();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(UserProfileActivity.this, "Error parsing weight data", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(UserProfileActivity.this, "Error fetching weight data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(com.example.androidexample.main_five_pages.UserProfileActivity.this, "Error fetching weight data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+            VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+        }
     }
-
-
-}
