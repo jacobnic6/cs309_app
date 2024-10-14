@@ -42,7 +42,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private Button postWeightButton;
     private TextView pastWeightsTextView;
     //private LineChart weightChart;
-    private String url = "http://coms-3090-058.class.las.iastate.edu:8080/users";
+    private String url = "http://coms-3090-058.class.las.iastate.edu:8080/bodyweights/username";
     // private String url = "http://3a3a3fa2-d4e1-4281-8a26-1ee024d50f35.mock.pstmn.io";
     private String username;
     //private float xValue = 0;
@@ -133,9 +133,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
         private void getWeightData() {
-            String getUrl = url + "/username/username" + username;
-
-            StringRequest request = new StringRequest(Request.Method.GET, getUrl,
+            StringRequest request = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
