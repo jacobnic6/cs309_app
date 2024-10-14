@@ -1,159 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#2C2C2C"> <!-- Dark Grey Background -->
+    android:layout_height="match_parent">
 
-    <!-- Title Section -->
-    <TextView
-        android:id="@+id/title_log_workout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Log a New Workout"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
-
-    <!-- Date Section (Month, Day, Year) -->
     <LinearLayout
-        android:id="@+id/date_input_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/title_log_workout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp">
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="#212121">
 
-        <!-- Month Input -->
+        <!-- Total Weight Input Field -->
         <EditText
-            android:id="@+id/log_month_edt"
-            android:layout_width="0dp"
+            android:id="@+id/total_weight_edt"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="MM"
-            android:inputType="number"
-            android:backgroundTint="#454545"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#E0E0E0"
+            android:hint="Total Weight Lifted"
+            android:inputType="numberDecimal"
             android:padding="12dp"
-            android:gravity="center" />
+            android:textColor="#FFFFFF"
+            android:textColorHint="#888888"
+            android:backgroundTint="#888888"
+            android:layout_marginBottom="16dp" />
 
-        <!-- Day Input -->
+        <!-- Exercise Name Input Field -->
         <EditText
-            android:id="@+id/log_day_edt"
-            android:layout_width="0dp"
+            android:id="@+id/exercise_name_edt"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="DD"
-            android:inputType="number"
-            android:backgroundTint="#454545"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#E0E0E0"
+            android:hint="Exercise Name"
+            android:inputType="text"
             android:padding="12dp"
-            android:gravity="center"
-            android:layout_marginLeft="8dp" />
+            android:textColor="#FFFFFF"
+            android:textColorHint="#888888"
+            android:backgroundTint="#888888"
+            android:layout_marginBottom="16dp" />
 
-        <!-- Year Input -->
-        <EditText
-            android:id="@+id/log_year_edt"
-            android:layout_width="0dp"
+        <!-- Log Workout Button -->
+        <Button
+            android:id="@+id/log_workout_btn"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="YYYY"
-            android:inputType="number"
-            android:backgroundTint="#454545"
+            android:text="Log Workout"
             android:textColor="#FFFFFF"
-            android:textColorHint="#E0E0E0"
-            android:padding="12dp"
-            android:gravity="center"
-            android:layout_marginLeft="8dp" />
+            android:backgroundTint="#6A5ACD"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
     </LinearLayout>
-
-    <!-- Workout Length Input Field -->
-    <EditText
-        android:id="@+id/workout_length_edt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Workout Length (in minutes)"
-        android:inputType="number"
-        android:padding="16dp"
-        android:backgroundTint="#8A8A8A"
-        android:textColorHint="#E0E0E0"
-        android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/date_input_section"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
-
-    <!-- Total Weight Input Field -->
-    <EditText
-        android:id="@+id/total_weight_edt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Total Weight Lifted"
-        android:inputType="numberDecimal"
-        android:padding="16dp"
-        android:backgroundTint="#8A8A8A"
-        android:textColorHint="#E0E0E0"
-        android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/workout_length_edt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
-
-    <!-- Exercises Performed Input Field -->
-    <EditText
-        android:id="@+id/exercises_performed_edt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Exercises Performed (JSON format)"
-        android:inputType="textMultiLine"
-        android:padding="16dp"
-        android:backgroundTint="#8A8A8A"
-        android:textColorHint="#E0E0E0"
-        android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/total_weight_edt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
-
-    <!-- Notes Input Field -->
-    <EditText
-        android:id="@+id/notes_edt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Additional Notes"
-        android:inputType="textMultiLine"
-        android:padding="16dp"
-        android:backgroundTint="#8A8A8A"
-        android:textColorHint="#E0E0E0"
-        android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/exercises_performed_edt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
-
-    <!-- Log Workout Button -->
-    <Button
-        android:id="@+id/log_workout_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Log Workout"
-        android:padding="16dp"
-        android:backgroundTint="#6A5ACD"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/notes_edt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
