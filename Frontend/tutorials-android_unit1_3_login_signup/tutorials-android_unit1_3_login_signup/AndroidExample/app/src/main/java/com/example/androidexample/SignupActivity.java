@@ -46,49 +46,55 @@ public class SignupActivity extends AppCompatActivity {
         signupButton = findViewById(R.id.signup_signup_btn);
 
         // Navigate to LoginActivity on login button click
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
+        loginButton.setOnClickListener(v -> {
+            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+            startActivity(intent);
         });
 
         // Signup button click listener
-        signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Retrieve input values
-                String firstName = firstNameEditText.getText().toString().trim();
-                String lastName = lastNameEditText.getText().toString().trim();
-                String email = emailEditText.getText().toString().trim();
-                String username = usernameEditText.getText().toString().trim();
-                String password = passwordEditText.getText().toString().trim();
-                String confirm = confirmEditText.getText().toString().trim();
+        signupButton.setOnClickListener(v -> {
+            // Retrieve input values
+            String firstName = firstNameEditText.getText().toString().trim();
+            String lastName = lastNameEditText.getText().toString().trim();
+            String email = emailEditText.getText().toString().trim();
+            String username = usernameEditText.getText().toString().trim();
+            String password = passwordEditText.getText().toString().trim();
+            String confirm = confirmEditText.getText().toString().trim();
 
-                // Check for empty fields
-                if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
-                    Toast.makeText(SignupActivity.this, "All fields are required", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                // Check if passwords match
-                if (!password.equals(confirm)) {
-                    Toast.makeText(SignupActivity.this, "Passwords don't match", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                // Proceed with signup request
-                signupUser(firstName, lastName, email, username, password);
+            // Check for empty
+            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
+                Toast.makeText(SignupActivity.this, "All fields are required", Toast.LENGTH_LONG).show();
+                return;
             }
+
+            // Check if passwords match
+            if (!password.equals(confirm)) {
+                Toast.makeText(SignupActivity.this, "Passwords don't match", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // Check if password has at least one capital letter and one special character
+            if (!isValidPassword(password)) {
+                Toast.makeText(SignupActivity.this, "Password must contain at least one capital letter and one special character", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // signup request
+            signupUser(firstName, lastName, email, username, password);
         });
     }
 
+    // validate password contains at least one capital letter and one special character
+    private boolean isValidPassword(String password) {
+        String passwordPattern = "^(?=.*[A-Z])(?=.*[@#$%^&+=!]).+$";
+        return password.matches(passwordPattern);
+    }
+
     private void signupUser(final String firstName, final String lastName, final String email, final String username, final String password) {
-        String url = "http://coms-3090-058.class.las.iastate.edu:8080/users";  // find correct url
+        String url = "http://coms-3090-058.class.las.iastate.edu:8080/users";  // Replace with correct URL
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        // Create JSON request body
+        //Request body
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("username", username);
@@ -105,7 +111,7 @@ public class SignupActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Handle successful signup
+                        // sign up
                         Toast.makeText(SignupActivity.this, "Signup successful!", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -115,7 +121,7 @@ public class SignupActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Handle signup failure
+                        //  failure
                         Toast.makeText(SignupActivity.this, "Signup failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }) {
@@ -130,7 +136,7 @@ public class SignupActivity extends AppCompatActivity {
             }
         };
 
-        // Add the request to the Volley queue
+        // add to queue
         queue.add(stringRequest);
     }
 }

@@ -26,21 +26,21 @@ public class WorkoutActivity extends AppCompatActivity {
     private EditText workoutIdEditText, deleteWorkoutIdEditText;
     private Button editWorkoutButton, deleteWorkoutButton, navigateLogWorkoutButton;
 
-    private final String BASE_URL = "https://06e76ef4-a66e-49e1-89ff-719066ed57f5.mock.pstmn.io//workouts";  // Base URL for all requests
+    private final String BASE_URL = "https://06e76ef4-a66e-49e1-89ff-719066ed57f5.mock.pstmn.io//workouts";  // URL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
 
-        // Initialize UI elements
+        // UI elements place
         workoutIdEditText = findViewById(R.id.edit_workout_id_edt);
         deleteWorkoutIdEditText = findViewById(R.id.delete_workout_id_edt);
         editWorkoutButton = findViewById(R.id.edit_workout_btn);
         deleteWorkoutButton = findViewById(R.id.delete_workout_btn);
         navigateLogWorkoutButton = findViewById(R.id.navigate_log_workout_btn);
 
-        // Set up click listeners
+
         navigateLogWorkoutButton.setOnClickListener(v -> {
             Intent intent = new Intent(WorkoutActivity.this, LogWorkoutActivity.class);
             startActivity(intent);
@@ -57,7 +57,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
         deleteWorkoutButton.setOnClickListener(v -> deleteWorkout());
 
-        // Set up Bottom Navigation
+        // Bottom nav for  new nav stuff
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -85,7 +85,7 @@ public class WorkoutActivity extends AppCompatActivity {
         });
     }
 
-    // Delete a workout based on its ID
+    // Delete a workout on ID
     private void deleteWorkout() {
         int workoutId = getValidatedWorkoutId(deleteWorkoutIdEditText);
         if (workoutId == -1) return;
@@ -101,7 +101,7 @@ public class WorkoutActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
-    // Helper method to validate the ID input and convert to integer
+    // Helper method to convert ID to int and validate
     private int getValidatedWorkoutId(EditText editText) {
         String input = editText.getText().toString().trim();
         if (input.isEmpty()) {

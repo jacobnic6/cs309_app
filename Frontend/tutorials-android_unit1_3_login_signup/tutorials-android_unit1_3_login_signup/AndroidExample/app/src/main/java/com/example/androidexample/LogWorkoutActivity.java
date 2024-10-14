@@ -49,9 +49,9 @@ public class LogWorkoutActivity extends AppCompatActivity {
 
 
         try {
-            // Create the JSON object to send in the request
+
             JSONObject workoutDetails = new JSONObject();
-            workoutDetails.put("userId", 1);  // Replace with the actual user ID
+            workoutDetails.put("userId", 1);  // placeholder
             workoutDetails.put("totalWeight", Double.parseDouble(totalWeightEditText.getText().toString()));
             workoutDetails.put("exerciseName", exerciseNameEditText.getText().toString());
 
@@ -60,12 +60,12 @@ public class LogWorkoutActivity extends AppCompatActivity {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, workoutDetails,
                     response -> {
                         try {
-                            // Get the workoutId from the response
+
                             int workoutId = response.getInt("workoutId");
                             Toast.makeText(LogWorkoutActivity.this, "Workout logged successfully! ID: " + workoutId, Toast.LENGTH_SHORT).show();
 
 
-                            // After successfully logging, redirect back to WorkoutActivity
+                            // After successfully logging, back to workout page
                             Intent intent = new Intent(LogWorkoutActivity.this, WorkoutActivity.class);
                             startActivity(intent);
                             finish();  // End this activity so it’s removed from the back stack
@@ -83,7 +83,7 @@ public class LogWorkoutActivity extends AppCompatActivity {
             );
 
 
-            // Add the request to the Volley request queue
+
             RequestQueue queue = Volley.newRequestQueue(this);
             queue.add(jsonObjectRequest);
 
