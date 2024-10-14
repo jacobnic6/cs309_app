@@ -47,5 +47,6 @@ public class UserSettingsController {
 
         return settingsServiceHandler.deleteSettings(id);
     }
-
+    //boolean success = jsonResponse.getBoolean("success");
+    //String password = jsonResponse.getString("password");
 }
