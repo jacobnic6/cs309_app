@@ -5,179 +5,201 @@
     tools:context=".MainActivity"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Signup Example"
-        android:layout_gravity="center"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="40dp"
-        android:textSize="30sp"
-        android:textColor="#fc0303" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="30dp"
+        android:textSize="28sp"
+        android:textColor="#fc0303"
+        android:textStyle="bold" />
 
     <!-- First Name Field -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
+        android:orientation="vertical"
+        android:layout_marginBottom="15dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="First Name: "
-            android:textSize="20sp"
+            android:text="First Name"
+            android:textSize="18sp"
             android:textColor="#000000" />
 
         <EditText
             android:id="@+id/signup_firstname_edt"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Enter First Name Here" />
+            android:hint="Enter First Name"
+            android:backgroundTint="#D3D3D3"
+            android:padding="10dp"
+            android:layout_marginTop="8dp" />
     </LinearLayout>
 
     <!-- Last Name Field -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
+        android:orientation="vertical"
+        android:layout_marginBottom="15dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last Name: "
-            android:textSize="20sp"
+            android:text="Last Name"
+            android:textSize="18sp"
             android:textColor="#000000" />
 
         <EditText
             android:id="@+id/signup_lastname_edt"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Enter Last Name Here" />
+            android:hint="Enter Last Name"
+            android:backgroundTint="#D3D3D3"
+            android:padding="10dp"
+            android:layout_marginTop="8dp" />
     </LinearLayout>
 
     <!-- Email Field -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal"
+        android:orientation="vertical"
+        android:layout_marginBottom="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="18sp"
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/signup_email_edt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:inputType="textEmailAddress"
+            android:hint="Enter Email"
+            android:backgroundTint="#D3D3D3"
+            android:padding="10dp"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <!-- Username Field -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textSize="18sp"
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/signup_username_edt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Enter Username"
+            android:backgroundTint="#D3D3D3"
+            android:padding="10dp"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <!-- Password Field -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textSize="18sp"
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/signup_password_edt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:inputType="textPassword"
+            android:hint="Enter Password"
+            android:backgroundTint="#D3D3D3"
+            android:padding="10dp"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <!-- Confirm Password Field -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginBottom="30dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email: "
-            android:textSize="20sp"
-            android:textColor="#000000" />
-
-        <EditText
-            android:id="@+id/signup_email_edt"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:inputType="textEmailAddress"
-            android:hint="Enter Email Here" />
-    </LinearLayout>
-
-    <!-- Username Field -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="30dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Username: "
-            android:textSize="20sp"
-            android:textColor="#000000" />
-
-        <EditText
-            android:id="@+id/signup_username_edt"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:hint="Enter Username Here" />
-    </LinearLayout>
-
-    <!-- Password Field -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Password: "
-            android:textSize="20sp"
-            android:textColor="#000000" />
-
-        <EditText
-            android:id="@+id/signup_password_edt"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:inputType="textPassword"
-            android:hint="Enter Password Here" />
-    </LinearLayout>
-
-    <!-- Confirm Password Field -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Confirm\nPassword: "
-            android:textSize="20sp"
+            android:text="Confirm Password"
+            android:textSize="18sp"
             android:textColor="#000000" />
 
         <EditText
             android:id="@+id/signup_confirm_edt"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:inputType="textPassword"
-            android:hint="Re-enter Password" />
+            android:hint="Re-enter Password"
+            android:backgroundTint="#D3D3D3"
+            android:padding="10dp"
+            android:layout_marginTop="8dp" />
     </LinearLayout>
 
     <!-- Buttons Layout -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:orientation="horizontal">
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <Button
             android:id="@+id/signup_login_btn"
-            android:layout_width="150dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_weight="1"
             android:text="Login"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:backgroundTint="#3F51B5"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:padding="12dp" />
+
+        <View
+            android:layout_width="16dp"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/signup_signup_btn"
-            android:layout_width="150dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
             android:text="Signup"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:backgroundTint="#FF9800"
-            android:textColor="#ffffff" />
-
+            android:textColor="#ffffff"
+            android:padding="12dp" />
     </LinearLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
