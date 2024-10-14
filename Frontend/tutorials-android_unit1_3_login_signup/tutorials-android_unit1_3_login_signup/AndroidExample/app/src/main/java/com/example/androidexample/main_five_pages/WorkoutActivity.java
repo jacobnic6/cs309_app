@@ -1,44 +1,37 @@
 package com.example.androidexample.main_five_pages;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.androidexample.EditWorkoutActivity;
 import com.example.androidexample.LogWorkoutActivity;
 import com.example.androidexample.R;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class WorkoutActivity extends AppCompatActivity {
-
 
     private EditText workoutIdEditText, deleteWorkoutIdEditText;
     private Button editWorkoutButton, deleteWorkoutButton, navigateLogWorkoutButton;
 
-
     private final String BASE_URL = "https://06e76ef4-a66e-49e1-89ff-719066ed57f5.mock.pstmn.io//workouts";  // Base URL for all requests
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
-
 
         // Initialize UI elements
         workoutIdEditText = findViewById(R.id.edit_workout_id_edt);
@@ -47,13 +40,11 @@ public class WorkoutActivity extends AppCompatActivity {
         deleteWorkoutButton = findViewById(R.id.delete_workout_btn);
         navigateLogWorkoutButton = findViewById(R.id.navigate_log_workout_btn);
 
-
         // Set up click listeners
         navigateLogWorkoutButton.setOnClickListener(v -> {
             Intent intent = new Intent(WorkoutActivity.this, LogWorkoutActivity.class);
             startActivity(intent);
         });
-
 
         editWorkoutButton.setOnClickListener(v -> {
             int workoutId = getValidatedWorkoutId(workoutIdEditText);
@@ -64,30 +55,51 @@ public class WorkoutActivity extends AppCompatActivity {
             }
         });
 
-
         deleteWorkoutButton.setOnClickListener(v -> deleteWorkout());
-    }
 
+        // Set up Bottom Navigation
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.social) {
+                    startActivity(new Intent(WorkoutActivity.this, SocialActivity.class));
+                    return true;
+                } else if (itemId == R.id.workouts) {
+                    startActivity(new Intent(WorkoutActivity.this, WorkoutActivity.class));
+                    return true;
+                } else if (itemId == R.id.profile) {
+                    startActivity(new Intent(WorkoutActivity.this, UserProfileActivity.class));
+                    return true;
+                } else if (itemId == R.id.nutrition) {
+                    startActivity(new Intent(WorkoutActivity.this, NutritionActivity.class));
+                    return true;
+                } else if (itemId == R.id.settings) {
+                    startActivity(new Intent(WorkoutActivity.this, SettingsActivity.class));
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
 
     // Delete a workout based on its ID
     private void deleteWorkout() {
         int workoutId = getValidatedWorkoutId(deleteWorkoutIdEditText);
         if (workoutId == -1) return;
 
-
         String url = BASE_URL + "/" + workoutId;
-
 
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
                 response -> Toast.makeText(WorkoutActivity.this, "Workout deleted successfully!", Toast.LENGTH_SHORT).show(),
                 error -> Log.e("WorkoutActivity", "Failed to delete workout: " + error.getMessage())
         );
 
-
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(stringRequest);
     }
-
 
     // Helper method to validate the ID input and convert to integer
     private int getValidatedWorkoutId(EditText editText) {
@@ -96,7 +108,6 @@ public class WorkoutActivity extends AppCompatActivity {
             Toast.makeText(this, "Workout ID cannot be empty", Toast.LENGTH_SHORT).show();
             return -1;
         }
-
 
         try {
             return Integer.parseInt(input);

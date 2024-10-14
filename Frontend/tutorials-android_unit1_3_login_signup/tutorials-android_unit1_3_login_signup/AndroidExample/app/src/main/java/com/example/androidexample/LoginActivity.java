@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         private void checkLoginCredentials(String username, String password) {
-            String url = loginUrl + "/username/?username=" + username;
+            String url = loginUrl + "/username/" + username;
 
             StringRequest request = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
