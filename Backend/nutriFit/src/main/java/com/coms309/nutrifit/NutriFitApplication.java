@@ -16,10 +16,9 @@ public class NutriFitApplication {
 
 
 	@Bean
-CommandLineRunner initExercises(ExerciseServiceHandler exerciseService) {
-	return args -> {
-
-
+	CommandLineRunner run(DataLoader dataLoader) {
+		return args -> {
+			dataLoader.loadData();
 		};
 	}
 

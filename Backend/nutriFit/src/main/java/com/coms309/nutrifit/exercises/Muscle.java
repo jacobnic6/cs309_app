@@ -19,5 +19,9 @@ public class Muscle {
     @Column(unique = true)
     private String name;
 
+public Muscle(String name) {
+    this.name = name;
+}
+
 
 }

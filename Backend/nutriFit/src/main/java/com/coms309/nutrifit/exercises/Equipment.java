@@ -15,4 +15,8 @@ public class Equipment {
 
     @Column(unique = true)
     private String name;
+
+    public Equipment(String name) {
+        this.name = name;
+    }
 }
