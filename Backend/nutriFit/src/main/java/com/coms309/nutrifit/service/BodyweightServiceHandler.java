@@ -1,7 +1,7 @@
 package com.coms309.nutrifit.service;
 
 import com.coms309.nutrifit.entity.User;
-import com.coms309.nutrifit.entity.UserWeightDto;
+import com.coms309.nutrifit.entity.UserWeight;
 import com.coms309.nutrifit.repo.BodyweightRepository;
 import com.coms309.nutrifit.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class BodyweightServiceHandler
         @Autowired
         private UserRepository userRepository;
 
-        public List<UserWeightDto> getUserWeights(String username)
+        public List<UserWeight> getUserWeights(String username)
             {
                 User u = userRepository.findByUsername(username);
                 if(u == null){
@@ -30,7 +30,7 @@ public class BodyweightServiceHandler
 
             }
 
-        public UserWeightDto addUserWeight(String username, double weight)
+        public UserWeight addUserWeight(String username, double weight)
             {
                 User u = userRepository.findByUsername(username);
 
@@ -39,14 +39,14 @@ public class BodyweightServiceHandler
                 if(u == null || bodyweightRepository.existsByWeightDateAndUserId(date, u.getId())){
                     return null;
                 }
-                UserWeightDto userWeight = new UserWeightDto(weight, date, u);
+                UserWeight userWeight = new UserWeight(weight, date, u);
                 u.addBodyWeight(userWeight);
                 userRepository.save(u);
 
               return   bodyweightRepository.getByWeightDateAndUserId(date, u.getId());
             }
 
-        public UserWeightDto getWeightByDate(String username, LocalDate date)
+        public UserWeight getWeightByDate(String username, LocalDate date)
             {
                 User u = userRepository.findByUsername(username);
                 if(u == null || date == null|| !bodyweightRepository.existsByWeightDateAndUserId (date, u.getId())){
@@ -59,18 +59,18 @@ public class BodyweightServiceHandler
 
 
 
-        public UserWeightDto updateUserWeight(String username, UserWeightDto userWeightDto)
+        public UserWeight updateUserWeight(String username, UserWeight userWeight)
             {
 
                 User u = userRepository.findByUsername(username);
-                if(u == null || userWeightDto == null){
+                if(u == null || userWeight == null){
                     return null;
                 }
 
-                LocalDate date = userWeightDto.getWeightDate();
+                LocalDate date = userWeight.getWeightDate();
 
-             UserWeightDto weight =   bodyweightRepository.getByWeightDateAndUserId(date, u.getId());
-             weight.setWeight(userWeightDto.getWeight());
+             UserWeight weight =   bodyweightRepository.getByWeightDateAndUserId(date, u.getId());
+             weight.setWeight(userWeight.getWeight());
              bodyweightRepository.saveAndFlush(weight);
              return   bodyweightRepository.getByWeightDateAndUserId(date, u.getId());
             }
@@ -81,7 +81,7 @@ public class BodyweightServiceHandler
                 if(u == null || date == null){
                     return "Couldn't find a weight for the username " + username +" on the date: " + date;
                 }
-               UserWeightDto weight =   bodyweightRepository.getByWeightDateAndUserId(date, u.getId());
+               UserWeight weight =   bodyweightRepository.getByWeightDateAndUserId(date, u.getId());
 
                 u.getBodyWeights().remove(weight);
                 userRepository.saveAndFlush(u);

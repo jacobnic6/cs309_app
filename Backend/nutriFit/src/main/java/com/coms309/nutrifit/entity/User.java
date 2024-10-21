@@ -7,10 +7,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -48,9 +45,9 @@ public class User {
     private LocalDateTime lastLogin;
 
    @OneToMany(cascade = CascadeType.ALL)
-   List<UserWeightDto> bodyWeights;
+   List<UserWeight> bodyWeights;
 
-    public void addBodyWeight(UserWeightDto weightDto)
+    public void addBodyWeight(UserWeight weightDto)
         {
             bodyWeights.add(weightDto);
         }
