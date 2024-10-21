@@ -1,6 +1,5 @@
 package com.coms309.nutrifit.controller;
 
-import com.coms309.nutrifit.entity.UserWeightDto;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.service.UserSettingsServiceHandler;
 import com.coms309.nutrifit.entity.User;

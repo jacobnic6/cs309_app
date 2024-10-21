@@ -6,13 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import netscape.javascript.JSObject;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -20,7 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_weights")
-public class UserWeightDto
+public class UserWeight
     {
 
 
@@ -42,12 +39,12 @@ public class UserWeightDto
 
 
 
-        public UserWeightDto(double weight, LocalDate weightDate, User user){
+        public UserWeight(double weight, LocalDate weightDate, User user){
             this.weight = weight;
             this.user = user;
             this.weightDate = weightDate;
         }
-        public UserWeightDto(double weight,  User user){
+        public UserWeight(double weight, User user){
             this.weight = weight;
             this.user = user;
             this.weightDate = LocalDate.now();
