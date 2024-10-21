@@ -1,7 +1,9 @@
 package com.coms309.nutrifit;
 
 import com.coms309.nutrifit.entity.Exercise;
+import com.coms309.nutrifit.repo.ExerciseRepository;
 import com.coms309.nutrifit.repo.UserRepository;
+import com.coms309.nutrifit.service.ExerciseServiceHandler;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -24,14 +26,10 @@ public class NutriFitApplication {
 
 
 	@Bean
-CommandLineRunner initUser(UserRepository userRepository) {
+CommandLineRunner initExercises(ExerciseServiceHandler exerciseService) {
 	return args -> {
-//			User user1 = new User( "John", "Smith" , "john12@mail.com","jSmith123",  "password"  );
-//
-//
-//
-//			userRepository.save(user1);
-//
+
+
 		};
 	}
 

@@ -7,10 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.lang.NonNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -20,18 +17,18 @@ import java.util.Map;
 public class Exercise
  {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-
-
-  private Categories category;
+  @Column(nullable = false)
+  @ElementCollection
+  private Set<String> category;
 
 
   @Column(nullable = false, unique = true)
   private String name;
 
-
+  @Column
   @ElementCollection
   private List<String>  aliases;
 
@@ -41,7 +38,7 @@ public class Exercise
 
   @Column
   @ElementCollection
-  private List<Equipment> equipment;
+  private List<String> equipment;
 
   @Column
   @ElementCollection
