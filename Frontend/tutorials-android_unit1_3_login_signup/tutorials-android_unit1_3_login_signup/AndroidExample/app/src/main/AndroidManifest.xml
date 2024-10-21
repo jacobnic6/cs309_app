@@ -19,8 +19,9 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
-
-
+        <activity
+            android:name=".main_five_pages.SettingsActivity"
+            android:exported="false" />
         <activity
             android:name=".DeleteUserActivity"
             android:exported="false"/>
@@ -39,8 +40,13 @@
             android:exported="false"/>
 
         <activity
+            android:name=".editUserActivity"
+            android:exported="false"/>
+
+        <activity
                 android:name=".MainActivity"
                 android:exported="true">
+
 
 
 

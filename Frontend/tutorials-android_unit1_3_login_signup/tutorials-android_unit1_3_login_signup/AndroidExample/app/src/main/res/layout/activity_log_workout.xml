@@ -10,7 +10,7 @@
         android:padding="24dp"
         android:background="#212121">
 
-        <!-- Total Weight Input Field -->
+        <!-- Total Weight  -->
         <EditText
             android:id="@+id/total_weight_edt"
             android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:backgroundTint="#888888"
             android:layout_marginBottom="16dp" />
 
-        <!-- Exercise Name Input Field -->
+        <!-- Exercise Name -->
         <EditText
             android:id="@+id/exercise_name_edt"
             android:layout_width="match_parent"

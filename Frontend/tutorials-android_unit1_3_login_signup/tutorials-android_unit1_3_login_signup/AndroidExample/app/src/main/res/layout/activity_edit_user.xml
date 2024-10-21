@@ -8,35 +8,35 @@
     <EditText
         android:id="@+id/edit_username_edt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:hint="Username"
         android:inputType="text" />
 
     <EditText
         android:id="@+id/edit_password_edt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:hint="Password"
         android:inputType="textPassword" />
 
     <EditText
         android:id="@+id/edit_email_edt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:hint="Email"
         android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/edit_firstname_edt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:hint="First Name"
         android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/edit_lastname_edt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:hint="Last Name"
         android:inputType="textPersonName" />
 

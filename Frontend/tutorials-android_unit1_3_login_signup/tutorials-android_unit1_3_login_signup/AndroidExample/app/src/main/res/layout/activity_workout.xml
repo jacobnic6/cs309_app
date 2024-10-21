@@ -7,7 +7,7 @@
     android:padding="16dp"
     android:background="#2C2C2C"> <!-- Dark Grey Background -->
 
-    <!-- Upper Section -->
+
     <LinearLayout
         android:id="@+id/upper_section"
         android:layout_width="0dp"
@@ -30,7 +30,7 @@
             android:textColor="#FFFFFF"
             android:layout_marginTop="20dp" />
 
-        <!-- Button to Navigate to Log Workout Page -->
+        <!-- Log Workout Page -->
         <Button
             android:id="@+id/navigate_log_workout_btn"
             android:layout_width="match_parent"
@@ -92,7 +92,7 @@
 
     </LinearLayout>
 
-    <!-- Guideline for bottom navigation -->
+    <!-- bottom navigation -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
