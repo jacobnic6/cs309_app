@@ -19,25 +19,7 @@ public class NutriFitApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NutriFitApplication.class, args);
-		try
-			{
-				//ObjectMapper objectMapper = new ObjectMapper();
-				 //objectMapper.readValue(new File("src/main/resources/exercises.json"), Map.class);
-				JsonFactory jasonFactory = new JsonFactory();
-				JsonParser jsonParser = jasonFactory.createJsonParser(new File("exercises.json"));
-				while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-					//get the current token
-					String fieldname = jsonParser.getCurrentName();
-					if ("name".equals(fieldname)) {
-						//move to next token
-						jsonParser.nextToken();
-						System.out.println(jsonParser.getText());
-					}
-				}
-			}
-			catch (Exception e){
-			e.printStackTrace();
-			}
+
 	}
 
 

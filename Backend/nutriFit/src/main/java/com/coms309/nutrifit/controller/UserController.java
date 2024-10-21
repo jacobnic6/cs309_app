@@ -50,8 +50,6 @@ public class UserController {
         return userServiceHandler.getByUsername(username);
     }
 
-//String url = loginUrl + "/username/?username=" + username + "&password=" + password;
-   // http://coms-3090-058.class.las.iastate.edu:8080/users/username/?username=
 
 
 
