@@ -1,5 +1,6 @@
 package com.coms309.nutrifit;
 
+import com.coms309.nutrifit.entity.ExerciseDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.coms309.nutrifit.entity.Exercise;
 import com.coms309.nutrifit.repo.ExerciseRepository;
@@ -37,7 +38,7 @@ public class DataLoader  implements CommandLineRunner{
 
         try(InputStream inputStream = getClass().getResourceAsStream("/exercises.json")) {
 
-          exercises = mapper.readValue(inputStream, Exercise.class);
+          exercises = mapper.readValue(inputStream, new TypeReference<List<Exercise>>() {});
 
           for (Exercise exercise : exercises) {
               exerciseRepository.saveAndFlush(exercise);
