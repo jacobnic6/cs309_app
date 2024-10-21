@@ -27,6 +27,66 @@
     "foam roll",
     "other"
   ],
+  "muscles": [
+    "forearms",
+    "abductors",
+    "adductors",
+    "middle back",
+    "neck",
+    "biceps",
+    "shoulders",
+    "serratus anterior",
+    "chest",
+    "triceps",
+    "abs",
+    "calves",
+    "glutes",
+    "traps",
+    "quads",
+    "hamstrings",
+    "lats",
+    "brachialis",
+    "obliques",
+    "soleus",
+    "lower back"
+  ],
+  "muscle_groups": {
+    "arms": [
+      "forearms",
+      "biceps",
+      "triceps",
+      "brachialis"
+    ],
+    "back": [
+      "neck",
+      "traps",
+      "lats",
+      "lower back",
+      "middle back"
+    ],
+    "calves": [
+      "calves",
+      "soleus"
+    ],
+    "chest": [
+      "chest",
+      "serratus anterior"
+    ],
+    "core": [
+      "abs",
+      "obliques"
+    ],
+    "legs": [
+      "abductors",
+      "adductors",
+      "quads",
+      "hamstrings",
+      "glutes"
+    ],
+    "shoulders": [
+      "shoulders"
+    ]
+  },
   "exercises": [
     {
       "category": "strength",
@@ -21258,65 +21318,5 @@
       "secondary_muscles": [],
       "variation_id": null
     }
-  ],
-  "muscle_groups": {
-    "arms": [
-      "forearms",
-      "biceps",
-      "triceps",
-      "brachialis"
-    ],
-    "back": [
-      "neck",
-      "traps",
-      "lats",
-      "lower back",
-      "middle back"
-    ],
-    "calves": [
-      "calves",
-      "soleus"
-    ],
-    "chest": [
-      "chest",
-      "serratus anterior"
-    ],
-    "core": [
-      "abs",
-      "obliques"
-    ],
-    "legs": [
-      "abductors",
-      "adductors",
-      "quads",
-      "hamstrings",
-      "glutes"
-    ],
-    "shoulders": [
-      "shoulders"
-    ]
-  },
-  "muscles": [
-    "forearms",
-    "abductors",
-    "adductors",
-    "middle back",
-    "neck",
-    "biceps",
-    "shoulders",
-    "serratus anterior",
-    "chest",
-    "triceps",
-    "abs",
-    "calves",
-    "glutes",
-    "traps",
-    "quads",
-    "hamstrings",
-    "lats",
-    "brachialis",
-    "obliques",
-    "soleus",
-    "lower back"
   ]
 }

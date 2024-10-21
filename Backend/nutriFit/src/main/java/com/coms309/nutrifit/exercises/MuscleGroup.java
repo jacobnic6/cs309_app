@@ -2,10 +2,12 @@ package com.coms309.nutrifit.exercises;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -16,8 +18,12 @@ public class MuscleGroup {
 
   private String groupName;
 
-  @ManyToOne
-  @JoinColumn(name = "muscle_id")
-  private Muscle muscle;
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "muscle_group", cascade = CascadeType.ALL)
+  private List<Muscle> muscle;
+
+  public MuscleGroup(String groupName, List<Muscle> muscle) {
+    this.groupName = groupName;
+    this.muscle = muscle;
+  }
 
 }
