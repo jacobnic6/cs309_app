@@ -1,17 +1,14 @@
 package com.coms309.nutrifit;
 
-import com.coms309.nutrifit.entity.ExerciseDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.coms309.nutrifit.entity.Exercise;
+import com.coms309.nutrifit.exercises.Exercise;
 import com.coms309.nutrifit.repo.ExerciseRepository;
-import com.coms309.nutrifit.service.ExerciseServiceHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;

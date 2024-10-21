@@ -1,4 +1,4 @@
-package com.coms309.nutrifit.entity;
+package com.coms309.nutrifit.exercises;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,9 +15,9 @@ public class Muscle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(unique = true)
     private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "group_id")
-    private MuscleGroup group;
+
 }

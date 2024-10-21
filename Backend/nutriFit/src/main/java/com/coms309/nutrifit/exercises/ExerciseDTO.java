@@ -1,4 +1,4 @@
-package com.coms309.nutrifit.entity;
+package com.coms309.nutrifit.exercises;
 
 import java.util.List;
 import java.util.Map;
