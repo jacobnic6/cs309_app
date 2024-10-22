@@ -6,13 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 @Getter
 @Setter
-@NoArgsConstructor
+
 @AllArgsConstructor
 public class Exercises {
 
@@ -22,7 +24,16 @@ public class Exercises {
 
     List<Muscle> muscles;
 
-    Map<String, List<String>> muscleGroups;
+    Map<String, List<Muscle>> muscleGroups;
 
     List<Exercise> exercises;
+
+    public Exercises(){
+        categories = new ArrayList<>();
+        equipment = new ArrayList<>();
+        muscles = new ArrayList<>();
+        muscleGroups = new HashMap<>();
+        exercises = new ArrayList<>();
+    }
+
 }

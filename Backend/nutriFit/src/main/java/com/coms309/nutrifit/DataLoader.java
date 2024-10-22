@@ -12,12 +12,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,91 +41,149 @@ public class DataLoader {
     @Autowired
    private ObjectMapper mapper;
 
+    private Exercises exercises;
+
 
     public DataLoader(ObjectMapper mapper, ExerciseRepository exerciseRepository) {
         this.mapper = mapper;
         this.exerciseRepository = exerciseRepository;
+        exercises = new Exercises();
     }
+
+    public void readJson(String filename) throws IOException {
+        JsonFactory factory = new JsonFactory();
+        URL url;
+        BufferedReader br = new BufferedReader(new InputStreamReader(new URL(filename).openStream(), "UTF-8"));
+    //DataReader dr = new JsonReader(br);
+
+    }
+
 
     @Transactional
     public void loadData() throws IOException {
 
-       Exercises exercises = new Exercises();
+        JsonFactory factory = new JsonFactory();
+List<Category> categoryArrayList = new ArrayList<>();
+List<Equipment> equipmentArrayList = new ArrayList<>();
+List<Muscle> muscleArrayList = new ArrayList<>();
+List<Exercise> exerciseArrayList = new ArrayList<>();
+ArrayList<MuscleGroup> groups = new ArrayList<>();
+
+        try (JsonParser parser = factory.createParser(new File("src/main/resources/exercises.json"))) {
+
+
+            while ( parser.currentValue()!= JsonToken.END_OBJECT  || parser.nextToken() != JsonToken.END_OBJECT  ) {
+
+                parser.nextToken();
+                String text = parser.getText();
+                String fieldName ="";
+
+
+                if(JsonToken.FIELD_NAME.equals(parser.getCurrentToken())) {
+                    fieldName = parser.getText();
+
+
+                }
+
+                if(fieldName.equals("categories")) {
 
 
 
+
+                        Category category = new Category(text);
+                        categoryArrayList.add(category);
+                        categoryRepository.saveAndFlush(category);
+
+
+                }
+                if(fieldName.equals("equipment")) {
+
+
+
+
+
+                        if(text != null) {
+                            if(equipmentRepository.existsByName(text)){
+                                Equipment equipment = equipmentRepository.getEquipmentByName(text);
+                                equipmentArrayList.add(equipment);
+                                equipmentRepository.save(equipment);
+                            }else {
+
+                                Equipment equipment = new Equipment(text);
+                                equipmentArrayList.add(equipment);
+                                equipmentRepository.save(equipment);
+                            }
+                        }
+
+
+
+
+
+
+                }
+                if(fieldName.equals("muscles")) {
+
+
+
+                        if(!muscleRepository.existsByName(text)){
+                            Muscle muscle = new Muscle(text);
+                            muscleArrayList.add(muscle);
+                            muscleRepository.save(muscle);
+                        }
+
+                    }
+
+
+                if(fieldName.equals("muscle_groups")) {
+
+
+                        String groupName = "";
+
+
+                        parser.nextToken();
+                        while(parser.nextToken() != JsonToken.END_ARRAY) {
+
+                            if(parser.nextToken() == JsonToken.START_ARRAY) {
+
+                                groupName = parser.getText();
+
+                            }else{
+                                String muscle = parser.getText();
+                                if(!muscleRepository.existsByName(muscle)) {
+                                    Muscle m = new Muscle(muscle);
+                                    muscleArrayList.add(m);
+
+                                }else{
+
+                                    muscleArrayList.add(muscleRepository.getByName(muscle));
+                                }
+
+                            }
+
+                        }
+                        MuscleGroup muscleGroup = new MuscleGroup(groupName, muscleArrayList);
+
+                        muscleGroupRepository.saveAndFlush(muscleGroup);
+
+                }
+                if(fieldName.equals("exercises")) {
+                    ObjectMapper mapper = new ObjectMapper();
+                }
+
+            }
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(" could not create parser", e);
+        }
+
+        categoryRepository.saveAllAndFlush(categoryArrayList);
+        equipmentRepository.saveAll(equipmentArrayList);
+        muscleRepository.saveAll(muscleArrayList);
+        exerciseRepository.saveAll(exerciseArrayList);
+
+
+        muscleGroupRepository.saveAll(groups);
     }
 }
 
-//@Transactional
-//public void loadData() throws IOException {
-//
-//    JsonFactory factory = new JsonFactory();
-//
-//    try (JsonParser parser = factory.createParser(Paths.get("src/main/resources/exercises.json").toFile())) {
-//
-//
-//        while (!parser.isClosed() && parser.nextToken() != JsonToken.NOT_AVAILABLE) {
-//
-//            String fieldName = parser.currentName();
-//
-//            if(fieldName.equals("categories")) {
-//                while(parser.nextToken() != JsonToken.END_ARRAY) {
-//                    parser.nextToken();
-//                    Category category = new Category(parser.getText());
-//                    categoryRepository.save(category);
-//                }
-//
-//            }
-//            if(fieldName.equals("equipment")) {
-//                while(parser.nextToken() != JsonToken.END_ARRAY) {
-//                    parser.nextToken();
-//                    Equipment equipment = new Equipment(parser.getText());
-//                    equipmentRepository.save(equipment);
-//                }
-//
-//
-//            }
-//            if(fieldName.equals("muscles")) {
-//                while(parser.nextToken() != JsonToken.END_ARRAY) {
-//                    parser.nextToken();
-//                    Muscle muscle = new Muscle(parser.getText());
-//                    muscleRepository.save(muscle);
-//                }
-//
-//            }
-//            if(fieldName.equals("muscle_groups")) {
-//
-//                while(parser.nextToken() != JsonToken.END_OBJECT) {
-//                    String groupName = "";
-//
-//                    ArrayList<Muscle> muscleList = new ArrayList<>();
-//                    parser.nextToken();
-//                    while(parser.nextToken() != JsonToken.END_ARRAY) {
-//
-//                        if(parser.nextToken() == JsonToken.START_ARRAY) {
-//                            muscleList = new ArrayList<>();
-//                            groupName = parser.getText();
-//
-//                        }else{
-//
-//                            muscleList.add(new Muscle(parser.getText()));
-//                        }
-//
-//                    }
-//                    MuscleGroup muscleGroup = new MuscleGroup(groupName, muscleList);
-//                    muscleGroupRepository.save(muscleGroup);
-//                }
-//            }
-//            if(fieldName.equals("exercises")) {
-//                ObjectMapper mapper = new ObjectMapper();
-//            }
-//
-//        }
-//
-//
-//    } catch (IOException e) {
-//        throw new RuntimeException(" could not create parser", e);
-//    }
-//
-//}
