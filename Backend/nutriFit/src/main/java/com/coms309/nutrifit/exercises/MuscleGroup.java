@@ -18,7 +18,7 @@ public class MuscleGroup {
 
   private String groupName;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "muscle_group", cascade = CascadeType.ALL)
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "muscleGroup", cascade = CascadeType.ALL)
   private List<Muscle> muscle;
 
   public MuscleGroup(String groupName, List<Muscle> muscle) {

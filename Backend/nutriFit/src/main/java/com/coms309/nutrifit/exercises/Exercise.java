@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.exercises;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.lang.NonNull;
@@ -18,6 +19,7 @@ public class Exercise
   private int id;
 
   @Column(nullable = false, unique = true)
+  @JsonProperty("name")
   private String name;
 
   @Column

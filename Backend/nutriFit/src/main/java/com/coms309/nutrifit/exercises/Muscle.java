@@ -29,6 +29,10 @@ public class Muscle {
 public Muscle(String name) {
     this.name = name;
 }
+    public Muscle(String name, MuscleGroup muscleGroup) {
+        this.name = name;
+        this.muscleGroup = muscleGroup;
+    }
 
 
 }
