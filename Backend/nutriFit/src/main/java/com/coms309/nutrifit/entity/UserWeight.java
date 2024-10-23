@@ -1,6 +1,8 @@
 package com.coms309.nutrifit.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +31,7 @@ public class UserWeight
         private double weight;
 
         @Column(unique = true)
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate weightDate;
 
         @ManyToOne(fetch = FetchType.EAGER)
@@ -49,6 +52,12 @@ public class UserWeight
             this.user = user;
             this.weightDate = LocalDate.now();
         }
+
+        public UserWeight(double weight, LocalDate weightDate)
+            {
+                this.weight = weight;
+                this.weightDate = weightDate;
+            }
 
 
 

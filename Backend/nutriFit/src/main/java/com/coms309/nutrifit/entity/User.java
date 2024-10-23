@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -44,11 +46,18 @@ public class User {
    @DateTimeFormat
     private LocalDateTime lastLogin;
 
+
+   @JsonProperty("bodyweights")
    @OneToMany(cascade = CascadeType.ALL)
+   @Column
    List<UserWeight> bodyWeights;
 
     public void addBodyWeight(UserWeight weightDto)
         {
+            if(bodyWeights == null){
+                bodyWeights = new ArrayList<>();
+            }
+
             bodyWeights.add(weightDto);
         }
 
@@ -62,7 +71,7 @@ public class User {
             this.password = password;
 
             this.lastLogin = LocalDateTime.now();
-
+        bodyWeights = new ArrayList<>();
 
 
 

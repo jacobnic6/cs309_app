@@ -29,18 +29,18 @@ public class UserBodyweightController
 
         //CREATE
         @PostMapping(path = "/{username}")
-        public UserWeight addUserWeight(@PathVariable String username, @RequestBody WeightDTO weightDTO)
+        public UserWeight addUserWeight(@PathVariable String username, @RequestBody UserWeight weight)
             {
 
-                return bodyweightServiceHandler.addUserWeight(username, weightDTO.getWeight());
+                return bodyweightServiceHandler.addUserWeight(username, weight);
 
             }
 
 
         //READ reads by date in the body
         @GetMapping(path = "/{username}/date")
-        public UserWeight getUserWeightByDate(@PathVariable String username, @RequestBody LocalDate date){
-            return bodyweightServiceHandler.getWeightByDate(username, date);
+        public UserWeight getUserWeightByDate(@PathVariable String username, @RequestBody UserWeight weight){
+            return bodyweightServiceHandler.getWeightByDate(username, weight.getWeightDate());
         }
 
         //UPDATE
