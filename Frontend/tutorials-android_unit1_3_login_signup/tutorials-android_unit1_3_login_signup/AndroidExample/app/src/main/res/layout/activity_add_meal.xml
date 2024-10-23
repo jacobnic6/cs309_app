@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Meal"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+        <Spinner
+            android:id="@+id/meal_type_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#1A1A1A"
+            android:layout_marginBottom="16dp"
+            android:popupBackground="#1A1A1A"/>
+
+        <EditText
+            android:id="@+id/food_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Food Name"
+            android:textColorHint="#808080"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            android:background="#1A1A1A"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/serving_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Serving Size"
+            android:textColorHint="#808080"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            android:background="#1A1A1A"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/calories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Calories"
+            android:inputType="number"
+            android:textColorHint="#808080"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            android:background="#1A1A1A"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/protein"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Protein (g)"
+            android:inputType="numberDecimal"
+            android:textColorHint="#808080"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            android:background="#1A1A1A"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/carbs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Carbs (g)"
+            android:inputType="numberDecimal"
+            android:textColorHint="#808080"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            android:background="#1A1A1A"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/fat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fat (g)"
+            android:inputType="numberDecimal"
+            android:textColorHint="#808080"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            android:background="#1A1A1A"
+            android:layout_marginBottom="24dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancel_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancel"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#4A4A4A"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Save"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#6366f1"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
