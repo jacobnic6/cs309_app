@@ -27,12 +27,10 @@ public class Equipment {
 
     public Equipment(String name) {
         this.name = name;
+        exercises = new ArrayList<>();
     }
 
     public void addExercise(Exercise exercise) {
-        if(exercises == null) {
-            exercises = new ArrayList<>();
-        }
 
         this.exercises.add(exercise);
     }

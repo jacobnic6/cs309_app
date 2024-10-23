@@ -16,6 +16,7 @@ import java.util.List;
 
 @Service
 public class DataLoader {
+private final int exerciseSize = 1038;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -40,23 +41,10 @@ public class DataLoader {
     private ExerciseServiceHandler exerciseServiceHandler;
 
 
-//    public DataLoader(ObjectMapper mapper, ExerciseRepository exerciseRepository) {
-//        this.mapper = mapper;
-//        this.exerciseRepository = exerciseRepository;
-//        exercises = new Exercises();
-//    }
-
-    public void readJson(String filename) throws IOException {
-        JsonFactory factory = new JsonFactory();
-        URL url;
-        BufferedReader br = new BufferedReader(new InputStreamReader(new URL(filename).openStream(), "UTF-8"));
-    //DataReader dr = new JsonReader(br);
-
-    }
-
-
-
     public void loadData() throws IOException {
+        if(exerciseRepository.existsById(exerciseSize)){
+            return;
+        }
         exercises = new Exercises();
         JsonFactory factory = new JsonFactory();
 List<Category> categoryArrayList = new ArrayList<>();
@@ -148,6 +136,7 @@ ArrayList<MuscleGroup> groups = new ArrayList<>();
 
                     while(!parser.getCurrentToken().equals(JsonToken.END_OBJECT) ) {
                             String t = parser.getText();
+
                         if(parser.getCurrentToken().equals(JsonToken.END_ARRAY)) {
 
                             if(!muscleGroupRepository.existsByGroupName(group.getGroupName())){
@@ -202,33 +191,37 @@ ArrayList<MuscleGroup> groups = new ArrayList<>();
 
 
                 }
-                if(fieldName.equals("exercises")) {
+                if(fieldName.equals("exercises")||fieldName.equals("exercises_to_merge")) {
 
 //                    ObjectReader reader = mapper.readerFor(Exercises.class);
 //                   StringBuilder sb = new StringBuilder();
 //                       JsonLocation l = parser.currentLocation();
                         Exercise exercise = new Exercise();
-                    while(!parser.getCurrentToken().equals(JsonToken.END_OBJECT) || parser.nextToken().equals(JsonToken.START_OBJECT)) {
+                    while(!parser.getCurrentToken().equals(JsonToken.END_OBJECT) || parser.nextToken().equals(JsonToken.END_ARRAY)) {
                         String t = parser.getText();
+
+                        if(t.equals("exercises_to_merge")){
+                            parser.nextToken();
+                           parser.nextToken();
+
+                        }
                         if(JsonToken.START_OBJECT.equals(parser.getCurrentToken()) || JsonToken.START_ARRAY.equals(parser.getCurrentToken())) {
                             //parser.nextToken();
                             exercise= mapper.readerFor(Exercise.class).readValue(parser);
                         }
 
-                        exerciseServiceHandler.addExercise(exercise);
+                        if(!exerciseRepository.existsByName(exercise.getName())){
+                            exerciseServiceHandler.addExercise(exercise);
+                            exerciseArrayList.add(exercise);
+                            exerciseRepository.save(exercise);
+                        }
 
-
-
-
-
-
-
-                        exerciseArrayList.add(exercise);
-                        exerciseRepository.save(exercise);
                         parser.nextToken();
                     }
 
                 }
+
+
 
             }
 
