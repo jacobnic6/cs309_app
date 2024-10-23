@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Type;
 import org.springframework.lang.NonNull;
 
 import java.util.*;
@@ -24,22 +23,21 @@ public class Exercise
   @JsonProperty("name")
   private String name;
 
-  @Column(columnDefinition = "MEDIUMTEXT COLLATE utf8mb4_general_ci")
-  @JsonProperty("description")
+  @Column
   private String description;
 
 
  @ManyToOne
- @JoinColumn(name = "category_name")
+ @JoinColumn(name = "category_name", nullable = false)
  @JsonProperty("category")
   private Category category;
 
   @Column(nullable = false)
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.LAZY)
   @JsonProperty("equipment")
   private List<Equipment> equipment;
 
-  @Column( columnDefinition = "MEDIUMTEXT")
+  @Column(nullable = false)
   @ElementCollection
   @JsonProperty("instructions")
   private List<String> instructions;
@@ -55,25 +53,17 @@ public class Exercise
   private List<Muscle> secondaryMuscles;
 
   @Column
-  @JsonProperty("video")
   private String videoUrl;
 
   @Column
   @ElementCollection
-  @JsonProperty("variation_on")
   private List<String> variationOn;
 
   @Column
-  @JsonProperty("variation_id")
-  private int variationId;
-
-  @Column
-  @JsonProperty("license_author")
   private String licenseAuthor;
 
   @Column
   @ElementCollection
-  @JsonProperty("license")
   Map<String, String> license;
 
   public Exercise(Category category, String name, List<Equipment> equipment, List<String> instructions,
@@ -86,7 +76,5 @@ public class Exercise
    this.secondaryMuscles = secondaryMuscles;
 
   }
-
-
 
  }

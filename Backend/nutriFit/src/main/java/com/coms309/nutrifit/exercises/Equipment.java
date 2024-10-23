@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -17,10 +20,20 @@ public class Equipment {
     private int id;
 
     @Column
-    @JsonEnumDefaultValue
     private String name;
+
+    @ManyToMany
+    private List<Exercise> exercises;
 
     public Equipment(String name) {
         this.name = name;
+    }
+
+    public void addExercise(Exercise exercise) {
+        if(exercises == null) {
+            exercises = new ArrayList<>();
+        }
+
+        this.exercises.add(exercise);
     }
 }

@@ -2,23 +2,17 @@ package com.coms309.nutrifit;
 
 import com.coms309.nutrifit.exercises.*;
 import com.coms309.nutrifit.repo.*;
+import com.coms309.nutrifit.service.ExerciseServiceHandler;
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class DataLoader {
@@ -42,13 +36,15 @@ public class DataLoader {
    private ObjectMapper mapper;
 
     private Exercises exercises;
+    @Autowired
+    private ExerciseServiceHandler exerciseServiceHandler;
 
 
-    public DataLoader(ObjectMapper mapper, ExerciseRepository exerciseRepository) {
-        this.mapper = mapper;
-        this.exerciseRepository = exerciseRepository;
-        exercises = new Exercises();
-    }
+//    public DataLoader(ObjectMapper mapper, ExerciseRepository exerciseRepository) {
+//        this.mapper = mapper;
+//        this.exerciseRepository = exerciseRepository;
+//        exercises = new Exercises();
+//    }
 
     public void readJson(String filename) throws IOException {
         JsonFactory factory = new JsonFactory();
@@ -59,40 +55,48 @@ public class DataLoader {
     }
 
 
-    @Transactional
-    public void loadData() throws IOException {
 
+    public void loadData() throws IOException {
+        exercises = new Exercises();
         JsonFactory factory = new JsonFactory();
 List<Category> categoryArrayList = new ArrayList<>();
 List<Equipment> equipmentArrayList = new ArrayList<>();
-List<Muscle> muscleArrayList = new ArrayList<>();
+
 List<Exercise> exerciseArrayList = new ArrayList<>();
 ArrayList<MuscleGroup> groups = new ArrayList<>();
 
         try (JsonParser parser = factory.createParser(new File("src/main/resources/exercises.json"))) {
 
-
+            String fieldName ="";
             while ( parser.currentValue()!= JsonToken.END_OBJECT  || parser.nextToken() != JsonToken.END_OBJECT  ) {
 
                 parser.nextToken();
                 String text = parser.getText();
-                String fieldName ="";
+                if(JsonToken.END_ARRAY.equals(parser.getCurrentToken())) {
+                    continue;
+                }
 
 
                 if(JsonToken.FIELD_NAME.equals(parser.getCurrentToken())) {
                     fieldName = parser.getText();
 
-
+                    parser.nextToken();
+                    parser.nextToken();
+                    text = parser.getText();
                 }
 
                 if(fieldName.equals("categories")) {
 
-
-
-
+                if(text != null) {
+                    if(!categoryRepository.existsByName(text)){
                         Category category = new Category(text);
                         categoryArrayList.add(category);
                         categoryRepository.saveAndFlush(category);
+                    }
+
+                }
+
+
 
 
                 }
@@ -127,7 +131,7 @@ ArrayList<MuscleGroup> groups = new ArrayList<>();
 
                         if(!muscleRepository.existsByName(text)){
                             Muscle muscle = new Muscle(text);
-                            muscleArrayList.add(muscle);
+
                             muscleRepository.save(muscle);
                         }
 
@@ -137,37 +141,93 @@ ArrayList<MuscleGroup> groups = new ArrayList<>();
                 if(fieldName.equals("muscle_groups")) {
 
 
-                        String groupName = "";
 
+                    String groupName = parser.getText();
+                    MuscleGroup group = null;
+                    ArrayList<Muscle> muscleArrayList = new ArrayList<>();
 
-                        parser.nextToken();
-                        while(parser.nextToken() != JsonToken.END_ARRAY) {
+                    while(!parser.getCurrentToken().equals(JsonToken.END_OBJECT) ) {
+                            String t = parser.getText();
+                        if(parser.getCurrentToken().equals(JsonToken.END_ARRAY)) {
 
-                            if(parser.nextToken() == JsonToken.START_ARRAY) {
-
-                                groupName = parser.getText();
-
-                            }else{
-                                String muscle = parser.getText();
-                                if(!muscleRepository.existsByName(muscle)) {
-                                    Muscle m = new Muscle(muscle);
-                                    muscleArrayList.add(m);
-
-                                }else{
-
-                                    muscleArrayList.add(muscleRepository.getByName(muscle));
+                            if(!muscleGroupRepository.existsByGroupName(group.getGroupName())){
+                                muscleGroupRepository.saveAndFlush(group);
+                                for(Muscle muscle : muscleArrayList){
+                                    muscleRepository.updateMuscleGroupByName(group, muscle.getName());
+                                    muscleRepository.saveAndFlush(muscle);
                                 }
-
                             }
 
-                        }
-                        MuscleGroup muscleGroup = new MuscleGroup(groupName, muscleArrayList);
 
-                        muscleGroupRepository.saveAndFlush(muscleGroup);
+                            muscleArrayList = new ArrayList<>();
+                            parser.nextToken();
+                            continue;
+                        }
+
+                            if(JsonToken.START_ARRAY.equals(parser.getCurrentToken())) {
+
+                                parser.nextToken();
+
+
+                            }
+                            if(parser.getCurrentToken().equals(JsonToken.FIELD_NAME)) {
+                                groupName = parser.getText();
+                                group = new MuscleGroup(groupName);
+
+                            }else {
+                                String muscle = parser.getText();
+                                if(muscleRepository.existsByName(muscle)) {
+                                    Muscle m = muscleRepository.getByName(muscle);
+                                    m.setMuscleGroup(group);
+                                    muscleArrayList.add(m);
+                                }else{
+
+                                    Muscle m = new Muscle(muscle);
+                                    m.setMuscleGroup(group);
+                                    muscleArrayList.add(m);
+                                }
+                            }
+
+                            parser.nextToken();
+
+                        }
+
+
+
+
+
+
+
+
+
 
                 }
                 if(fieldName.equals("exercises")) {
-                    ObjectMapper mapper = new ObjectMapper();
+
+//                    ObjectReader reader = mapper.readerFor(Exercises.class);
+//                   StringBuilder sb = new StringBuilder();
+//                       JsonLocation l = parser.currentLocation();
+                        Exercise exercise = new Exercise();
+                    while(!parser.getCurrentToken().equals(JsonToken.END_OBJECT) || parser.nextToken().equals(JsonToken.START_OBJECT)) {
+                        String t = parser.getText();
+                        if(JsonToken.START_OBJECT.equals(parser.getCurrentToken()) || JsonToken.START_ARRAY.equals(parser.getCurrentToken())) {
+                            //parser.nextToken();
+                            exercise= mapper.readerFor(Exercise.class).readValue(parser);
+                        }
+
+                        exerciseServiceHandler.addExercise(exercise);
+
+
+
+
+
+
+
+                        exerciseArrayList.add(exercise);
+                        exerciseRepository.save(exercise);
+                        parser.nextToken();
+                    }
+
                 }
 
             }
@@ -179,7 +239,7 @@ ArrayList<MuscleGroup> groups = new ArrayList<>();
 
         categoryRepository.saveAllAndFlush(categoryArrayList);
         equipmentRepository.saveAll(equipmentArrayList);
-        muscleRepository.saveAll(muscleArrayList);
+
         exerciseRepository.saveAll(exerciseArrayList);
 
 
