@@ -4,21 +4,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SignupActivity extends AppCompatActivity {
@@ -82,8 +82,8 @@ public class SignupActivity extends AppCompatActivity {
                 return;
             }
 
-            // Check if username and email are available before proceeding with signup
-            checkUsernameAndEmail(username, email, isAvailable -> {
+            // Check if the username is available before proceeding with signup
+            checkUsernameAvailability(username, isAvailable -> {
                 if (isAvailable) {
                     signupUser(firstName, lastName, email, username, password);
                 }
@@ -97,62 +97,55 @@ public class SignupActivity extends AppCompatActivity {
         return password.matches(passwordPattern);
     }
 
-    // Check if username and email are available
-    private void checkUsernameAndEmail(String username, String email, ValidationCallback callback) {
+    // Check if the username is available
+    private void checkUsernameAvailability(String username, ValidationCallback callback) {
         RequestQueue queue = Volley.newRequestQueue(this);
         AtomicBoolean usernameAvailable = new AtomicBoolean(true);
-        AtomicBoolean emailAvailable = new AtomicBoolean(true);
-        AtomicBoolean checksCompleted = new AtomicBoolean(false);
 
-        // Check username availability
-        String usernameCheckUrl = BASE_URL + "/users/check-username/" + username;
-        StringRequest usernameRequest = new StringRequest(Request.Method.GET, usernameCheckUrl,
-                response -> {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        usernameAvailable.set(!jsonResponse.getBoolean("exists"));
-                        if (!usernameAvailable.get()) {
-                            Toast.makeText(SignupActivity.this, "Username is already taken", Toast.LENGTH_LONG).show();
-                        }
-                        if (checksCompleted.get()) {
-                            callback.onValidationResult(usernameAvailable.get() && emailAvailable.get());
-                        }
-                        checksCompleted.set(true);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(SignupActivity.this, "Error checking username availability", Toast.LENGTH_LONG).show();
-                    }
-                },
-                error -> {
-                    Toast.makeText(SignupActivity.this, "Error checking username: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                });
+        try {
+            // Encode the username to handle special characters
+            String usernameCheckUrl = BASE_URL + "/users/username/" + URLEncoder.encode(username, "UTF-8");
 
-        // Check email availability
-        String emailCheckUrl = BASE_URL + "/users/check-email/" + email;
-        StringRequest emailRequest = new StringRequest(Request.Method.GET, emailCheckUrl,
-                response -> {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        emailAvailable.set(!jsonResponse.getBoolean("exists"));
-                        if (!emailAvailable.get()) {
-                            Toast.makeText(SignupActivity.this, "Email is already registered", Toast.LENGTH_LONG).show();
-                        }
-                        if (checksCompleted.get()) {
-                            callback.onValidationResult(usernameAvailable.get() && emailAvailable.get());
-                        }
-                        checksCompleted.set(true);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(SignupActivity.this, "Error checking email availability", Toast.LENGTH_LONG).show();
-                    }
-                },
-                error -> {
-                    Toast.makeText(SignupActivity.this, "Error checking email: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                });
+            // Check username availability
+            StringRequest usernameRequest = new StringRequest(Request.Method.GET, usernameCheckUrl,
+                    response -> {
+                        try {
+                            Log.d("Username Check Response", response);  // Log the response for debugging
 
-        // Add both requests to the queue
-        queue.add(usernameRequest);
-        queue.add(emailRequest);
+                            // If the response is empty, the username is available
+                            if (response == null || response.isEmpty()) {
+                                usernameAvailable.set(true);  // No user found, username is available
+                                Toast.makeText(SignupActivity.this, "Username is available", Toast.LENGTH_LONG).show();
+                            } else {
+                                // If we get a response, check if the username is part of it
+                                JSONObject jsonResponse = new JSONObject(response);
+
+                                if (jsonResponse.has("username")) {
+                                    usernameAvailable.set(false);  // Username is taken
+                                    Toast.makeText(SignupActivity.this, "Username is already taken", Toast.LENGTH_LONG).show();
+                                } else {
+                                    usernameAvailable.set(true);  // Username is available
+                                }
+                            }
+
+                            // Invoke the callback with the result
+                            callback.onValidationResult(usernameAvailable.get());
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(SignupActivity.this, "Error parsing response", Toast.LENGTH_LONG).show();
+                        }
+                    },
+                    error -> {
+                        Toast.makeText(SignupActivity.this, "Error checking username: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+
+            // Add request to the queue
+            queue.add(usernameRequest);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Toast.makeText(SignupActivity.this, "Encoding error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     // Callback interface for validation results
@@ -160,6 +153,7 @@ public class SignupActivity extends AppCompatActivity {
         void onValidationResult(boolean isAvailable);
     }
 
+    // Signup user if username is available
     private void signupUser(final String firstName, final String lastName, final String email, final String username, final String password) {
         String url = BASE_URL + "/users";
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -204,3 +198,4 @@ public class SignupActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 }
+
