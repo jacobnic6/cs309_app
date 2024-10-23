@@ -42,10 +42,20 @@
         <activity
             android:name=".editUserActivity"
             android:exported="false"/>
-
         <activity
-                android:name=".MainActivity"
-                android:exported="true">
+            android:name=".AddMealActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".main_five_pages.NutritionActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
+
+
+
+
 
 
 

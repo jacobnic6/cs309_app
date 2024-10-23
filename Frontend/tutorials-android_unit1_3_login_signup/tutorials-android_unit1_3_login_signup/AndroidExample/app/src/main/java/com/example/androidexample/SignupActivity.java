@@ -19,6 +19,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class SignupActivity extends AppCompatActivity {
 
     private EditText firstNameEditText;
@@ -29,6 +31,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText confirmEditText;
     private Button loginButton;
     private Button signupButton;
+    private final String BASE_URL = "http://coms-3090-058.class.las.iastate.edu:8080";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,7 @@ public class SignupActivity extends AppCompatActivity {
             String password = passwordEditText.getText().toString().trim();
             String confirm = confirmEditText.getText().toString().trim();
 
-            // Check for empty
+            // Check for empty fields
             if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
                 Toast.makeText(SignupActivity.this, "All fields are required", Toast.LENGTH_LONG).show();
                 return;
@@ -79,22 +82,89 @@ public class SignupActivity extends AppCompatActivity {
                 return;
             }
 
-            // signup request
-            signupUser(firstName, lastName, email, username, password);
+            // Check if username and email are available before proceeding with signup
+            checkUsernameAndEmail(username, email, isAvailable -> {
+                if (isAvailable) {
+                    signupUser(firstName, lastName, email, username, password);
+                }
+            });
         });
     }
 
-    // validate password contains at least one capital letter and one special character
+    // Validate password contains at least one capital letter and one special character
     private boolean isValidPassword(String password) {
         String passwordPattern = "^(?=.*[A-Z])(?=.*[@#$%^&+=!]).+$";
         return password.matches(passwordPattern);
     }
 
+    // Check if username and email are available
+    private void checkUsernameAndEmail(String username, String email, ValidationCallback callback) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        AtomicBoolean usernameAvailable = new AtomicBoolean(true);
+        AtomicBoolean emailAvailable = new AtomicBoolean(true);
+        AtomicBoolean checksCompleted = new AtomicBoolean(false);
+
+        // Check username availability
+        String usernameCheckUrl = BASE_URL + "/users/check-username/" + username;
+        StringRequest usernameRequest = new StringRequest(Request.Method.GET, usernameCheckUrl,
+                response -> {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        usernameAvailable.set(!jsonResponse.getBoolean("exists"));
+                        if (!usernameAvailable.get()) {
+                            Toast.makeText(SignupActivity.this, "Username is already taken", Toast.LENGTH_LONG).show();
+                        }
+                        if (checksCompleted.get()) {
+                            callback.onValidationResult(usernameAvailable.get() && emailAvailable.get());
+                        }
+                        checksCompleted.set(true);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(SignupActivity.this, "Error checking username availability", Toast.LENGTH_LONG).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(SignupActivity.this, "Error checking username: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                });
+
+        // Check email availability
+        String emailCheckUrl = BASE_URL + "/users/check-email/" + email;
+        StringRequest emailRequest = new StringRequest(Request.Method.GET, emailCheckUrl,
+                response -> {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        emailAvailable.set(!jsonResponse.getBoolean("exists"));
+                        if (!emailAvailable.get()) {
+                            Toast.makeText(SignupActivity.this, "Email is already registered", Toast.LENGTH_LONG).show();
+                        }
+                        if (checksCompleted.get()) {
+                            callback.onValidationResult(usernameAvailable.get() && emailAvailable.get());
+                        }
+                        checksCompleted.set(true);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(SignupActivity.this, "Error checking email availability", Toast.LENGTH_LONG).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(SignupActivity.this, "Error checking email: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                });
+
+        // Add both requests to the queue
+        queue.add(usernameRequest);
+        queue.add(emailRequest);
+    }
+
+    // Callback interface for validation results
+    interface ValidationCallback {
+        void onValidationResult(boolean isAvailable);
+    }
+
     private void signupUser(final String firstName, final String lastName, final String email, final String username, final String password) {
-        String url = "http://coms-3090-058.class.las.iastate.edu:8080/users";  // Replace with correct URL
+        String url = BASE_URL + "/users";
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        //Request body
+        // Request body
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("username", username);
@@ -108,22 +178,16 @@ public class SignupActivity extends AppCompatActivity {
 
         // Create a POST request using Volley
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // sign up
-                        Toast.makeText(SignupActivity.this, "Signup successful!", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
+                response -> {
+                    // Signup success
+                    Toast.makeText(SignupActivity.this, "Signup successful!", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //  failure
-                        Toast.makeText(SignupActivity.this, "Signup failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+                error -> {
+                    // Signup failure
+                    Toast.makeText(SignupActivity.this, "Signup failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
                 }) {
             @Override
             public byte[] getBody() {
@@ -136,7 +200,7 @@ public class SignupActivity extends AppCompatActivity {
             }
         };
 
-        // add to queue
+        // Add to queue
         queue.add(stringRequest);
     }
 }
