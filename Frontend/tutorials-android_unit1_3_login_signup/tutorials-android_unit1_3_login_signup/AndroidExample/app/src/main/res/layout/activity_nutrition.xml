@@ -1,262 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:padding="16dp">
 
+    <!-- Calories Remaining Section -->
+    <TextView
+        android:id="@+id/calories_remaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="2000 calories remaining"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Nutrition Progress Bars -->
+    <TextView
+        android:id="@+id/calories_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Calories"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calories_remaining" />
+
+    <ProgressBar
+        android:id="@+id/calories_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/calories_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/calories_label"
+        app:layout_constraintTop_toTopOf="@id/calories_label" />
+
+    <TextView
+        android:id="@+id/protein_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Protein"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calories_label" />
+
+    <ProgressBar
+        android:id="@+id/protein_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/protein_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/protein_label"
+        app:layout_constraintTop_toTopOf="@id/protein_label" />
+
+    <TextView
+        android:id="@+id/carbs_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Carbs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/protein_label" />
+
+    <ProgressBar
+        android:id="@+id/carbs_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/carbs_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/carbs_label"
+        app:layout_constraintTop_toTopOf="@id/carbs_label" />
+
+    <TextView
+        android:id="@+id/fat_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Fat"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/carbs_label" />
+
+    <ProgressBar
+        android:id="@+id/fat_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/fat_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fat_label"
+        app:layout_constraintTop_toTopOf="@id/fat_label" />
+
+    <!-- Meals Section -->
+    <TextView
+        android:id="@+id/meals_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Today's Meals"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fat_progress" />
+
+    <TextView
+        android:id="@+id/breakfast_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Breakfast"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/meals_header" />
+
+    <TextView
+        android:id="@+id/breakfast_calories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="0 cal"
+        app:layout_constraintBottom_toBottomOf="@id/breakfast_label"
+        app:layout_constraintStart_toEndOf="@id/breakfast_label"
+        app:layout_constraintTop_toTopOf="@id/breakfast_label" />
+
+    <TextView
+        android:id="@+id/lunch_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Lunch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/breakfast_label" />
+
+    <TextView
+        android:id="@+id/lunch_calories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="0 cal"
+        app:layout_constraintBottom_toBottomOf="@id/lunch_label"
+        app:layout_constraintStart_toEndOf="@id/lunch_label"
+        app:layout_constraintTop_toTopOf="@id/lunch_label" />
+
+    <TextView
+        android:id="@+id/dinner_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Dinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lunch_label" />
+
+    <TextView
+        android:id="@+id/dinner_calories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="0 cal"
+        app:layout_constraintBottom_toBottomOf="@id/dinner_label"
+        app:layout_constraintStart_toEndOf="@id/dinner_label"
+        app:layout_constraintTop_toTopOf="@id/dinner_label" />
+
+    <TextView
+        android:id="@+id/snacks_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Snacks"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dinner_label" />
+
+    <TextView
+        android:id="@+id/snacks_calories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="0 cal"
+        app:layout_constraintBottom_toBottomOf="@id/snacks_label"
+        app:layout_constraintStart_toEndOf="@id/snacks_label"
+        app:layout_constraintTop_toTopOf="@id/snacks_label" />
+
+    <!-- Action Buttons -->
     <LinearLayout
+        android:id="@+id/buttons_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintTop_toBottomOf="@id/snacks_label">
 
-        <!-- Daily Summary Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/add_meal_button"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardBackgroundColor="#1A1A1A">
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="Add Meal" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Daily Summary"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="16dp"/>
-
-                <TextView
-                    android:id="@+id/calories_remaining"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1,200 calories remaining"
-                    android:textColor="#6366f1"
-                    android:textSize="18sp"
-                    android:layout_marginBottom="8dp"/>
-
-                <!-- Calories Progress -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Calories: 800/2000"
-                    android:textColor="#FFFFFF"/>
-
-                <ProgressBar
-                    android:id="@+id/calories_progress"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:progress="40"
-                    android:progressTint="#6366f1"
-                    android:layout_marginBottom="8dp"/>
-
-                <!-- Protein Progress -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Protein: 45g/150g"
-                    android:textColor="#FFFFFF"/>
-
-                <ProgressBar
-                    android:id="@+id/protein_progress"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:progress="30"
-                    android:progressTint="#FF4081"
-                    android:layout_marginBottom="8dp"/>
-
-                <!-- Carbs Progress -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Carbs: 80g/250g"
-                    android:textColor="#FFFFFF"/>
-
-                <ProgressBar
-                    android:id="@+id/carbs_progress"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:progress="32"
-                    android:progressTint="#FFD700"
-                    android:layout_marginBottom="8dp"/>
-
-                <!-- Fat Progress -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Fat: 20g/65g"
-                    android:textColor="#FFFFFF"/>
-
-                <ProgressBar
-                    android:id="@+id/fat_progress"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:progress="31"
-                    android:progressTint="#4CAF50"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Meals Section -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/scan_barcode_button"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardBackgroundColor="#1A1A1A">
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="Scan" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Today's Meals"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="16dp"/>
-
-                <!-- Breakfast Section -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Breakfast"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp"/>
-
-                    <TextView
-                        android:id="@+id/breakfast_calories"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="320 cal"
-                        android:textColor="#808080"/>
-                </LinearLayout>
-
-                <!-- Lunch Section -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Lunch"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp"/>
-
-                    <TextView
-                        android:id="@+id/lunch_calories"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="480 cal"
-                        android:textColor="#808080"/>
-                </LinearLayout>
-
-                <!-- Dinner Section -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Dinner"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp"/>
-
-                    <TextView
-                        android:id="@+id/dinner_calories"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0 cal"
-                        android:textColor="#808080"/>
-                </LinearLayout>
-
-                <!-- Snacks Section -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Snacks"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp"/>
-
-                    <TextView
-                        android:id="@+id/snacks_calories"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0 cal"
-                        android:textColor="#808080"/>
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/add_meal_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Add Meal"
-                    android:textColor="#FFFFFF"
-                    android:backgroundTint="#6366f1"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Quick Add Buttons -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/quick_add_button"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:layout_weight="1"
+            android:text="Quick Add" />
 
-            <Button
-                android:id="@+id/scan_barcode_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Scan Barcode"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#6366f1"
-                android:layout_marginEnd="8dp"/>
-
-            <Button
-                android:id="@+id/quick_add_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Quick Add"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#6366f1"/>
-        </LinearLayout>
     </LinearLayout>
-</ScrollView>
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
