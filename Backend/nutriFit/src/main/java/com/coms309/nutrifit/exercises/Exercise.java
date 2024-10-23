@@ -24,7 +24,7 @@ public class Exercise
   @JsonProperty("name")
   private String name;
 
-  @Column(columnDefinition = "MEDIUMTEXT")
+  @Column(columnDefinition = "MEDIUMTEXT COLLATE utf8mb4_general_ci")
   @JsonProperty("description")
   private String description;
 
