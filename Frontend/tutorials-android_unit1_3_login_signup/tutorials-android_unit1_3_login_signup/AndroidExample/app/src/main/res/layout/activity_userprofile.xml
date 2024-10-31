@@ -36,13 +36,26 @@
             android:layout_height="104dp"
             android:text="" />
 
-        <!--
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/weight_chart"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="wrap_content" >
 
-        -->
+            <ImageView
+                android:id="@+id/muscle_anatomy"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/muscle_anatomy" />
+
+    </RelativeLayout>
+
+
+    <!--
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/weight_chart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    -->
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
