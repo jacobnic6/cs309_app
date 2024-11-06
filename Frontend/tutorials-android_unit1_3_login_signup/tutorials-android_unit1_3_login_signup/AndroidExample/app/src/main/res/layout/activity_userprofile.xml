@@ -36,26 +36,35 @@
             android:layout_height="104dp"
             android:text="" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/muscle_anatomy"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/muscle_anatomy" />
+        <ImageView
+            android:id="@+id/back_avatar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/back_avatar" />
 
-    </RelativeLayout>
+        <ImageView
+            android:id="@+id/front_avatar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/front_avatar" />
+
+    </LinearLayout>
 
 
-    <!--
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/weight_chart"
-        android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        <!--
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/weight_chart"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
 
-    -->
+        -->
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

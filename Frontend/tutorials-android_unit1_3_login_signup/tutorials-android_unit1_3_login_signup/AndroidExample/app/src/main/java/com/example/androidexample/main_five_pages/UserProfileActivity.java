@@ -53,7 +53,8 @@ public class UserProfileActivity extends AppCompatActivity {
     //private float xValue = 0;
 
     // Body diagram
-    private ImageView muscleAnatomy;
+    private ImageView frontAvatar;
+    private ImageView backAvatar;
 
 
     @Override
@@ -69,8 +70,10 @@ public class UserProfileActivity extends AppCompatActivity {
         pastWeightsTextView = findViewById(R.id.past_weights_textview);
 
         // Muscle diagram
-        muscleAnatomy = findViewById(R.id.muscle_anatomy);
-        muscleAnatomy.setOnTouchListener(touchListener);
+        frontAvatar = findViewById(R.id.front_avatar);
+        backAvatar = findViewById(R.id.back_avatar);
+        backAvatar.setOnTouchListener(touchListener);
+        frontAvatar.setOnTouchListener(touchListener);
 
 
         postWeightButton.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +120,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 int x = (int) event.getX();
                 int y = (int) event.getY();
 
-            if (v == muscleAnatomy) {
+            if (v == frontAvatar) {
                 // front
                 if (isQuadsRegion(x, y)) {
                     showProgressPopup("Quads");
@@ -125,11 +128,13 @@ public class UserProfileActivity extends AppCompatActivity {
                     showProgressPopup("Abs");
                 } else if (isbicpsRegion(x, y)) {
                     showProgressPopup("Biceps");
-                    } else if (ischestRegion(x, y)) {
+                } else if (ischestRegion(x, y)) {
                     showProgressPopup("Chest");
                 }
+            }
+                if (v == backAvatar) {
                 // back
-                else if (istricepsRegion(x, y)) {
+                 if (istricepsRegion(x, y)) {
                     showProgressPopup("Triceps");
                 }
                 else if (isbackRegion(x, y)) {
