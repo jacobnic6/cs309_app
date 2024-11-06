@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -48,8 +49,9 @@ public class User {
    @DateTimeFormat
     private LocalDateTime lastLogin;
 
-   @OneToMany
-   private List<Image> images;
+   @OneToMany(cascade = CascadeType.ALL)
+   @JsonIgnore
+   private List<ImageData> imageData;
 
 
    @JsonProperty("bodyweights")
@@ -65,11 +67,11 @@ public class User {
 
             bodyWeights.add(weightDto);
         }
-    public void addPicture(Image image){
-        if(images == null){
-            images = new ArrayList<>();
+    public void addPicture(ImageData imageData){
+        if(this.imageData == null){
+            this.imageData = new ArrayList<>();
         }
-        images.add(image);
+        this.imageData.add(imageData);
     }
 
 
@@ -83,7 +85,7 @@ public class User {
 
             this.lastLogin = LocalDateTime.now();
         bodyWeights = new ArrayList<>();
-        images = new ArrayList<>();
+        imageData = new ArrayList<>();
         profile = new Profile(this);
 
 

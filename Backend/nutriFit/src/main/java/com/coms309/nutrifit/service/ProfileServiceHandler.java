@@ -1,7 +1,9 @@
 package com.coms309.nutrifit.service;
 
+import com.coms309.nutrifit.entity.ImageData;
 import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.entity.User;
+import com.coms309.nutrifit.repo.ImageRepository;
 import com.coms309.nutrifit.repo.ProfileRepository;
 import com.coms309.nutrifit.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,13 @@ public class ProfileServiceHandler
 
         @Autowired
         UserRepository userRepository;
+        @Autowired
+        ImageRepository imageRepository;
 
 
         public Profile addProfile(Profile profile)
             {
+
                 return profileRepository.save(profile);
             }
 
@@ -31,7 +36,7 @@ public class ProfileServiceHandler
         public Profile getUserProfile(String username)
             {
                 User user = userRepository.findByUsername(username);
-                return user.getProfile();
+                return profileRepository.findByUser(user);
 
             }
 
@@ -39,7 +44,9 @@ public class ProfileServiceHandler
             {
               User user =  userRepository.findByUsername(username);
               Profile profile = new Profile(user);
-              return profileRepository.save(profile);
+                user.setProfile(profile);
+             user =  userRepository.save(user);
+              return profileRepository.findByUser(user);
             }
 
         public String updateProfile(String username, Profile profile)
@@ -54,4 +61,15 @@ public class ProfileServiceHandler
             }
 
 
+        public void assignImage(String upload, String username) {
+            User user = userRepository.findByUsername(username);
+            Profile profile = profileRepository.findByUser(user);
+
+            ImageData imageData = imageRepository.findByName(upload);
+
+            profile.setProfileImageData(imageData);
+
+            profileRepository.save(profile);
+
+        }
     }

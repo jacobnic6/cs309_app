@@ -14,27 +14,34 @@ import lombok.Setter;
 public class Profile
     {
         @Id
+        @GeneratedValue (strategy = GenerationType.IDENTITY)
         private int id;
 
+        @Column
         private String name;
 
+
+        @OneToOne(mappedBy = "profile")
         @JsonIgnore
-        @OneToOne
+        @JoinColumn
         private User user;
 
-        @OneToOne
-        private UserWeight weight;
+
+        private double weight;
 
         @Column
         private int height;
 
         @OneToOne
-        private Image profileImage;
+        private ImageData profileImageData;
 
         public Profile(User user){
             this.user = user;
             this.name = user.getFirstName();
-            this.weight= user.getBodyWeights().get(0);
+            if(user.getBodyWeights().size() != 0){
+                this.weight= user.getBodyWeights().get(0).getWeight();
+            }
+
 
 
 
