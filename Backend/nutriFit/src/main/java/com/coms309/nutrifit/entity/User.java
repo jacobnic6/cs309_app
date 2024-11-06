@@ -25,8 +25,10 @@ public class User {
 
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_settings_id")
     private UserSettings settings;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Profile profile;
 
     @Column(nullable = false)
     private String firstName;
@@ -46,6 +48,9 @@ public class User {
    @DateTimeFormat
     private LocalDateTime lastLogin;
 
+   @OneToMany
+   private List<Image> images;
+
 
    @JsonProperty("bodyweights")
    @OneToMany(cascade = CascadeType.ALL)
@@ -60,6 +65,12 @@ public class User {
 
             bodyWeights.add(weightDto);
         }
+    public void addPicture(Image image){
+        if(images == null){
+            images = new ArrayList<>();
+        }
+        images.add(image);
+    }
 
 
     public User(String firstName, String lastName, String email, String username, String password)
@@ -72,6 +83,8 @@ public class User {
 
             this.lastLogin = LocalDateTime.now();
         bodyWeights = new ArrayList<>();
+        images = new ArrayList<>();
+        profile = new Profile(this);
 
 
 
