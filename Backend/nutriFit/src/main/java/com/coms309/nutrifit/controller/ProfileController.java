@@ -34,7 +34,7 @@ public class ProfileController
         public Profile addProfile(@PathVariable String username)
             {
 
-                return profileServiceHandler.addProfileByName(username);
+                return profileServiceHandler.createProfileByName(username);
             }
 
         @GetMapping

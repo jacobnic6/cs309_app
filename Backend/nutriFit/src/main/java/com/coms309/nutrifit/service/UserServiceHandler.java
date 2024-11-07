@@ -1,6 +1,8 @@
 package com.coms309.nutrifit.service;
 
+import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.entity.User;
+import com.coms309.nutrifit.entity.UserWeight;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.entity.UserSettings;
 import com.coms309.nutrifit.repo.UserSettingsRepository;
@@ -40,6 +42,7 @@ public class UserServiceHandler
 
             UserSettings settings = new UserSettings();
             user.setSettings(settings);
+            //user.setProfile(new Profile());
             userRepository.saveAndFlush(user);
             userSettingsRepository.saveAndFlush(settings);
 

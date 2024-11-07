@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,21 +18,24 @@ import java.util.List;
 public class Profile
     {
         @Id
-        @GeneratedValue (strategy = GenerationType.IDENTITY)
+        @Column(name = "user_id")
         private int id;
 
-        @Column
         private String name;
 
 
 
-        @OneToOne(mappedBy = "profile")
+        @OneToOne
+        @MapsId
+        @JoinColumn(name = "user_id")
         @JsonIgnore
-        @JoinColumn
         private User user;
 
 
         private double weight;
+
+        @OneToMany(mappedBy = "profile")
+        private List<Workout> workouts;
 
         @Column
         private int height;
@@ -42,7 +46,7 @@ public class Profile
 
         public Profile(User user){
             this.user = user;
-            this.name = user.getFirstName() + " " + user.getLastName();
+            this.name =  user.getFirstName() + " " + user.getLastName();
             if(user.getBodyWeights().size() != 0){
                 this.weight= user.getBodyWeights().get(0).getWeight();
             }
@@ -50,6 +54,12 @@ public class Profile
 
 
 
+        }
+        public void AddWorkout(Workout workout){
+            if(this.workouts == null){
+                this.workouts = new ArrayList<>();
+            }
+            workouts.add(workout);
         }
 
 

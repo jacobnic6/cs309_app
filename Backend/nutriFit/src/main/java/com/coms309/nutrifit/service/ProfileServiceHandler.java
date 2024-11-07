@@ -25,8 +25,11 @@ public class ProfileServiceHandler
 
         public Profile addProfile(Profile profile)
             {
+                if(profileRepository.findByUser(profile.getUser()) == null){
+                    return profileRepository.save(profile);
+                }
+                return profileRepository.findByUser(profile.getUser());
 
-                return profileRepository.save(profile);
             }
 
         public List<Profile> getProfiles()
@@ -46,13 +49,26 @@ public class ProfileServiceHandler
                 return profile;
             }
 
-        public Profile addProfileByName(String username)
+        public Profile createProfileByName(String username)
             {
+
+
               User user =  userRepository.findByUsername(username);
-              Profile profile = new Profile(user);
-                user.setProfile(profile);
-             user =  userRepository.save(user);
-              return profileRepository.findByUser(user);
+                Profile profile = user.getProfile();
+              if(user == null ){
+                  return null;
+              }
+
+              if(profile == null){
+                  profile = new Profile(user);
+                  user.setProfile(profile);
+                   userRepository.saveAndFlush(user);
+              }else {
+
+              }
+
+
+              return userRepository.findByUsername(username).getProfile();
             }
 
         public String updateProfile(String username, Profile profile)

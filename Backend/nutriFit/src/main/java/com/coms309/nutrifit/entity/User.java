@@ -3,6 +3,7 @@ package com.coms309.nutrifit.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
 
@@ -32,7 +34,7 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     private UserSettings settings;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile;
 
     @Column(nullable = false)
@@ -88,9 +90,9 @@ public class User {
             this.password = password;
 
             this.lastLogin = LocalDateTime.now();
-        bodyWeights = new ArrayList<>();
-        imageData = new ArrayList<>();
-        profile = new Profile(this);
+//        bodyWeights = new ArrayList<>();
+//        imageData = new ArrayList<>();
+//        profile = new Profile(this);
 
 
 
