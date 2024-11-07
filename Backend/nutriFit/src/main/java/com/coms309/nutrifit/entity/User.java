@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -24,6 +25,9 @@ public class User {
     private int id;
 
 
+    @ManyToMany
+    @JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
+    private Set<User> friends;
 
     @OneToOne(cascade = CascadeType.ALL)
     private UserSettings settings;

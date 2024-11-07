@@ -1,7 +1,9 @@
 package com.coms309.nutrifit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "image_data")
@@ -18,8 +20,8 @@ public class ImageData
 
 
 
-
         @Lob
+        @JsonIgnore
         private byte[] pictureData;
 
         private String name;

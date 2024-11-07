@@ -6,6 +6,7 @@ import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.repo.ImageRepository;
 import com.coms309.nutrifit.repo.ProfileRepository;
 import com.coms309.nutrifit.repo.UserRepository;
+import com.coms309.nutrifit.util.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +37,13 @@ public class ProfileServiceHandler
         public Profile getUserProfile(String username)
             {
                 User user = userRepository.findByUsername(username);
-                return profileRepository.findByUser(user);
+                Profile profile = profileRepository.findByUser(user);
+                if(profile != null && profile.getProfileImageData() != null){
+                    ImageData imageData = profile.getProfileImageData();
+                    byte[] img = ImageUtils.decompressImage(imageData.getPictureData());
 
+                }
+                return profile;
             }
 
         public Profile addProfileByName(String username)
@@ -61,11 +67,11 @@ public class ProfileServiceHandler
             }
 
 
-        public void assignImage(String upload, String username) {
+        public void assignImage(ImageData upload, String username) {
             User user = userRepository.findByUsername(username);
             Profile profile = profileRepository.findByUser(user);
 
-            ImageData imageData = imageRepository.findByName(upload);
+            ImageData imageData = imageRepository.findByName(upload.getName());
 
             profile.setProfileImageData(imageData);
 

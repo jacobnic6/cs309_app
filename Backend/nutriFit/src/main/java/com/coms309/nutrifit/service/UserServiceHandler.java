@@ -7,6 +7,7 @@ import com.coms309.nutrifit.repo.UserSettingsRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -104,5 +105,22 @@ public class UserServiceHandler
             return  userRepository.findByUsername(username);
         }
 
+        public String addFriend(int userId, int friendId) {
+            User user = userRepository.findById(userId);
+            User friend = userRepository.findById(friendId);
+            if(user != null && friend != null) {
+                user.getFriends().add(friend);
+                friend.getFriends().add(user);
+                userRepository.saveAndFlush(user);
+                return success;
+            }
+
+            return failure;
+        }
+
+        public List<User> getFriends(int userId) {
+            User user = userRepository.findById(userId);
+            return new ArrayList<>(user.getFriends());
+        }
 
     }

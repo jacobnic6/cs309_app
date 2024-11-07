@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,6 +24,7 @@ public class Profile
         private String name;
 
 
+
         @OneToOne(mappedBy = "profile")
         @JsonIgnore
         @JoinColumn
@@ -33,11 +37,12 @@ public class Profile
         private int height;
 
         @OneToOne
+        @PrimaryKeyJoinColumn
         private ImageData profileImageData;
 
         public Profile(User user){
             this.user = user;
-            this.name = user.getFirstName();
+            this.name = user.getFirstName() + " " + user.getLastName();
             if(user.getBodyWeights().size() != 0){
                 this.weight= user.getBodyWeights().get(0).getWeight();
             }

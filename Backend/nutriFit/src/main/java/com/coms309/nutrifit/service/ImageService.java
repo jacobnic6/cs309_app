@@ -16,9 +16,7 @@ public class ImageService {
     private ImageRepository imageRepository;
 
 
-    public String saveImage(MultipartFile file) throws IOException {
-
-
+    public ImageData saveImage(MultipartFile file) throws IOException {
 
             ImageData imageData = imageRepository.save(ImageData.builder()
                     .name(file.getOriginalFilename()).type(file.getContentType())
@@ -28,7 +26,7 @@ public class ImageService {
 
 
        if(imageData != null) {
-           return  file.getOriginalFilename();
+           return  imageData;
        }
        return null;
     }
