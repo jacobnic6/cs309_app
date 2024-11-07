@@ -121,6 +121,8 @@ public class UserProfileActivity extends AppCompatActivity {
                 int y = (int) event.getY();
 
             if (v == frontAvatar) {
+                System.out.println(x + " " + y);
+
                 // front
                 if (isQuadsRegion(x, y)) {
                     showProgressPopup("Quads");
@@ -134,16 +136,18 @@ public class UserProfileActivity extends AppCompatActivity {
             }
                 if (v == backAvatar) {
                 // back
+                    System.out.println(x + " " + y);
+
                  if (istricepsRegion(x, y)) {
                     showProgressPopup("Triceps");
                 }
-                else if (isbackRegion(x, y)) {
+                if (isbackRegion(x, y)) {
                     showProgressPopup("Back");
                 }
-                else if (isHamstringsRegion(x, y)) {
+                if (isHamstringsRegion(x, y)) {
                     showProgressPopup("Hamstrings");
                 }
-                else if (isCalvesRegion(x, y)) {
+                if (isCalvesRegion(x, y)) {
                     showProgressPopup("Calves");
                 }
             }
@@ -152,54 +156,60 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     };
 
-// helper methods for defining the specific regions within the body diagram
+// helper methods for defining the specific regions within the body diagram left muscles
 private boolean isQuadsRegion(int x, int y) {
     // 133 x 194 on right image
-    Rect QuadsRect = new Rect();
-    return QuadsRect.contains(x, y);
+    Rect QuadsRectLeft = new Rect(127, 409, 234, 650);
+    Rect QuadsRectRight = new Rect(263, 409, 369, 650);
+    return QuadsRectLeft.contains(x, y) || QuadsRectRight.contains(x, y);
 }
 
     private boolean isAbsRegion(int x, int y) {
         // 124 x 126 on right image
-        Rect AbsRect = new Rect();
+        Rect AbsRect = new Rect(156, 270, 340, 415);
         return AbsRect.contains(x, y);
     }
 
 private boolean isbicpsRegion(int x, int y) {
     // 34 x 83 on right image
-    Rect bicepsRect = new Rect();
-    return bicepsRect.contains(x, y);
+    Rect bicepsRectLeft = new Rect(57, 222, 130, 320);
+    Rect bicepsRectRight = new Rect(366, 222, 437, 320);
+    return bicepsRectLeft.contains(x, y) || bicepsRectRight.contains(x, y);
     }
 
     private boolean ischestRegion(int x, int y) {
         // 123 x 63 on right image
-        Rect ChestRect = new Rect();
+        Rect ChestRect = new Rect(140, 140, 360,250);
         return ChestRect.contains(x, y);
     }
 
     private boolean istricepsRegion(int x, int y) {
         // 44 x 65 on left image
-        Rect TricepsRect = new Rect();
-        return TricepsRect.contains(x, y);
+        Rect TricepsRectLeft = new Rect(42, 212, 110, 290);
+        Rect TricepsRectRight = new Rect(361, 212, 429, 290);
+        return TricepsRectLeft.contains(x, y) || TricepsRectRight.contains(x, y);
     }
 
     private boolean isbackRegion(int x, int y) {
         // 135 x 202 on left image
-        Rect BackRect = new Rect();
+        Rect BackRect = new Rect(115, 96, 355, 409);
         return BackRect.contains(x, y);
     }
 
     private boolean isHamstringsRegion(int x, int y) {
         // 134 x 168 on the left image
-        Rect HamstringsRect = new Rect();
-        return HamstringsRect.contains(x, y);
+        Rect HamstringsRectLeft = new Rect(113, 530, 219, 686);
+        Rect HamstringsRectRight = new Rect(248, 530, 351, 686);
+        return HamstringsRectLeft.contains(x, y) || HamstringsRectRight.contains(x, y);
     }
 
     private boolean isCalvesRegion(int x, int y) {
         // 111 x 170 on left image
-        Rect CalvesRect = new Rect();
-        return CalvesRect.contains(x, y);
+        Rect CalvesRectLeft = new Rect(103, 690, 206, 890);
+        Rect CalvesRectRight = new Rect(258, 690, 361, 890);
+        return CalvesRectLeft.contains(x, y) || CalvesRectRight.contains(x, y);
     }
+
 
     // pop up for each muscle group
     private void showProgressPopup(String muscleGroup) {
