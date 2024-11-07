@@ -1,13 +1,15 @@
 package com.coms309.nutrifit.service;
 
-import com.coms309.nutrifit.entity.Profile;
-import com.coms309.nutrifit.entity.User;
-import com.coms309.nutrifit.entity.UserWeight;
+import com.coms309.nutrifit.dto.UserDto;
+import com.coms309.nutrifit.entity.*;
+import com.coms309.nutrifit.repo.FriendRepository;
 import com.coms309.nutrifit.repo.UserRepository;
-import com.coms309.nutrifit.entity.UserSettings;
 import com.coms309.nutrifit.repo.UserSettingsRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,12 @@ public class UserServiceHandler
 
         private final UserRepository userRepository;
         private final UserSettingsRepository userSettingsRepository;
+
+        @Autowired
+        private FriendRepository friendRepository;
+
+        @Autowired
+        private ObjectMapper mapper;
 
 
        // private String nullUserMessage = "{\"message\":\"User is null\"}";
@@ -108,22 +116,54 @@ public class UserServiceHandler
             return  userRepository.findByUsername(username);
         }
 
-        public String addFriend(int userId, int friendId) {
+
+
+        public String addFriend(int userId, UserDto friendDto) {
             User user = userRepository.findById(userId);
-            User friend = userRepository.findById(friendId);
-            if(user != null && friend != null) {
-                user.getFriends().add(friend);
-                friend.getFriends().add(user);
-                userRepository.saveAndFlush(user);
+            UserDto userDto = mapper.convertValue(user, UserDto.class);
+
+            Friend friend = new Friend();
+            User user2 = userRepository.findByUsername(friendDto.getUsername());
+            User temp1 = user;
+            User temp2 = user2;
+            if(user.getId() > user2.getId()) {
+                temp1 = user2;
+                temp2 = user;
+            }
+            if( !(friendRepository.existsByFirstUserAndSecondUser(temp1, temp2)) ){
+
+                friend.setDateAdded(LocalDate.now());
+                friend.setFirstUser(temp1);
+                friend.setSecondUser(temp2);
+                friendRepository.save(friend);
+            }
+            if(friendRepository.existsByFirstUserAndSecondUser(temp1, temp2)) {
                 return success;
             }
+
 
             return failure;
         }
 
         public List<User> getFriends(int userId) {
+
             User user = userRepository.findById(userId);
-            return new ArrayList<>(user.getFriends());
+
+            List<Friend> friendsByFirst = friendRepository.findByFirstUser(user);
+            List<Friend> friendsBySecond = friendRepository.findBySecondUser(user);
+            List<User> friends = new ArrayList<>();
+
+            for( Friend friend : friendsByFirst) {
+                friends.add(userRepository.findById(friend.getSecondUser().getId()));
+            }
+            for( Friend friend : friendsBySecond) {
+                friends.add(userRepository.findById(friend.getFirstUser().getId()));
+            }
+
+            return friends;
         }
 
+        public List<Friend> getAllFriends() {
+            return friendRepository.findAll();
+        }
     }

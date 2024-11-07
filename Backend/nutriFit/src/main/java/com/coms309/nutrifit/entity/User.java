@@ -27,11 +27,17 @@ public class User {
     private int id;
 
 
-    @ManyToMany
-    @JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
-    private Set<User> friends;
+//    @ManyToMany
+//    @JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
+//    @JsonIgnore
+//    private Set<User> friends;
+
+    @OneToMany(mappedBy = "firstUser")
+    @JsonIgnore
+    private List<Friend> friends;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     private UserSettings settings;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
