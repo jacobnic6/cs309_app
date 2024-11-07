@@ -43,14 +43,12 @@ import java.util.ArrayList;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-    private EditText weightInput;
-    private Button postWeightButton;
-    private TextView pastWeightsTextView;
-    //private LineChart weightChart;
+    private EditText inputField;
+    private Button submitButton;
+    private TextView outputBox;
     private String url = "http://coms-3090-058.class.las.iastate.edu:8080/bodyweights/username";
     // private String url = "http://3a3a3fa2-d4e1-4281-8a26-1ee024d50f35.mock.pstmn.io";
     private String username;
-    //private float xValue = 0;
 
     // Body diagram
     private ImageView frontAvatar;
@@ -64,10 +62,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
         username = getIntent().getStringExtra("USERNAME");
 
-        weightInput = findViewById(R.id.weight_input);
-        postWeightButton = findViewById(R.id.post_weight_button);
-        //weightChart = findViewById(R.id.weight_chart);
-        pastWeightsTextView = findViewById(R.id.past_weights_textview);
+        // Inferface for inputs and outputs - weight, height, name
+        inputField = findViewById(R.id.input_field);
+        submitButton = findViewById(R.id.submit_button);
+        outputBox = findViewById(R.id.output_box);
 
         // Muscle diagram
         frontAvatar = findViewById(R.id.front_avatar);
@@ -76,14 +74,8 @@ public class UserProfileActivity extends AppCompatActivity {
         frontAvatar.setOnTouchListener(touchListener);
 
 
-        postWeightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                postWeight();
-            }
-        });
 
-        getWeightData();
+
 
         // The following is for switching to the other four "main pages of the app" - social, exercise, nutrition, and settings
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -112,6 +104,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
         });
     }
+
 
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @Override
@@ -220,104 +213,33 @@ private boolean isbicpsRegion(int x, int y) {
         // Get references to views in the popup (e.g., TextView, ProgressBar)
         TextView progressText = dialog.findViewById(R.id.progress_text);
         ProgressBar progressBar = dialog.findViewById(R.id.progress_bar);
+        TextView tier = dialog.findViewById(R.id.tier_text);
 
         // Set progress data and update progress bar
-        progressText.setText(muscleGroup + " Progress: " + getProgressForMuscle(muscleGroup));
+        progressText.setText(muscleGroup + " Progress: " + getProgressForMuscle(muscleGroup) + "%");
         progressBar.setProgress(getProgressPercentageForMuscle(muscleGroup));
+
+        // Set tier text
+        tier.setText("Tier: " + getTier(muscleGroup));
 
         dialog.show();
     }
 
     // Helper method to get progress for a specific muscle group
     private int getProgressForMuscle(String muscleGroup) {
-        return 0;
+
+    return 75;
     }
 
     // Helper method to get progress percentage for a specific muscle group
     private int getProgressPercentageForMuscle(String muscleGroup) {
-        return 0;
+
+    return 75;
     }
 
+    private String getTier(String muscleGroup) {
 
-
-
-
-
-
-
-
-
-
-
-
-    private void postWeight() {
-        String weight = weightInput.getText().toString();
-        if (weight.isEmpty()) {
-            Toast.makeText(this, "Please enter a weight", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        JSONObject postBody = new JSONObject();
-        try {
-            postBody.put("username", username);
-            postBody.put("weight", weight);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, postBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Toast.makeText(UserProfileActivity.this, "Weight posted successfully", Toast.LENGTH_SHORT).show();
-                        getWeightData();
-                        weightInput.setText("");
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(UserProfileActivity.this, "Error posting weight: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+    return "Bronze";
     }
 
-        private void getWeightData() {
-            StringRequest request = new StringRequest(Request.Method.GET, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONArray jsonArray = new JSONArray(response);
-                                StringBuilder weightsBuilder = new StringBuilder();
-
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject dataPoint = jsonArray.getJSONObject(i);
-                                    float weight = (float) dataPoint.getDouble("weight");
-                                    weightsBuilder.append(weight);
-
-                                    if (i < jsonArray.length() - 1) {
-                                        weightsBuilder.append(", ");
-                                    }
-                                }
-
-                                pastWeightsTextView.setText(weightsBuilder.toString()); // Set text to TextView
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Toast.makeText(com.example.androidexample.main_five_pages.UserProfileActivity.this, "Error parsing weight data", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(com.example.androidexample.main_five_pages.UserProfileActivity.this, "Error fetching weight data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-            VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
-        }
     }

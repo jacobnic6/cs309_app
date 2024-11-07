@@ -17,4 +17,10 @@
         android:layout_height="wrap_content"
         style="?android:attr/progressBarStyleHorizontal" />
 
+    <TextView
+        android:id="@+id/tier_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tier: " />
+
 </LinearLayout>

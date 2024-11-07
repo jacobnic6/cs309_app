@@ -16,22 +16,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/weight_input"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Enter weight"
-        android:inputType="numberDecimal" />
+        <EditText
+            android:id="@+id/input_field"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Enter: Weight- float, Height- Int, Name- String" />
 
     <Button
-        android:id="@+id/post_weight_button"
+        android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Post Weight" />
+        android:text="Submit" />
 
 
         <TextView
-            android:id="@+id/past_weights_textview"
+            android:id="@+id/output_box"
             android:layout_width="match_parent"
             android:layout_height="104dp"
             android:text="" />
