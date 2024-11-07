@@ -52,8 +52,6 @@ public class UserProfileActivity extends AppCompatActivity {
     private String username;
     //private float xValue = 0;
 
-    // Body diagram
-    private ImageView muscleAnatomy;
 
 
     @Override
@@ -67,10 +65,6 @@ public class UserProfileActivity extends AppCompatActivity {
         postWeightButton = findViewById(R.id.post_weight_button);
         //weightChart = findViewById(R.id.weight_chart);
         pastWeightsTextView = findViewById(R.id.past_weights_textview);
-
-        // Muscle diagram
-        muscleAnatomy = findViewById(R.id.muscle_anatomy);
-        muscleAnatomy.setOnTouchListener(touchListener);
 
 
         postWeightButton.setOnClickListener(new View.OnClickListener() {
@@ -109,129 +103,6 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
         });
     }
-
-    private View.OnTouchListener touchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                int x = (int) event.getX();
-                int y = (int) event.getY();
-
-            if (v == muscleAnatomy) {
-                // front
-                if (isQuadsRegion(x, y)) {
-                    showProgressPopup("Quads");
-                } else if (isAbsRegion(x, y)) {
-                    showProgressPopup("Abs");
-                } else if (isbicpsRegion(x, y)) {
-                    showProgressPopup("Biceps");
-                    } else if (ischestRegion(x, y)) {
-                    showProgressPopup("Chest");
-                }
-                // back
-                else if (istricepsRegion(x, y)) {
-                    showProgressPopup("Triceps");
-                }
-                else if (isbackRegion(x, y)) {
-                    showProgressPopup("Back");
-                }
-                else if (isHamstringsRegion(x, y)) {
-                    showProgressPopup("Hamstrings");
-                }
-                else if (isCalvesRegion(x, y)) {
-                    showProgressPopup("Calves");
-                }
-            }
-            }
-            return true;
-        }
-    };
-
-// helper methods for defining the specific regions within the body diagram
-private boolean isQuadsRegion(int x, int y) {
-    // 133 x 194 on right image
-    Rect QuadsRect = new Rect();
-    return QuadsRect.contains(x, y);
-}
-
-    private boolean isAbsRegion(int x, int y) {
-        // 124 x 126 on right image
-        Rect AbsRect = new Rect();
-        return AbsRect.contains(x, y);
-    }
-
-private boolean isbicpsRegion(int x, int y) {
-    // 34 x 83 on right image
-    Rect bicepsRect = new Rect();
-    return bicepsRect.contains(x, y);
-    }
-
-    private boolean ischestRegion(int x, int y) {
-        // 123 x 63 on right image
-        Rect ChestRect = new Rect();
-        return ChestRect.contains(x, y);
-    }
-
-    private boolean istricepsRegion(int x, int y) {
-        // 44 x 65 on left image
-        Rect TricepsRect = new Rect();
-        return TricepsRect.contains(x, y);
-    }
-
-    private boolean isbackRegion(int x, int y) {
-        // 135 x 202 on left image
-        Rect BackRect = new Rect();
-        return BackRect.contains(x, y);
-    }
-
-    private boolean isHamstringsRegion(int x, int y) {
-        // 134 x 168 on the left image
-        Rect HamstringsRect = new Rect();
-        return HamstringsRect.contains(x, y);
-    }
-
-    private boolean isCalvesRegion(int x, int y) {
-        // 111 x 170 on left image
-        Rect CalvesRect = new Rect();
-        return CalvesRect.contains(x, y);
-    }
-
-    // pop up for each muscle group
-    private void showProgressPopup(String muscleGroup) {
-        // Create and show progress popup dialog
-        Dialog dialog = new Dialog(UserProfileActivity.this);
-        dialog.setContentView(R.layout.progress_popup); // Create a layout for the popup
-
-        // Get references to views in the popup (e.g., TextView, ProgressBar)
-        TextView progressText = dialog.findViewById(R.id.progress_text);
-        ProgressBar progressBar = dialog.findViewById(R.id.progress_bar);
-
-        // Set progress data and update progress bar
-        progressText.setText(muscleGroup + " Progress: " + getProgressForMuscle(muscleGroup));
-        progressBar.setProgress(getProgressPercentageForMuscle(muscleGroup));
-
-        dialog.show();
-    }
-
-    // Helper method to get progress for a specific muscle group
-    private int getProgressForMuscle(String muscleGroup) {
-        return 0;
-    }
-
-    // Helper method to get progress percentage for a specific muscle group
-    private int getProgressPercentageForMuscle(String muscleGroup) {
-        return 0;
-    }
-
-
-
-
-
-
-
-
-
-
 
 
 
