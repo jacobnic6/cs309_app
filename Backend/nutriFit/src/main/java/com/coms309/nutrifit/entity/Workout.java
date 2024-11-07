@@ -1,6 +1,7 @@
 package com.coms309.nutrifit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,39 +12,77 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "workouts")
 public class Workout
     {
         @Id
-        @GeneratedValue(strategy =GenerationType.IDENTITY)
+        @GeneratedValue(strategy =GenerationType.AUTO)
         private int id;
 
-        @Column(nullable = false)
+
+        @ElementCollection
+        private List<WorkoutSet> activities;
+
+
+
        private double totalWeight;
 
-       @Column(nullable = false)
-        private String exerciseName;
+
 
         @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name = "user_id")
         @JsonIgnore
         @OnDelete(action = OnDeleteAction.CASCADE)
-        private User user;
+        private Profile profile;
 
         @Column(nullable = false)
-        private LocalDate updatedAt;
+        private LocalDate dateTracked;
 
-        public Workout(double totalWeight, String exerciseName, User user){
-                this.totalWeight = totalWeight;
-                this.exerciseName = exerciseName;
-                this.user = user;
-                this.updatedAt = LocalDate.now();
+        public Workout( Profile profile){
+
+                this.profile = profile;
+                activities = new ArrayList<>();
+                this.dateTracked = LocalDate.now();
+
         }
+        public Workout(){
+            this.profile = null;
+            activities = new ArrayList<>();
+            this.dateTracked = LocalDate.now();
+        }
+
+        public void addActivity(WorkoutSet set){
+            if(activities == null){
+                activities = new ArrayList<>();
+            }
+            if(!activities.contains(set)){
+                activities.add(set);
+            }
+
+        }
+
+        public void updateTotalWeight(){
+            if(activities != null){
+                double tempTotal = 0;
+                for(WorkoutSet set : activities){
+                    double weight = set.getWeightLifted() * set.getRepetitions();
+                    tempTotal += weight;
+                }
+                totalWeight = tempTotal;
+            }
+
+        }
+
+
+
+
 
     }

@@ -1,12 +1,15 @@
 package com.coms309.nutrifit.service;
 
+import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.entity.User;
+import com.coms309.nutrifit.entity.UserWeight;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.entity.UserSettings;
 import com.coms309.nutrifit.repo.UserSettingsRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,6 +42,7 @@ public class UserServiceHandler
 
             UserSettings settings = new UserSettings();
             user.setSettings(settings);
+            //user.setProfile(new Profile());
             userRepository.saveAndFlush(user);
             userSettingsRepository.saveAndFlush(settings);
 
@@ -104,5 +108,22 @@ public class UserServiceHandler
             return  userRepository.findByUsername(username);
         }
 
+        public String addFriend(int userId, int friendId) {
+            User user = userRepository.findById(userId);
+            User friend = userRepository.findById(friendId);
+            if(user != null && friend != null) {
+                user.getFriends().add(friend);
+                friend.getFriends().add(user);
+                userRepository.saveAndFlush(user);
+                return success;
+            }
+
+            return failure;
+        }
+
+        public List<User> getFriends(int userId) {
+            User user = userRepository.findById(userId);
+            return new ArrayList<>(user.getFriends());
+        }
 
     }
