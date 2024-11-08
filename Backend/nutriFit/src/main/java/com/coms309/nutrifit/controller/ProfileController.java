@@ -3,6 +3,8 @@ package com.coms309.nutrifit.controller;
 import com.coms309.nutrifit.entity.ImageData;
 import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.entity.ProfileDto;
+import com.coms309.nutrifit.repo.MuscleGroupRepository;
+import com.coms309.nutrifit.repo.MuscleRepository;
 import com.coms309.nutrifit.service.ImageService;
 import com.coms309.nutrifit.service.ProfileServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,6 +27,7 @@ public class ProfileController
         ProfileServiceHandler profileServiceHandler;
         @Autowired
         ImageService imageService;
+
 
         @PostMapping
         public Profile addProfile(@RequestBody Profile profile)
@@ -41,6 +46,8 @@ public class ProfileController
         public List<Profile> getAllProfiles(){
             return profileServiceHandler.getProfiles();
         }
+
+
 
         @GetMapping("/{username}")
         public Profile getUserProfile(@PathVariable String username){

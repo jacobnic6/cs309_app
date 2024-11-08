@@ -1,14 +1,14 @@
 package com.coms309.nutrifit.entity;
 
+import com.coms309.nutrifit.util.UserMuscles;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -21,8 +21,13 @@ public class Profile
         @Column(name = "user_id")
         private int id;
 
+        @Column(name = "name")
         private String name;
 
+
+
+        @ElementCollection
+        private Map<String, Integer> muscleProgress;
 
 
         @OneToOne
@@ -43,6 +48,7 @@ public class Profile
         @OneToOne
         @PrimaryKeyJoinColumn
         private ImageData profileImageData;
+
 
         public Profile(User user){
             this.user = user;

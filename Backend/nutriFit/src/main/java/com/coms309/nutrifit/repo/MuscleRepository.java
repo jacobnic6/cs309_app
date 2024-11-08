@@ -21,4 +21,6 @@ public interface MuscleRepository extends JpaRepository<Muscle, Integer> {
     @Modifying
     @Query("update Muscle m set m.muscleGroup = ?1 where m.name = ?2")
     void updateMuscleGroupByName(@NonNull MuscleGroup muscleGroup, String name);
+
+
 }

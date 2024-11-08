@@ -3,14 +3,18 @@ package com.coms309.nutrifit.service;
 import com.coms309.nutrifit.entity.ImageData;
 import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.entity.User;
-import com.coms309.nutrifit.repo.ImageRepository;
-import com.coms309.nutrifit.repo.ProfileRepository;
-import com.coms309.nutrifit.repo.UserRepository;
+import com.coms309.nutrifit.exercises.Muscle;
+import com.coms309.nutrifit.exercises.MuscleGroup;
+import com.coms309.nutrifit.repo.*;
 import com.coms309.nutrifit.util.ImageUtils;
+import com.coms309.nutrifit.util.UserMuscles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class ProfileServiceHandler
     {
@@ -21,11 +25,18 @@ public class ProfileServiceHandler
         UserRepository userRepository;
         @Autowired
         ImageRepository imageRepository;
-
+        @Autowired
+        MuscleRepository muscleRepository;
+        @Autowired
+        MuscleGroupRepository groupRepository;
+        @Autowired
+        private MuscleGroupRepository muscleGroupRepository;
 
         public Profile addProfile(Profile profile)
             {
+
                 if(profileRepository.findByUser(profile.getUser()) == null){
+                    profile.setMuscleProgress(getMusclesMap());
                     return profileRepository.save(profile);
                 }
                 return profileRepository.findByUser(profile.getUser());
@@ -61,6 +72,7 @@ public class ProfileServiceHandler
 
               if(profile == null){
                   profile = new Profile(user);
+                    profile.setMuscleProgress(getMusclesMap());
                   user.setProfile(profile);
                    userRepository.saveAndFlush(user);
               }else {
@@ -94,4 +106,34 @@ public class ProfileServiceHandler
             profileRepository.save(profile);
 
         }
+
+        private Map<String, Integer> getMusclesMap(){
+            Map<String, Integer> muscleMap = new HashMap<>();
+            UserMuscles muscles;
+
+            for(UserMuscles muscle : UserMuscles.values()){
+
+                muscleMap.put(muscle.name(), 0);
+            }
+            return muscleMap;
+
+        }
+
+
+//        private Map<String, Integer> getMusclesMap(){
+//            List<Muscle> muscles = muscleRepository.findAll();
+//            Map<String, Integer> map = new HashMap<>();
+//            for (Muscle muscle : muscles){
+//                map.put(muscle.getName(), 0);
+//            }
+//            return map;
+//        }
+//        private Map<String, Integer> getMuscleGroupMap(){
+//            List<MuscleGroup> muscles = muscleGroupRepository.findAll();
+//            Map<String, Integer> map = new HashMap<>();
+//            for (MuscleGroup group: muscles){
+//                map.put(group.getGroupName(), 0);
+//            }
+//            return map;
+//        }
     }

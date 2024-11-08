@@ -61,6 +61,8 @@ public class User {
    @DateTimeFormat
     private LocalDateTime lastLogin;
 
+
+
    @OneToMany(cascade = CascadeType.ALL)
    @JsonIgnore
    private List<ImageData> imageData;
@@ -70,6 +72,7 @@ public class User {
    @OneToMany(cascade = CascadeType.ALL)
    @Column
    List<UserWeight> bodyWeights;
+
 
     public void addBodyWeight(UserWeight weightDto)
         {
