@@ -96,6 +96,7 @@ public class SocialActivity extends AppCompatActivity {
                             Log.d("Volley Response", response.toString());
                             Toast.makeText(SocialActivity.this, "User found", Toast.LENGTH_SHORT).show();
                             // Handle the response here
+
                         }
                     },
                     new Response.ErrorListener() {
