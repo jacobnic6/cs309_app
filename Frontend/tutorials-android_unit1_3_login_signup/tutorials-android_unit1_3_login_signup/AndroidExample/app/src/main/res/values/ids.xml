@@ -1,5 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="searchView" type="id">searchView</item>
-    <item name="recyclerView" type="id">recyclerView</item>
 </resources>
