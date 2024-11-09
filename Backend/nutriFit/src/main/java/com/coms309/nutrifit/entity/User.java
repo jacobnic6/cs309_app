@@ -33,7 +33,7 @@ public class User {
 //    @JsonIgnore
 //    private Set<User> friends;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserMeals> meals;
 
     @OneToMany(mappedBy = "firstUser")

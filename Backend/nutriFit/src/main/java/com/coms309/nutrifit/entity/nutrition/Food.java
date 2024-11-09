@@ -1,20 +1,20 @@
 package com.coms309.nutrifit.entity.nutrition;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-@Getter
-@Setter
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Food {
+public class Food  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,6 +22,7 @@ public class Food {
 
     @ManyToOne
     @JoinColumn(name = "meal_id", referencedColumnName = "id")
+    @JsonIgnore
     private Meal meal;
 
 
@@ -33,18 +34,11 @@ public class Food {
 
     private int amount;
 
+
+
    @ElementCollection
-    private Map<String, Integer> nutrients;
+    private Map<String, Integer> foodNutrients = new HashMap<>();
 
 
 
-   private void addNutrient(String nutrient, int amount) {
-       if(!nutrients.containsKey(nutrient)){
-           nutrients.put(nutrient, amount);
-       }
-       else if (nutrients.containsKey(nutrient)){
-           nutrients.put(nutrient, nutrients.get(nutrient) + amount);
-       }
-
-   }
 }

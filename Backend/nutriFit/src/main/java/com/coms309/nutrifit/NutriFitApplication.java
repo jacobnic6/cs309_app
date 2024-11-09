@@ -1,5 +1,9 @@
 package com.coms309.nutrifit;
 
+import com.coms309.nutrifit.entity.User;
+import com.coms309.nutrifit.entity.nutrition.Food;
+import com.coms309.nutrifit.entity.nutrition.Meal;
+import com.coms309.nutrifit.entity.nutrition.UserMeals;
 import com.coms309.nutrifit.service.ExerciseServiceHandler;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +23,7 @@ public class NutriFitApplication {
 	CommandLineRunner run(DataLoader dataLoader) {
 		return args -> {
 			dataLoader.loadData();
+
 		};
 	}
 
