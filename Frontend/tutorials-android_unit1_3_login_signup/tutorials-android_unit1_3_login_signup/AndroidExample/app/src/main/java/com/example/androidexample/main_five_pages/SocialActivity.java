@@ -44,6 +44,8 @@ public class SocialActivity extends AppCompatActivity {
     EditText searchBar;
     TextView friendsListText;
     Button searchButton;
+    private String username;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,9 @@ public class SocialActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.search_bar);
         searchButton = findViewById(R.id.search_button);
         friendsListText = findViewById(R.id.friendslist_text);
+
+        username = getIntent().getStringExtra("USERNAME");
+
 
         Button chatButton = findViewById(R.id.chat_button);
 
@@ -173,7 +178,7 @@ public class SocialActivity extends AppCompatActivity {
     }
 
     private void postRequest(EditText searchBar) {
-        String url = "http://coms-3090-058.class.las.iastate.edu:8080";
+        String url = "http://coms-3090-058.class.las.iastate.edu:8080/friends/1/add";
         // Convert input to JSONObject
         JSONObject postBody = null;
         try {

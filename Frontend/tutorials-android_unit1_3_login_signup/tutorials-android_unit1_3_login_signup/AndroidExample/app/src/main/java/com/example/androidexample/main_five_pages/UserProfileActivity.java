@@ -84,7 +84,9 @@ public class UserProfileActivity extends AppCompatActivity {
                     int itemId = item.getItemId();
 
                     if (itemId == R.id.social) {
-                        startActivity(new Intent(UserProfileActivity.this, SocialActivity.class));
+                        Intent intent = new Intent(UserProfileActivity.this, SocialActivity.class);
+                        intent.putExtra("Username", username);
+                        startActivity(intent);
                         return true;
                     } else if (itemId == R.id.workouts) {
                         startActivity(new Intent(UserProfileActivity.this, WorkoutActivity.class));
