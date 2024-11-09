@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserServiceHandler
+public class UserServiceHandler extends ServiceHandler
     {
 
 
@@ -29,9 +29,7 @@ public class UserServiceHandler
         private ObjectMapper mapper;
 
 
-       // private String nullUserMessage = "{\"message\":\"User is null\"}";
-        private String success = "{\"message\":\"success\"}";
-        private String failure = "{\"message\":\"failure\"}";
+
 
         public UserServiceHandler(UserRepository userRepository, UserSettingsRepository userSettingsRepository) {
             this.userRepository = userRepository;

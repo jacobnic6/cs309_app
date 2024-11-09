@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.entity;
 
+import com.coms309.nutrifit.entity.nutrition.UserMeals;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -31,6 +32,9 @@ public class User {
 //    @JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
 //    @JsonIgnore
 //    private Set<User> friends;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserMeals> meals;
 
     @OneToMany(mappedBy = "firstUser")
     @JsonIgnore
