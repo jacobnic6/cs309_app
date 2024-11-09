@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -40,19 +43,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserProfileActivity extends AppCompatActivity {
 
+    // In Out Interface
     private EditText inputField;
     private Button submitButton;
     private TextView outputBox;
+
     private String url = "http://coms-3090-058.class.las.iastate.edu:8080/bodyweights/username";
-    // private String url = "http://3a3a3fa2-d4e1-4281-8a26-1ee024d50f35.mock.pstmn.io";
+
     private String username;
 
     // Body diagram
     private ImageView frontAvatar;
     private ImageView backAvatar;
+
 
 
     @Override
@@ -73,37 +81,62 @@ public class UserProfileActivity extends AppCompatActivity {
         backAvatar.setOnTouchListener(touchListener);
         frontAvatar.setOnTouchListener(touchListener);
 
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    String name = inputField.getText().toString();
+                    float weight = Float.parseFloat(inputField.getText().toString());
+                    int height = Integer.parseInt(inputField.getText().toString());
 
+                    // Create JSON object
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("name", name);
+                    jsonObject.put("weight", weight);
+                    jsonObject.put("height", height);
+
+                    sendPostRequest(jsonObject);
+
+                }
+                catch (NumberFormatException e) {
+                    Toast.makeText(UserProfileActivity.this, "Invalid input format", Toast.LENGTH_SHORT).show();
+                }
+                catch (JSONException e) {
+                    Toast.makeText(UserProfileActivity.this, "Error creating JSON object", Toast.LENGTH_SHORT).show();
+                }
+            }
+            });
 
 
 
         // The following is for switching to the other four "main pages of the app" - social, exercise, nutrition, and settings
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    int itemId = item.getItemId();
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
 
-                    if (itemId == R.id.social) {
-                        startActivity(new Intent(UserProfileActivity.this, SocialActivity.class));
-                        return true;
-                    } else if (itemId == R.id.workouts) {
-                        startActivity(new Intent(UserProfileActivity.this, WorkoutActivity.class));
-                        return true;
-                    } else if (itemId == R.id.profile) {
-                        startActivity(new Intent(UserProfileActivity.this, UserProfileActivity.class));
-                        return true;
-                    } else if (itemId == R.id.nutrition) {
-                        startActivity(new Intent(UserProfileActivity.this, NutritionActivity.class));
-                        return true;
-                    } else if (itemId == R.id.settings) {
-                        startActivity(new Intent(UserProfileActivity.this, SettingsActivity.class));
-                        return true;
-                    }
-                    return false;
+                if (itemId == R.id.social) {
+                    startActivity(new Intent(UserProfileActivity.this, SocialActivity.class));
+                    return true;
+                } else if (itemId == R.id.workouts) {
+                    startActivity(new Intent(UserProfileActivity.this, WorkoutActivity.class));
+                    return true;
+                } else if (itemId == R.id.profile) {
+                    startActivity(new Intent(UserProfileActivity.this, UserProfileActivity.class));
+                    return true;
+                } else if (itemId == R.id.nutrition) {
+                    startActivity(new Intent(UserProfileActivity.this, NutritionActivity.class));
+                    return true;
+                } else if (itemId == R.id.settings) {
+                    startActivity(new Intent(UserProfileActivity.this, SettingsActivity.class));
+                    return true;
                 }
+                return false;
+            }
         });
     }
+
 
 
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
@@ -215,15 +248,69 @@ private boolean isbicpsRegion(int x, int y) {
         ProgressBar progressBar = dialog.findViewById(R.id.progress_bar);
         TextView tier = dialog.findViewById(R.id.tier_text);
 
+        /*
+        String url = "http://coms-3090-058.class.las.iastate.edu:8080/users/username/" + muscleGroup;
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest( Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        // Handle the response here
+
+                        // Set progress data and update progress bar
+                        progressText.setText(muscleGroup + " Progress: " + getProgressForMuscle(muscleGroup) + "%");
+
+                        progressBar.setProgress(getProgressPercentageForMuscle(muscleGroup));
+
+
+                        // Set tier text
+                        tier.setText("Tier: " + getTier(muscleGroup));
+
+                        dialog.show();
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                        Toast.makeText(UserProfileActivity.this, "progress not found", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+
+         */
         // Set progress data and update progress bar
         progressText.setText(muscleGroup + " Progress: " + getProgressForMuscle(muscleGroup) + "%");
+
         progressBar.setProgress(getProgressPercentageForMuscle(muscleGroup));
+
 
         // Set tier text
         tier.setText("Tier: " + getTier(muscleGroup));
 
         dialog.show();
-    }
+
+}
 
     // Helper method to get progress for a specific muscle group
     private int getProgressForMuscle(String muscleGroup) {
@@ -240,6 +327,10 @@ private boolean isbicpsRegion(int x, int y) {
     private String getTier(String muscleGroup) {
 
     return "Bronze";
+    }
+
+    private void sendPostRequest(JSONObject jsonObject) {
+
     }
 
     }
