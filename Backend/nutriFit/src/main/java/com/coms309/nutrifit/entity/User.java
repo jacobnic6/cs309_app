@@ -33,6 +33,7 @@ public class User {
 //    @JsonIgnore
 //    private Set<User> friends;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserMeals> meals;
 

@@ -143,7 +143,7 @@ public class UserServiceHandler extends ServiceHandler
             return failure;
         }
 
-        public List<User> getFriends(int userId) {
+        public List<User> getFriendsById(int userId) {
 
             User user = userRepository.findById(userId);
 
@@ -164,4 +164,11 @@ public class UserServiceHandler extends ServiceHandler
         public List<Friend> getAllFriends() {
             return friendRepository.findAll();
         }
+
+        public List<User> getFriendsByUsername(String username) {
+            User user = userRepository.findByUsername(username);
+            return getFriendsById(user.getId());
+        }
+
+
     }
