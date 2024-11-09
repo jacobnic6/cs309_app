@@ -1,6 +1,7 @@
 package com.coms309.nutrifit.controller;
 
 import com.coms309.nutrifit.repo.UserRepository;
+import com.coms309.nutrifit.service.ServiceHandler;
 import com.coms309.nutrifit.service.UserSettingsServiceHandler;
 import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.service.UserServiceHandler;
@@ -54,6 +55,23 @@ public class UserController {
 
 
                 return userServiceHandler.getUserById(id);
+    }
+    /**
+     * Gets user by id.
+     *
+     * @param id the id
+     * @return the user by id
+     */
+//READ
+    @GetMapping(path = "/")
+    public User getUser(@RequestParam String id) {
+
+        if(ServiceHandler.isNumeric(id)){
+            int userId = Integer.parseInt(id);
+
+            return userServiceHandler.getUserById(userId);
+        }
+        return userServiceHandler.getByUsername(id);
     }
 
 

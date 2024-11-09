@@ -61,6 +61,7 @@ public class FriendsController {
 
     if(ServiceHandler.isNumeric(id)){
         int userId = Integer.parseInt(id);
+
         return userServiceHandler.getFriendsById(userId);
     }
         return userServiceHandler.getFriendsByUsername(id);
