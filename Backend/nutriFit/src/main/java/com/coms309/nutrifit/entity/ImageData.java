@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
+/**
+ * The type Image data.
+ */
 @Entity
 @Table(name = "image_data")
 @Getter

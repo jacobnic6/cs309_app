@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Meal.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -39,6 +42,14 @@ public class Meal {
     @Enumerated(EnumType.STRING )
     private MealType mealType;
 
+    /**
+     * Instantiates a new Meal.
+     *
+     * @param userMeals       the user meals
+     * @param foods           the foods
+     * @param nutrientAmounts the nutrient amounts
+     * @param mealType        the meal type
+     */
     public Meal(UserMeals userMeals, List<Food> foods, Map<String, Integer> nutrientAmounts, String mealType){
         this.userMeals = userMeals;
         this.foods = foods;

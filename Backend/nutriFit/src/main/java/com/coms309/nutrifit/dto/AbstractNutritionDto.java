@@ -7,13 +7,22 @@ import java.io.Serializable;
 import java.util.Map;
 
 
+/**
+ * The type Abstract nutrition dto.
+ */
 public abstract class AbstractNutritionDto implements Trackable  {
 
 
-
-
+    /**
+     * The Nutrient map.
+     */
     protected  Map<String, Integer> nutrientMap;
 
+    /**
+     * Gets nutrient map.
+     *
+     * @return the nutrient map
+     */
     public Map<String, Integer> getNutrientMap() {
         return nutrientMap;
     }

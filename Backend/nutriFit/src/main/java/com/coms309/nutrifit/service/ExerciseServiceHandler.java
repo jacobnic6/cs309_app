@@ -18,9 +18,15 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Exercise service handler.
+ */
 @Service
 public class ExerciseServiceHandler {
 
+    /**
+     * The Category repository.
+     */
     @Autowired
     CategoryRepository categoryRepository;
 
@@ -35,12 +41,23 @@ public class ExerciseServiceHandler {
     @Autowired
     private MuscleRepository muscleRepository;
 
+    /**
+     * Import exercises.
+     *
+     * @param path the path
+     * @throws IOException the io exception
+     */
     public void importExercises(String path) throws IOException {
         File file = new File(path);
      List<Exercise> exerciseList = objectMapper.readValue(file, List.class );
         exerciseRepository.saveAll(exerciseList);
     }
 
+    /**
+     * Add exercise.
+     *
+     * @param exercise the exercise
+     */
     public void addExercise(Exercise exercise) {
         if(exercise.getCategory() == null) {
             exercise.setCategory(new Category("strength"));

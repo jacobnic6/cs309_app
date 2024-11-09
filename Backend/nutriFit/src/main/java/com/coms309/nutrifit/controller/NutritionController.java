@@ -15,14 +15,27 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The type Nutrition controller.
+ */
 @RestController
 @RequestMapping("/meals")
 public class NutritionController {
 
+    /**
+     * The Nutrition service.
+     */
     @Autowired
     NutritionService nutritionService;
 
-    //Create
+    /**
+     * Create meal list response entity.
+     *
+     * @param date     the date
+     * @param username the username
+     * @return the response entity
+     */
+//Create
     @PostMapping("/{date}/{username}")
     public ResponseEntity<?> createMealList(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @PathVariable("username") String username) {
 
@@ -34,13 +47,28 @@ public class NutritionController {
 
     }
 
+    /**
+     * Add meal response entity.
+     *
+     * @param date     the date
+     * @param username the username
+     * @param meal     the meal
+     * @return the response entity
+     */
     @PostMapping("/add/{date}/{username}")
     public ResponseEntity<?> addMeal(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                      @PathVariable("username") String username, @RequestBody MealDto meal) {
        return  ResponseEntity.status(HttpStatus.OK).body(nutritionService.addMeal(date, username, meal ));
     }
 
-    //Read
+    /**
+     * Gets meals by date.
+     *
+     * @param date     the date
+     * @param username the username
+     * @return the meals by date
+     */
+//Read
     @GetMapping("/{date}/{username}")
     public UserMeals getMealsByDate(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @PathVariable("username") String username) {
 
@@ -49,7 +77,14 @@ public class NutritionController {
 
     }
 
-    //Update
+    /**
+     * Update meal list by id user meals.
+     *
+     * @param id       the id
+     * @param mealsDto the meals dto
+     * @return the user meals
+     */
+//Update
     @PutMapping("/{Id}")
     public UserMeals updateMealListById(@PathVariable("Id")int id,  @RequestBody UserMealsDto mealsDto) {
         return nutritionService.updateMealListByDate(id, mealsDto);
@@ -58,20 +93,35 @@ public class NutritionController {
 
     //Delete
 
+    /**
+     * Delete meal list by id string.
+     *
+     * @param id the id
+     * @return the string
+     */
     @DeleteMapping("/{id}")
     public String deleteMealListById(@PathVariable int id) {
         return   nutritionService.deleteMealListById(id);
     }
 
+    /**
+     * Delete meal by id string.
+     *
+     * @param id the id
+     * @return the string
+     */
     @DeleteMapping("/meal/{id}")
     public String deleteMealById(@PathVariable int id) {
       return   nutritionService.deleteMealById(id);
     }
 
 
-
-
-    //List
+    /**
+     * Gets all meals.
+     *
+     * @return the all meals
+     */
+//List
     @GetMapping
     public List<UserMeals> getAllMeals() {
         return nutritionService.getAllUserMeals();

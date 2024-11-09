@@ -12,15 +12,34 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * The type Workout service handler.
+ */
 @Service
 public class WorkoutServiceHandler {
+    /**
+     * The Workout repository.
+     */
     @Autowired
     WorkoutRepository workoutRepository;
+    /**
+     * The User repository.
+     */
     @Autowired
     UserRepository userRepository;
+    /**
+     * The Profile repository.
+     */
     @Autowired
     ProfileRepository profileRepository;
 
+    /**
+     * Add workout by username workout.
+     *
+     * @param username the username
+     * @param workout  the workout
+     * @return the workout
+     */
     public Workout addWorkoutByUsername(String username, Workout workout) {
 
         Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
@@ -42,12 +61,24 @@ public class WorkoutServiceHandler {
 
     }
 
+    /**
+     * Gets workouts by user.
+     *
+     * @param username the username
+     * @return the workouts by user
+     */
     public List<Workout> getWorkoutsByUser(String username) {
 
       Profile profile =  profileRepository.findByUser(userRepository.findByUsername(username));
         return workoutRepository.findWorkoutsByProfile(profile);
     }
 
+    /**
+     * Gets workout by id.
+     *
+     * @param workoutId the workout id
+     * @return the workout by id
+     */
     public Workout getWorkoutById(int workoutId) {
 
         if (workoutRepository.existsById(workoutId)) {
@@ -56,6 +87,13 @@ public class WorkoutServiceHandler {
         return null;
     }
 
+    /**
+     * Update workout workout.
+     *
+     * @param workoutId the workout id
+     * @param workout   the workout
+     * @return the workout
+     */
     public Workout updateWorkout(int workoutId, Workout workout) {
 
         if(workout == null) {
@@ -76,6 +114,12 @@ public class WorkoutServiceHandler {
         return workoutRepository.findById(workoutId).get();
     }
 
+    /**
+     * Remove workout string.
+     *
+     * @param workoutId the workout id
+     * @return the string
+     */
     public String removeWorkout(int workoutId) {
         if (!workoutRepository.existsById(workoutId)) {
             return "Workout with id " + workoutId + " does not exist";

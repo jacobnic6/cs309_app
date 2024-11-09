@@ -17,6 +17,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The type Workout.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -46,6 +49,11 @@ public class Workout
         @Column(nullable = false)
         private LocalDate dateTracked;
 
+        /**
+         * Instantiates a new Workout.
+         *
+         * @param profile the profile
+         */
         public Workout( Profile profile){
 
                 this.profile = profile;
@@ -53,12 +61,21 @@ public class Workout
                 this.dateTracked = LocalDate.now();
 
         }
+
+        /**
+         * Instantiates a new Workout.
+         */
         public Workout(){
             this.profile = null;
             activities = new ArrayList<>();
             this.dateTracked = LocalDate.now();
         }
 
+        /**
+         * Add activity.
+         *
+         * @param set the set
+         */
         public void addActivity(WorkoutSet set){
             if(activities == null){
                 activities = new ArrayList<>();
@@ -69,6 +86,9 @@ public class Workout
 
         }
 
+        /**
+         * Update total weight.
+         */
         public void updateTotalWeight(){
             if(activities != null){
                 double tempTotal = 0;

@@ -7,9 +7,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * The interface Workout repository.
+ */
 @Repository
 public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
-  List<Workout> findWorkoutsByProfile(Profile profile);
+    /**
+     * Find workouts by profile list.
+     *
+     * @param profile the profile
+     * @return the list
+     */
+    List<Workout> findWorkoutsByProfile(Profile profile);
 
 
 }

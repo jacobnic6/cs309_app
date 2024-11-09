@@ -24,6 +24,11 @@ public class MealDto extends AbstractNutritionDto{
 
     private String mealType;
 
+    /**
+     * Instantiates a new Meal dto.
+     *
+     * @param foods the foods
+     */
     public MealDto(List<FoodDto> foods){
         this.foods = foods;
         mealNutrients = new HashMap<>();

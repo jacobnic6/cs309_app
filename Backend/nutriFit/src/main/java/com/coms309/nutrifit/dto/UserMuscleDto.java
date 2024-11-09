@@ -5,6 +5,9 @@ import jakarta.persistence.MapKey;
 
 import java.util.Map;
 
+/**
+ * The type User muscle dto.
+ */
 public class UserMuscleDto {
 
 

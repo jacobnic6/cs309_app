@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Profile.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -50,6 +53,11 @@ public class Profile
         private ImageData profileImageData;
 
 
+        /**
+         * Instantiates a new Profile.
+         *
+         * @param user the user
+         */
         public Profile(User user){
             this.user = user;
             this.name =  user.getFirstName() + " " + user.getLastName();
@@ -61,6 +69,12 @@ public class Profile
 
 
         }
+
+        /**
+         * Add workout.
+         *
+         * @param workout the workout
+         */
         public void AddWorkout(Workout workout){
             if(this.workouts == null){
                 this.workouts = new ArrayList<>();

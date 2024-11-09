@@ -22,25 +22,50 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+/**
+ * The type Nutrition service.
+ */
 @Service
 public class NutritionService {
 
+    /**
+     * The User repository.
+     */
     @Autowired
     UserRepository userRepository;
 
+    /**
+     * The User meals repository.
+     */
     @Autowired
     UserMealsRepository userMealsRepository;
 
+    /**
+     * The Meal repository.
+     */
     @Autowired
     MealRepository mealRepository;
 
+    /**
+     * The Food repository.
+     */
     @Autowired
     FoodRepository foodRepository;
 
+    /**
+     * The Object mapper.
+     */
     @Autowired
     ObjectMapper objectMapper;
 
 
+    /**
+     * Create meal list user meals.
+     *
+     * @param date     the date
+     * @param username the username
+     * @return the user meals
+     */
     public UserMeals createMealList(LocalDate date, String username ) {
 
         User user = userRepository.findByUsername(username);
@@ -60,16 +85,36 @@ public class NutritionService {
         return userMealsRepository.save(meals);
     }
 
+    /**
+     * Gets meals by date.
+     *
+     * @param date     the date
+     * @param username the username
+     * @return the meals by date
+     */
     public UserMeals getMealsByDate(LocalDate date, String username) {
         User user = userRepository.findByUsername(username);
         UserMeals meals = userMealsRepository.findByUserAndDate(user, date);
         return userMealsRepository.findByUserAndDate(user, date);
     }
 
+    /**
+     * Gets all user meals.
+     *
+     * @return the all user meals
+     */
     public List<UserMeals> getAllUserMeals() {
         return userMealsRepository.findAll();
     }
 
+    /**
+     * Add meal user meals.
+     *
+     * @param date     the date
+     * @param username the username
+     * @param mealDto  the meal dto
+     * @return the user meals
+     */
     public UserMeals addMeal(LocalDate date, String username, MealDto mealDto) {
         UserMeals meals = getMealsByDate(date, username);
         if(meals == null) {
@@ -105,6 +150,12 @@ public class NutritionService {
     }
 
 
+    /**
+     * Delete meal by id string.
+     *
+     * @param id the id
+     * @return the string
+     */
     public String deleteMealById(int id) {
 
         if(!mealRepository.existsById(id)) {
@@ -115,6 +166,12 @@ public class NutritionService {
     }
 
 
+    /**
+     * Delete meal list by id string.
+     *
+     * @param id the id
+     * @return the string
+     */
     public String deleteMealListById(int id) {
         if(!userMealsRepository.existsById(id)) {
             return "meal list with id " + id + " does not exist";
@@ -125,7 +182,13 @@ public class NutritionService {
     }
 
 
-
+    /**
+     * Update meal list by date user meals.
+     *
+     * @param id       the id
+     * @param mealsDto the meals dto
+     * @return the user meals
+     */
     public UserMeals updateMealListByDate(int id, UserMealsDto mealsDto) {
         if(!userMealsRepository.existsById(id)) {
             return null;

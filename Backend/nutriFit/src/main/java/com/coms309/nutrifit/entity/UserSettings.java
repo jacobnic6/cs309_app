@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * The type User settings.
+ */
 @Entity
 @Getter
 @Setter
@@ -53,8 +56,10 @@ public class UserSettings {
         private boolean workoutRemindersEnabled;
 
 
-
-        public UserSettings(){
+    /**
+     * Instantiates a new User settings.
+     */
+    public UserSettings(){
             profileVisibility = Visibility.PRIVATE;
             biometricVisibility = Visibility.PRIVATE;
             measurementUnits = MeasurementUnits.IMPERIAL;

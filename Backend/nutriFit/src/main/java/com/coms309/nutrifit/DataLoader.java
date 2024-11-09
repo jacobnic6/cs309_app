@@ -14,6 +14,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Data loader.
+ */
 @Service
 public class DataLoader {
 private final int exerciseSize = 1038;
@@ -41,6 +44,11 @@ private final int exerciseSize = 1038;
     private ExerciseServiceHandler exerciseServiceHandler;
 
 
+    /**
+     * Load data.
+     *
+     * @throws IOException the io exception
+     */
     public void loadData() throws IOException {
         if(exerciseRepository.existsById(exerciseSize)){
             return;

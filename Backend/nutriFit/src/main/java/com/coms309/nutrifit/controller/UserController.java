@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * The type User controller.
+ */
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -25,7 +28,13 @@ public class UserController {
     private UserRepository userRepository;
 
 
-    //CREATE
+    /**
+     * Create user string.
+     *
+     * @param user the user
+     * @return the string
+     */
+//CREATE
     @PostMapping
     String createUser(@RequestBody User user) {
 
@@ -33,8 +42,13 @@ public class UserController {
     }
 
 
-
-    //READ
+    /**
+     * Gets user by id.
+     *
+     * @param id the id
+     * @return the user by id
+     */
+//READ
     @GetMapping(path = "/{id}")
     public User getUserById(@PathVariable int id) {
 
@@ -43,7 +57,12 @@ public class UserController {
     }
 
 
-
+    /**
+     * Gets user by username.
+     *
+     * @param username the username
+     * @return the user by username
+     */
     @GetMapping(path = "/username/{username}")
     public User getUserByUsername(@PathVariable String username) {
 
@@ -51,17 +70,27 @@ public class UserController {
     }
 
 
-
-
-
-    //UPDATE
+    /**
+     * Update user user.
+     *
+     * @param id   the id
+     * @param user the user
+     * @return the user
+     */
+//UPDATE
     @PutMapping(path = "/{id}")
     User updateUser(@PathVariable int id, @RequestBody User user) {
 
         return userServiceHandler.updateUser(id, user);
     }
 
-    //DELETE
+    /**
+     * Delete user string.
+     *
+     * @param id the id
+     * @return the string
+     */
+//DELETE
     @DeleteMapping(path = "/{id}")
     String deleteUser(@PathVariable int id) {
        // userRepository.deleteById(id);
@@ -71,7 +100,12 @@ public class UserController {
     }
 
 
-    //LIST
+    /**
+     * Gets all users.
+     *
+     * @return the all users
+     */
+//LIST
     @GetMapping()
     public List<User> getAllUsers() {
        // return userRepository.findAll();
@@ -79,8 +113,15 @@ public class UserController {
     }
 
 
-
-    //update settings
+    /**
+     * Update user settings string.
+     *
+     * @param userId       the user id
+     * @param settingsId   the settings id
+     * @param userSettings the user settings
+     * @return the string
+     */
+//update settings
     @PutMapping(path = "/{userId}/settings/{settingsId}")
     public String updateUserSettings(@PathVariable int userId, @PathVariable int settingsId, @RequestBody UserSettings userSettings) {
 

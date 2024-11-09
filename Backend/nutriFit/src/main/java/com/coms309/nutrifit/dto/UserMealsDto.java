@@ -25,6 +25,11 @@ public class UserMealsDto extends AbstractNutritionDto {
     private Map<String, Integer> nutrientTotals;
 
 
+    /**
+     * Instantiates a new User meals dto.
+     *
+     * @param meals the meals
+     */
     UserMealsDto(List<MealDto> meals){
         date = LocalDate.now();
         this.meals = meals;

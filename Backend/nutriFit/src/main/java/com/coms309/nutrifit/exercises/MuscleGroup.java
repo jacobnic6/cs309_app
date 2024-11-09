@@ -12,6 +12,9 @@ import org.springframework.lang.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Muscle group.
+ */
 @NoArgsConstructor
 @Getter
 @Setter
@@ -28,16 +31,33 @@ public class MuscleGroup {
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "muscleGroup", cascade = CascadeType.ALL)
   private List<Muscle> muscle;
 
-  public MuscleGroup(String groupName, List<Muscle> muscle) {
+    /**
+     * Instantiates a new Muscle group.
+     *
+     * @param groupName the group name
+     * @param muscle    the muscle
+     */
+    public MuscleGroup(String groupName, List<Muscle> muscle) {
     this.groupName = groupName;
     this.muscle = muscle;
   }
-  public MuscleGroup(String groupName) {
+
+    /**
+     * Instantiates a new Muscle group.
+     *
+     * @param groupName the group name
+     */
+    public MuscleGroup(String groupName) {
     this.groupName = groupName;
     muscle = new ArrayList<Muscle>();
   }
 
-  public void addMuscle(Muscle muscle) {
+    /**
+     * Add muscle.
+     *
+     * @param muscle the muscle
+     */
+    public void addMuscle(Muscle muscle) {
     this.muscle.add(muscle);
   }
 

@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The type User.
+ */
 @Entity
 @Getter
 @Setter
@@ -73,12 +76,20 @@ public class User {
    private List<ImageData> imageData;
 
 
-   @JsonProperty("bodyweights")
+    /**
+     * The Body weights.
+     */
+    @JsonProperty("bodyweights")
    @OneToMany(cascade = CascadeType.ALL)
    @Column
    List<UserWeight> bodyWeights;
 
 
+    /**
+     * Add body weight.
+     *
+     * @param weightDto the weight dto
+     */
     public void addBodyWeight(UserWeight weightDto)
         {
             if(bodyWeights == null){
@@ -87,6 +98,12 @@ public class User {
 
             bodyWeights.add(weightDto);
         }
+
+    /**
+     * Add picture.
+     *
+     * @param imageData the image data
+     */
     public void addPicture(ImageData imageData){
         if(this.imageData == null){
             this.imageData = new ArrayList<>();
@@ -95,6 +112,15 @@ public class User {
     }
 
 
+    /**
+     * Instantiates a new User.
+     *
+     * @param firstName the first name
+     * @param lastName  the last name
+     * @param email     the email
+     * @param username  the username
+     * @param password  the password
+     */
     public User(String firstName, String lastName, String email, String username, String password)
         {
             this.firstName = firstName;

@@ -19,22 +19,43 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Profile controller.
+ */
 @RestController
 @RequestMapping("/profile")
 public class ProfileController
     {
+        /**
+         * The Profile service handler.
+         */
         @Autowired
         ProfileServiceHandler profileServiceHandler;
+        /**
+         * The Image service.
+         */
         @Autowired
         ImageService imageService;
 
 
+        /**
+         * Add profile profile.
+         *
+         * @param profile the profile
+         * @return the profile
+         */
         @PostMapping
         public Profile addProfile(@RequestBody Profile profile)
             {
                 return profileServiceHandler.addProfile(profile);
             }
 
+        /**
+         * Add profile profile.
+         *
+         * @param username the username
+         * @return the profile
+         */
         @PostMapping("/{username}")
         public Profile addProfile(@PathVariable String username)
             {
@@ -42,13 +63,23 @@ public class ProfileController
                 return profileServiceHandler.createProfileByName(username);
             }
 
+        /**
+         * Get all profiles list.
+         *
+         * @return the list
+         */
         @GetMapping
         public List<Profile> getAllProfiles(){
             return profileServiceHandler.getProfiles();
         }
 
 
-
+        /**
+         * Get user profile profile.
+         *
+         * @param username the username
+         * @return the profile
+         */
         @GetMapping("/{username}")
         public Profile getUserProfile(@PathVariable String username){
 
@@ -60,13 +91,28 @@ public class ProfileController
         }
 
 
+        /**
+         * Update profile string.
+         *
+         * @param username the username
+         * @param profile  the profile
+         * @return the string
+         */
         @PutMapping("/{username}")
         public String updateProfile(@PathVariable String username, @RequestBody Profile profile)
             {
                 return profileServiceHandler.updateProfile(username, profile);
             }
 
-            @PostMapping("/image/{username}")
+        /**
+         * Upload picture response entity.
+         *
+         * @param file     the file
+         * @param username the username
+         * @return the response entity
+         * @throws IOException the io exception
+         */
+        @PostMapping("/image/{username}")
             public ResponseEntity<?> uploadPicture(@RequestParam("image") MultipartFile file, @PathVariable String username) throws IOException {
 
 
@@ -79,7 +125,13 @@ public class ProfileController
                return ResponseEntity.status(HttpStatus.OK).body(img);
             }
 
-            //Get a specific image
+        /**
+         * Download picture response entity.
+         *
+         * @param fileName the file name
+         * @return the response entity
+         */
+//Get a specific image
         @GetMapping("/image/{fileName}")
         public ResponseEntity<?> downloadPicture(@PathVariable String fileName) {
             byte[] imgData =  imageService.downloadImage(fileName);
@@ -89,6 +141,12 @@ public class ProfileController
 
         }
 
+        /**
+         * Get profile picture response entity.
+         *
+         * @param username the username
+         * @return the response entity
+         */
         @GetMapping("/{username}/pic")
         public ResponseEntity<?> getProfilePicture(@PathVariable String username){
 

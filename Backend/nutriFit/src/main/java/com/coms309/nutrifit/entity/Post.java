@@ -8,6 +8,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.awt.*;
 import java.time.LocalDateTime;
 
+/**
+ * The type Post.
+ */
 @Entity
 @Data
 public class Post {

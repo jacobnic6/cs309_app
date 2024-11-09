@@ -9,6 +9,10 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.lang.NonNull;
+
+/**
+ * The type User muscle progress.
+ */
 @Entity
 @Getter
 @Setter

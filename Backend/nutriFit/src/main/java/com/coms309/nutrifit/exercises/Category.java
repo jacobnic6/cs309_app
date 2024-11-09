@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Set;
 
 
+/**
+ * The type Category.
+ */
 @Entity
 @Getter
 @Setter
@@ -28,7 +31,11 @@ public class Category {
     private String name;
 
 
-
+    /**
+     * Instantiates a new Category.
+     *
+     * @param name the name
+     */
     public Category(String name) {
         this.name = name;
     }

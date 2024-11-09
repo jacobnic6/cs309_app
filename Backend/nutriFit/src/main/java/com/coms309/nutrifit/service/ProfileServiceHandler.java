@@ -15,23 +15,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Profile service handler.
+ */
 @Service
 public class ProfileServiceHandler
     {
         @Autowired
         private ProfileRepository profileRepository;
 
+        /**
+         * The User repository.
+         */
         @Autowired
         UserRepository userRepository;
+        /**
+         * The Image repository.
+         */
         @Autowired
         ImageRepository imageRepository;
+        /**
+         * The Muscle repository.
+         */
         @Autowired
         MuscleRepository muscleRepository;
+        /**
+         * The Group repository.
+         */
         @Autowired
         MuscleGroupRepository groupRepository;
         @Autowired
         private MuscleGroupRepository muscleGroupRepository;
 
+        /**
+         * Add profile profile.
+         *
+         * @param profile the profile
+         * @return the profile
+         */
         public Profile addProfile(Profile profile)
             {
 
@@ -43,11 +64,22 @@ public class ProfileServiceHandler
 
             }
 
+        /**
+         * Gets profiles.
+         *
+         * @return the profiles
+         */
         public List<Profile> getProfiles()
             {
                 return profileRepository.findAll();
             }
 
+        /**
+         * Gets user profile.
+         *
+         * @param username the username
+         * @return the user profile
+         */
         public Profile getUserProfile(String username)
             {
                 User user = userRepository.findByUsername(username);
@@ -60,6 +92,12 @@ public class ProfileServiceHandler
                 return profile;
             }
 
+        /**
+         * Create profile by name profile.
+         *
+         * @param username the username
+         * @return the profile
+         */
         public Profile createProfileByName(String username)
             {
 
@@ -83,6 +121,13 @@ public class ProfileServiceHandler
               return userRepository.findByUsername(username).getProfile();
             }
 
+        /**
+         * Update profile string.
+         *
+         * @param username the username
+         * @param profile  the profile
+         * @return the string
+         */
         public String updateProfile(String username, Profile profile)
             {
                 User user = userRepository.findByUsername(username);
@@ -95,6 +140,12 @@ public class ProfileServiceHandler
             }
 
 
+        /**
+         * Assign image.
+         *
+         * @param upload   the upload
+         * @param username the username
+         */
         public void assignImage(ImageData upload, String username) {
             User user = userRepository.findByUsername(username);
             Profile profile = profileRepository.findByUser(user);

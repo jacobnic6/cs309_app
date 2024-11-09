@@ -7,6 +7,9 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+/**
+ * The type Weight dto.
+ */
 @JsonFormat
 @Getter
 @Setter
@@ -19,17 +22,34 @@ public class WeightDTO
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate weightDate;
 
+        /**
+         * Instantiates a new Weight dto.
+         *
+         * @param weight the weight
+         */
         public WeightDTO(double weight)
             {
                 this.weight = weight;
                 this.weightDate = LocalDate.now();
             }
 
+        /**
+         * Instantiates a new Weight dto.
+         *
+         * @param weight     the weight
+         * @param weightDate the weight date
+         */
         public WeightDTO(double weight, LocalDate weightDate)
             {
                 this.weight = weight;
                 this.weightDate = weightDate;
             }
+
+        /**
+         * Instantiates a new Weight dto.
+         *
+         * @param weightDate the weight date
+         */
         public WeightDTO(LocalDate weightDate){
             this.weightDate = weightDate;
         }

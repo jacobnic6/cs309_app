@@ -14,8 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Map;
 
+/**
+ * The interface User meals repository.
+ */
 @Repository
 public interface UserMealsRepository extends JpaRepository<UserMeals, Integer> {
-  UserMeals findByUserAndDate(User user, LocalDate date);
+    /**
+     * Find by user and date user meals.
+     *
+     * @param user the user
+     * @param date the date
+     * @return the user meals
+     */
+    UserMeals findByUserAndDate(User user, LocalDate date);
 
 }

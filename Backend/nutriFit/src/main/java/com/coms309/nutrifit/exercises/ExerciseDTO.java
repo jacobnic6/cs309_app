@@ -3,6 +3,9 @@ package com.coms309.nutrifit.exercises;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Exercise dto.
+ */
 public class ExerciseDTO {
     private String category;
     private String name;

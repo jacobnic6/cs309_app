@@ -8,6 +8,9 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+/**
+ * The type Muscle.
+ */
 @Entity
 @Getter
 @Setter
@@ -26,9 +29,21 @@ public class Muscle {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private MuscleGroup muscleGroup;
 
-public Muscle(String name) {
+    /**
+     * Instantiates a new Muscle.
+     *
+     * @param name the name
+     */
+    public Muscle(String name) {
     this.name = name;
 }
+
+    /**
+     * Instantiates a new Muscle.
+     *
+     * @param name        the name
+     * @param muscleGroup the muscle group
+     */
     public Muscle(String name, MuscleGroup muscleGroup) {
         this.name = name;
         this.muscleGroup = muscleGroup;

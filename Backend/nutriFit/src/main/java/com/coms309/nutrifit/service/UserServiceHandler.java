@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type User service handler.
+ */
 @Service
 public class UserServiceHandler extends ServiceHandler
     {
@@ -29,15 +32,25 @@ public class UserServiceHandler extends ServiceHandler
         private ObjectMapper mapper;
 
 
-
-
+        /**
+         * Instantiates a new User service handler.
+         *
+         * @param userRepository         the user repository
+         * @param userSettingsRepository the user settings repository
+         */
         public UserServiceHandler(UserRepository userRepository, UserSettingsRepository userSettingsRepository) {
             this.userRepository = userRepository;
             this.userSettingsRepository = userSettingsRepository;
         }
 
 
-        //CREATE
+        /**
+         * Create user string.
+         *
+         * @param user the user
+         * @return the string
+         */
+//CREATE
         //Creates a user with a default settings entity
         public String createUser(User user) {
             if (user == null || userRepository.existsUserByIdOrEmailOrUsername(user.getId(), user.getEmail(), user.getUsername()) ){
@@ -54,7 +67,14 @@ public class UserServiceHandler extends ServiceHandler
 
             return success;
         }
-        //READ
+
+        /**
+         * Gets user by id.
+         *
+         * @param id the id
+         * @return the user by id
+         */
+//READ
         public User getUserById(int id) {
             if (!userRepository.existsById(id)){
                 return null;
@@ -64,7 +84,14 @@ public class UserServiceHandler extends ServiceHandler
 
         }
 
-        //UPDATE
+        /**
+         * Update user user.
+         *
+         * @param id   the id
+         * @param user the user
+         * @return the user
+         */
+//UPDATE
         public User updateUser(int id, User user) {
             User u = userRepository.findById(id);
             if (u == null ){
@@ -77,7 +104,13 @@ public class UserServiceHandler extends ServiceHandler
             return userRepository.findById(id);
         }
 
-        //DELETE
+        /**
+         * Delete user string.
+         *
+         * @param id the id
+         * @return the string
+         */
+//DELETE
         public String deleteUser(int id) {
             if (userRepository.findById(id) == null) {
                 return "User " + id + " does not exist";
@@ -87,12 +120,26 @@ public class UserServiceHandler extends ServiceHandler
 
             return deleteMessage;
         }
-        //LIST
+
+        /**
+         * List all users list.
+         *
+         * @return the list
+         */
+//LIST
         public List<User> listAllUsers() {
             return userRepository.findAll();
         }
 
 
+        /**
+         * Update user settings string.
+         *
+         * @param userId     the user id
+         * @param settingsId the settings id
+         * @param settings   the settings
+         * @return the string
+         */
         public String updateUserSettings(int userId, int settingsId, UserSettings settings) {
             User u = userRepository.findById(userId);
             UserSettings existingSettings = userSettingsRepository.findById(settingsId);
@@ -109,13 +156,24 @@ public class UserServiceHandler extends ServiceHandler
         }
 
 
-
+        /**
+         * Gets by username.
+         *
+         * @param username the username
+         * @return the by username
+         */
         public User getByUsername(String username) {
             return  userRepository.findByUsername(username);
         }
 
 
-
+        /**
+         * Add friend string.
+         *
+         * @param userId    the user id
+         * @param friendDto the friend dto
+         * @return the string
+         */
         public String addFriend(int userId, UserDto friendDto) {
             User user = userRepository.findById(userId);
             UserDto userDto = mapper.convertValue(user, UserDto.class);
@@ -143,6 +201,12 @@ public class UserServiceHandler extends ServiceHandler
             return failure;
         }
 
+        /**
+         * Gets friends by id.
+         *
+         * @param userId the user id
+         * @return the friends by id
+         */
         public List<User> getFriendsById(int userId) {
 
             User user = userRepository.findById(userId);
@@ -161,10 +225,21 @@ public class UserServiceHandler extends ServiceHandler
             return friends;
         }
 
+        /**
+         * Gets all friends.
+         *
+         * @return the all friends
+         */
         public List<Friend> getAllFriends() {
             return friendRepository.findAll();
         }
 
+        /**
+         * Gets friends by username.
+         *
+         * @param username the username
+         * @return the friends by username
+         */
         public List<User> getFriendsByUsername(String username) {
             User user = userRepository.findByUsername(username);
             return getFriendsById(user.getId());

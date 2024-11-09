@@ -9,6 +9,9 @@ import org.springframework.lang.NonNull;
 
 import java.util.*;
 
+/**
+ * The type Exercise.
+ */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -71,12 +74,25 @@ public class Exercise
   @JsonProperty("license_author")
   private String licenseAuthor;
 
-  @Column
+     /**
+      * The License.
+      */
+     @Column
   @ElementCollection
   @JsonProperty("license")
   Map<String, String> license;
 
-  public Exercise(Category category, String name, List<Equipment> equipment, List<String> instructions,
+     /**
+      * Instantiates a new Exercise.
+      *
+      * @param category         the category
+      * @param name             the name
+      * @param equipment        the equipment
+      * @param instructions     the instructions
+      * @param primaryMuscles   the primary muscles
+      * @param secondaryMuscles the secondary muscles
+      */
+     public Exercise(Category category, String name, List<Equipment> equipment, List<String> instructions,
                   List<Muscle> primaryMuscles, List<Muscle> secondaryMuscles){
    this.category = category;
    this.name = name;

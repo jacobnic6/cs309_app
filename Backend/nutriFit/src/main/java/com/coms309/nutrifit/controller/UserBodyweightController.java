@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * The type User bodyweight controller.
+ */
 @RestController()
 @RequestMapping("/bodyweights")
 public class UserBodyweightController
@@ -17,9 +20,13 @@ public class UserBodyweightController
        private BodyweightServiceHandler bodyweightServiceHandler;
 
 
-
-
-        //LIST all of a specific user's weight
+        /**
+         * Gets user weights.
+         *
+         * @param username the username
+         * @return the user weights
+         */
+//LIST all of a specific user's weight
         @GetMapping(path = "/{username}")
         public List<UserWeight> getUserWeights(@PathVariable String username) {
 
@@ -27,7 +34,14 @@ public class UserBodyweightController
 
         }
 
-        //CREATE
+        /**
+         * Add user weight user weight.
+         *
+         * @param username the username
+         * @param weight   the weight
+         * @return the user weight
+         */
+//CREATE
         @PostMapping(path = "/{username}")
         public UserWeight addUserWeight(@PathVariable String username, @RequestBody UserWeight weight)
             {
@@ -37,19 +51,40 @@ public class UserBodyweightController
             }
 
 
-        //READ reads by date in the body
+        /**
+         * Get user weight by date user weight.
+         *
+         * @param username the username
+         * @param weight   the weight
+         * @return the user weight
+         */
+//READ reads by date in the body
         @GetMapping(path = "/{username}/date")
         public UserWeight getUserWeightByDate(@PathVariable String username, @RequestBody UserWeight weight){
             return bodyweightServiceHandler.getWeightByDate(username, weight.getWeightDate());
         }
 
-        //UPDATE
+        /**
+         * Update user weight user weight.
+         *
+         * @param username   the username
+         * @param userWeight the user weight
+         * @return the user weight
+         */
+//UPDATE
         @PutMapping(path = "/{username}/date")
         public UserWeight updateUserWeight(@PathVariable String username, @RequestBody UserWeight userWeight){
             return bodyweightServiceHandler.updateUserWeight(username, userWeight);
         }
 
-        //DELETE
+        /**
+         * Delete user weight string.
+         *
+         * @param username the username
+         * @param date     the date
+         * @return the string
+         */
+//DELETE
         @DeleteMapping(path = "/{username}/date")
         public String deleteUserWeight(@PathVariable String username, @RequestBody LocalDate date)
             {

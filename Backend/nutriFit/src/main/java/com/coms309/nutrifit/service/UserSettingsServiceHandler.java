@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * The type User settings service handler.
+ */
 @Service
 public class UserSettingsServiceHandler {
 
@@ -17,18 +20,36 @@ public class UserSettingsServiceHandler {
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
+    /**
+     * Instantiates a new User settings service handler.
+     *
+     * @param userSettingsRepository the user settings repository
+     * @param userRepository         the user repository
+     */
     public UserSettingsServiceHandler(UserSettingsRepository userSettingsRepository, UserRepository userRepository) {
         this.userSettingsRepository = userSettingsRepository;
         this.userRepository = userRepository;
     }
 
-    //READ
+    /**
+     * Gets settings by id.
+     *
+     * @param id the id
+     * @return the settings by id
+     */
+//READ
     public UserSettings getSettingsById(int id) {
 
         return userSettingsRepository.findById(id);
     }
 
-    //CREATE
+    /**
+     * Create user settings string.
+     *
+     * @param settings the settings
+     * @return the string
+     */
+//CREATE
     public String createUserSettings(UserSettings settings) {
 
         if(settings == null){
@@ -39,7 +60,14 @@ public class UserSettingsServiceHandler {
     }
 
 
-    //UPDATE
+    /**
+     * Update settings user settings.
+     *
+     * @param id       the id
+     * @param settings the settings
+     * @return the user settings
+     */
+//UPDATE
     @Transactional
     public UserSettings updateSettings(int id, UserSettings settings) {
 
@@ -63,12 +91,23 @@ public class UserSettingsServiceHandler {
     }
 
 
-    //LIST
+    /**
+     * List all user settings list.
+     *
+     * @return the list
+     */
+//LIST
     public List<UserSettings> listAllUserSettings() {
         return userSettingsRepository.findAll();
     }
 
-    //DELETE
+    /**
+     * Delete settings string.
+     *
+     * @param id the id
+     * @return the string
+     */
+//DELETE
     @Transactional
     public String deleteSettings(int id) {
         if(!userSettingsRepository.existsById(id) ){

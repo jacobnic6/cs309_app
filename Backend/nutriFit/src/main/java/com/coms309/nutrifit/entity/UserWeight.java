@@ -13,6 +13,9 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 
+/**
+ * The type User weight.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -41,18 +44,37 @@ public class UserWeight
         private User user;
 
 
-
+        /**
+         * Instantiates a new User weight.
+         *
+         * @param weight     the weight
+         * @param weightDate the weight date
+         * @param user       the user
+         */
         public UserWeight(double weight, LocalDate weightDate, User user){
             this.weight = weight;
             this.user = user;
             this.weightDate = weightDate;
         }
+
+        /**
+         * Instantiates a new User weight.
+         *
+         * @param weight the weight
+         * @param user   the user
+         */
         public UserWeight(double weight, User user){
             this.weight = weight;
             this.user = user;
             this.weightDate = LocalDate.now();
         }
 
+        /**
+         * Instantiates a new User weight.
+         *
+         * @param weight     the weight
+         * @param weightDate the weight date
+         */
         public UserWeight(double weight, LocalDate weightDate)
             {
                 this.weight = weight;

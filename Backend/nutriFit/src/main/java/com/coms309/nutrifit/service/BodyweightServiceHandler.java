@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+
+/**
+ * The type Bodyweight service handler.
+ */
 @Service
 public class BodyweightServiceHandler extends ServiceHandler
     {
@@ -18,6 +22,12 @@ public class BodyweightServiceHandler extends ServiceHandler
         @Autowired
         private UserRepository userRepository;
 
+        /**
+         * Gets user weights.
+         *
+         * @param username the username
+         * @return the user weights
+         */
         public List<UserWeight> getUserWeights(String username)
             {
                 User u = userRepository.findByUsername(username);
@@ -28,6 +38,13 @@ public class BodyweightServiceHandler extends ServiceHandler
                 return bodyweightRepository.getAllByUserId(u.getId());
             }
 
+        /**
+         * Add user weight user weight.
+         *
+         * @param username   the username
+         * @param bodyWeight the body weight
+         * @return the user weight
+         */
         public UserWeight addUserWeight(String username, UserWeight bodyWeight)
             {
                 double weight = bodyWeight.getWeight();
@@ -43,6 +60,13 @@ public class BodyweightServiceHandler extends ServiceHandler
                 return bodyweightRepository.getByWeightDateAndUserId(date, u.getId());
             }
 
+        /**
+         * Gets weight by date.
+         *
+         * @param username the username
+         * @param date     the date
+         * @return the weight by date
+         */
         public UserWeight getWeightByDate(String username, LocalDate date)
             {
                 User u = userRepository.findByUsername(username);
@@ -53,6 +77,13 @@ public class BodyweightServiceHandler extends ServiceHandler
                 return bodyweightRepository.getByWeightDateAndUserId(date, u.getId());
             }
 
+        /**
+         * Update user weight user weight.
+         *
+         * @param username   the username
+         * @param userWeight the user weight
+         * @return the user weight
+         */
         public UserWeight updateUserWeight(String username, UserWeight userWeight)
             {
                 User u = userRepository.findByUsername(username);
@@ -67,6 +98,13 @@ public class BodyweightServiceHandler extends ServiceHandler
                 return bodyweightRepository.getByWeightDateAndUserId(date, u.getId());
             }
 
+        /**
+         * Delete user weight string.
+         *
+         * @param username the username
+         * @param date     the date
+         * @return the string
+         */
         public String deleteUserWeight(String username, LocalDate date)
             {
                 User u = userRepository.findByUsername(username);

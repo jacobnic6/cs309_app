@@ -9,6 +9,9 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Equipment.
+ */
 @Entity
 @Getter
 @Setter
@@ -25,11 +28,21 @@ public class Equipment {
     @ManyToMany
     private List<Exercise> exercises;
 
+    /**
+     * Instantiates a new Equipment.
+     *
+     * @param name the name
+     */
     public Equipment(String name) {
         this.name = name;
         exercises = new ArrayList<>();
     }
 
+    /**
+     * Add exercise.
+     *
+     * @param exercise the exercise
+     */
     public void addExercise(Exercise exercise) {
 
         this.exercises.add(exercise);
