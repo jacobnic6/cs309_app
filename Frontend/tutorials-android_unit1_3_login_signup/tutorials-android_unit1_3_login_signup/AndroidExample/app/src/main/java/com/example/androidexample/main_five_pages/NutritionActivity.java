@@ -3,6 +3,8 @@ package com.example.androidexample.main_five_pages;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,10 +14,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.androidexample.AddMealActivity;
 import com.example.androidexample.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class NutritionActivity extends AppCompatActivity {
     // UI Elements
@@ -36,18 +49,27 @@ public class NutritionActivity extends AppCompatActivity {
     private int currentCarbs = 0;
     private int currentFat = 0;
 
+    // API Related
+    private RequestQueue requestQueue;
+    private static final String BASE_URL = "YOUR_API_URL"; // Replace with your API URL
     private static final int ADD_MEAL_REQUEST_CODE = 1;
+    private static final int EDIT_MEAL_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nutrition);
 
+        // Initialize RequestQueue
+        requestQueue = Volley.newRequestQueue(this);
+
         // Initialize UI elements
         initializeViews();
         setupClickListeners();
-        updateNutritionDisplays();
         setupNavigationBar();
+
+        // Fetch initial data
+        fetchDailyMeals();
     }
 
     private void initializeViews() {
@@ -66,7 +88,6 @@ public class NutritionActivity extends AppCompatActivity {
 
         // Initialize Buttons
         addMealButton = findViewById(R.id.add_meal_button);
-        scanBarcodeButton = findViewById(R.id.scan_barcode_button);
         quickAddButton = findViewById(R.id.quick_add_button);
 
         // Log to ensure views are initialized correctly
@@ -79,85 +100,67 @@ public class NutritionActivity extends AppCompatActivity {
     private void setupClickListeners() {
         addMealButton.setOnClickListener(v -> showAddMealDialog());
 
-        scanBarcodeButton.setOnClickListener(v -> {
-            // TODO: Implement barcode scanning functionality
-            Toast.makeText(this, "Barcode scanning feature coming soon!", Toast.LENGTH_SHORT).show();
-        });
+        // Listeners for Edit and Delete actions
+        findViewById(R.id.edit_breakfast_button).setOnClickListener(v -> editMeal("breakfast"));
+        findViewById(R.id.delete_breakfast_button).setOnClickListener(v -> confirmDeleteMeal("breakfastId")); // Replace with actual meal ID
 
-        quickAddButton.setOnClickListener(v -> showQuickAddDialog());
+        // Repeat for lunch, dinner, and snacks
+        findViewById(R.id.edit_lunch_button).setOnClickListener(v -> editMeal("lunch"));
+        findViewById(R.id.delete_lunch_button).setOnClickListener(v -> confirmDeleteMeal("lunchId"));
+
+        findViewById(R.id.edit_dinner_button).setOnClickListener(v -> editMeal("dinner"));
+        findViewById(R.id.delete_dinner_button).setOnClickListener(v -> confirmDeleteMeal("dinnerId"));
+
+        findViewById(R.id.edit_snacks_button).setOnClickListener(v -> editMeal("snacks"));
+        findViewById(R.id.delete_snacks_button).setOnClickListener(v -> confirmDeleteMeal("snacksId"));
     }
 
     private void showAddMealDialog() {
-        // Create intent for AddMealActivity
         Intent intent = new Intent(this, AddMealActivity.class);
         startActivityForResult(intent, ADD_MEAL_REQUEST_CODE);
     }
 
-    private void showQuickAddDialog() {
-        // TODO: Implement quick add dialog
-        Toast.makeText(this, "Quick Add feature coming soon!", Toast.LENGTH_SHORT).show();
+    private void editMeal(String mealType) {
+        Intent intent = new Intent(this, AddMealActivity.class);
+        intent.putExtra("mealType", mealType);
+        intent.putExtra("isEditMode", true);
+        startActivityForResult(intent, EDIT_MEAL_REQUEST_CODE);
+    }
+
+    private void confirmDeleteMeal(String mealId) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Meal")
+                .setMessage("Are you sure you want to delete this meal?")
+                .setPositiveButton("Yes", (dialog, which) -> deleteMeal(mealId))
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void deleteMeal(String mealId) {
+        String url = BASE_URL + "/meals/" + mealId;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.DELETE, url, null,
+                response -> {
+                    Toast.makeText(this, "Meal deleted successfully", Toast.LENGTH_SHORT).show();
+                    fetchDailyMeals(); // Refresh the data
+                },
+                error -> {
+                    Log.e("NutritionActivity", "Error deleting meal: " + error.getMessage());
+                    Toast.makeText(this, "Error deleting meal", Toast.LENGTH_SHORT).show();
+                }
+        );
+
+        requestQueue.add(request);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ADD_MEAL_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            // Handle the added meal data
-            updateNutritionData(
-                    data.getIntExtra("calories", 0),
-                    data.getIntExtra("protein", 0),
-                    data.getIntExtra("carbs", 0),
-                    data.getIntExtra("fat", 0),
-                    data.getStringExtra("mealType")
-            );
+        if (resultCode == RESULT_OK) {
+            if (requestCode == ADD_MEAL_REQUEST_CODE || requestCode == EDIT_MEAL_REQUEST_CODE) {
+                fetchDailyMeals(); // Refresh the data
+            }
         }
-    }
-
-    private void updateNutritionData(int calories, int protein, int carbs, int fat, String mealType) {
-        // Update totals
-        currentCalories += calories;
-        currentProtein += protein;
-        currentCarbs += carbs;
-        currentFat += fat;
-
-        // Update meal-specific displays
-        switch (mealType) {
-            case "Breakfast":
-                updateMealDisplay(breakfastCalories, calories);
-                break;
-            case "Lunch":
-                updateMealDisplay(lunchCalories, calories);
-                break;
-            case "Dinner":
-                updateMealDisplay(dinnerCalories, calories);
-                break;
-            case "Snacks":
-                updateMealDisplay(snacksCalories, calories);
-                break;
-            default:
-                // Handle unexpected meal types
-                Log.w("NutritionActivity", "Unknown meal type: " + mealType);
-                break;
-        }
-
-        // Update overall displays
-        updateNutritionDisplays();
-    }
-
-    private void updateMealDisplay(TextView mealTextView, int calories) {
-        mealTextView.setText(calories + " cal");
-    }
-
-    private void updateNutritionDisplays() {
-        // Update progress bars
-        caloriesProgress.setProgress((currentCalories * 100) / DAILY_CALORIES_GOAL);
-        proteinProgress.setProgress((currentProtein * 100) / DAILY_PROTEIN_GOAL);
-        carbsProgress.setProgress((currentCarbs * 100) / DAILY_CARBS_GOAL);
-        fatProgress.setProgress((currentFat * 100) / DAILY_FAT_GOAL);
-
-        // Update calories remaining
-        int remainingCalories = DAILY_CALORIES_GOAL - currentCalories;
-        caloriesRemaining.setText(remainingCalories + " calories remaining");
     }
 
     private void setupNavigationBar() {
@@ -186,5 +189,55 @@ public class NutritionActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void fetchDailyMeals() {
+        String url = BASE_URL + "/meals/" + getCurrentDate();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        currentCalories = response.getInt("totalCalories");
+                        currentProtein = response.getInt("totalProtein");
+                        currentCarbs = response.getInt("totalCarbs");
+                        currentFat = response.getInt("totalFat");
+
+                        updateMealDisplay(breakfastCalories, response.getInt("breakfastCalories"));
+                        updateMealDisplay(lunchCalories, response.getInt("lunchCalories"));
+                        updateMealDisplay(dinnerCalories, response.getInt("dinnerCalories"));
+                        updateMealDisplay(snacksCalories, response.getInt("snacksCalories"));
+
+                        updateNutritionDisplays();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing meal data", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Log.e("NutritionActivity", "Error fetching meals: " + error.getMessage());
+                    Toast.makeText(this, "Error fetching meals", Toast.LENGTH_SHORT).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+
+    private void updateMealDisplay(TextView mealTextView, int calories) {
+        mealTextView.setText(calories + " cal");
+    }
+
+    private void updateNutritionDisplays() {
+        caloriesProgress.setProgress((currentCalories * 100) / DAILY_CALORIES_GOAL);
+        proteinProgress.setProgress((currentProtein * 100) / DAILY_PROTEIN_GOAL);
+        carbsProgress.setProgress((currentCarbs * 100) / DAILY_CARBS_GOAL);
+        fatProgress.setProgress((currentFat * 100) / DAILY_FAT_GOAL);
+
+        int remainingCalories = DAILY_CALORIES_GOAL - currentCalories;
+        caloriesRemaining.setText(remainingCalories + " calories remaining");
     }
 }

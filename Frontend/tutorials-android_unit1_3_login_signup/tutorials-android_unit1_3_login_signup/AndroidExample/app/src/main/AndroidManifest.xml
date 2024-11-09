@@ -45,12 +45,16 @@
         <activity
             android:name=".AddMealActivity"
             android:exported="false"/>
-        <activity
-            android:name=".main_five_pages.NutritionActivity"
-            android:exported="false"/>
+<!--        <activity-->
+<!--            android:name=".main_five_pages.NutritionActivity"-->
+<!--            android:exported="false"/>-->
         <activity
             android:name=".MainActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".main_five_pages.NutritionActivity"
             android:exported="true">
+
 
 
 

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -50,6 +49,13 @@ public class AddMealActivity extends AppCompatActivity {
         setupSpinner();
         setupButtons();
         setupFoodSearch();
+
+        // Check if this is edit mode
+        boolean isEditMode = getIntent().getBooleanExtra("isEditMode", false);
+        if (isEditMode) {
+            String mealType = getIntent().getStringExtra("mealType");
+            loadMealDataForEditing(mealType);
+        }
     }
 
     private void initializeViews() {
@@ -62,6 +68,21 @@ public class AddMealActivity extends AppCompatActivity {
         fatInput = findViewById(R.id.fat);
         saveButton = findViewById(R.id.save_button);
         cancelButton = findViewById(R.id.cancel_button);
+    }
+
+    private void setupSpinner() {
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"Breakfast", "Lunch", "Dinner", "Snacks"}
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mealTypeSpinner.setAdapter(adapter);
+    }
+
+    private void setupButtons() {
+        saveButton.setOnClickListener(v -> validateAndSaveMeal());
+        cancelButton.setOnClickListener(v -> finish());
     }
 
     private void setupFoodSearch() {
@@ -149,27 +170,20 @@ public class AddMealActivity extends AppCompatActivity {
         }
     }
 
-    // Keep existing setupSpinner(), setupButtons(), and validateAndSaveMeal() methods
-
-
-    private void setupSpinner() {
-        // Create an ArrayAdapter for the meal types
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                new String[]{"Breakfast", "Lunch", "Dinner", "Snacks"}
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mealTypeSpinner.setAdapter(adapter);
-    }
-
-    private void setupButtons() {
-        saveButton.setOnClickListener(v -> validateAndSaveMeal());
-        cancelButton.setOnClickListener(v -> finish());
+    private void loadMealDataForEditing(String mealType) {
+        // Fetch meal data from the API or local storage
+        if (mealType.equals("breakfast")) {
+            foodNameInput.setText("Oatmeal");
+            servingSizeInput.setText("1 cup");
+            caloriesInput.setText("150");
+            proteinInput.setText("5");
+            carbsInput.setText("27");
+            fatInput.setText("3");
+        }
+        // Load data for other meal types similarly
     }
 
     private void validateAndSaveMeal() {
-        // Validate required fields
         if (foodNameInput.getText().toString().trim().isEmpty()) {
             foodNameInput.setError("Food name is required");
             return;
@@ -181,7 +195,6 @@ public class AddMealActivity extends AppCompatActivity {
         }
 
         try {
-            // Get values from inputs
             String foodName = foodNameInput.getText().toString();
             String servingSize = servingSizeInput.getText().toString();
             int calories = Integer.parseInt(caloriesInput.getText().toString());
@@ -193,7 +206,6 @@ public class AddMealActivity extends AppCompatActivity {
                     Float.parseFloat(fatInput.getText().toString());
             String mealType = mealTypeSpinner.getSelectedItem().toString();
 
-            // Create intent to send back the data
             Intent resultIntent = new Intent();
             resultIntent.putExtra("foodName", foodName);
             resultIntent.putExtra("servingSize", servingSize);
@@ -203,7 +215,6 @@ public class AddMealActivity extends AppCompatActivity {
             resultIntent.putExtra("fat", (int)fat);
             resultIntent.putExtra("mealType", mealType);
 
-            // Set the result and finish
             setResult(RESULT_OK, resultIntent);
             finish();
 
