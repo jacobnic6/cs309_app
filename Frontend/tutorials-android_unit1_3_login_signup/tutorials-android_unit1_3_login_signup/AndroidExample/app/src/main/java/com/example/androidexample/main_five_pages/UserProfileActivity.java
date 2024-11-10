@@ -53,7 +53,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private Button submitButton;
     private TextView outputBox;
 
-    private String url = "http://coms-3090-058.class.las.iastate.edu:8080/bodyweights/username";
+    private String url = "http://coms-3090-058.class.las.iastate.edu:8080/";
 
     private String username;
 
@@ -68,7 +68,7 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userprofile);
 
-        username = getIntent().getStringExtra("USERNAME");
+        username = getIntent().getStringExtra("Username");
 
         // Inferface for inputs and outputs - weight, height, name
         inputField = findViewById(R.id.input_field);
@@ -84,7 +84,8 @@ public class UserProfileActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String input = inputField.getText().toString().trim();
+               String input = inputField.getText().toString().trim();
+
                 JSONObject jsonObject = new JSONObject();
                 // Check if the input is empty
                 if (input.isEmpty()) {
@@ -92,32 +93,54 @@ public class UserProfileActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Try to parse the input as an Integer
+                else if (isInteger(input)) {
+                    try {
+                        jsonObject.put("height", input);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    sendPutRequest(jsonObject, username);
+                }
+
+                else if (input.matches("[a-zA-Z]+")) {
+                    try {
+                        jsonObject.put("name", input);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    sendPutRequest(jsonObject, username);
+                }
+
+                else if (isFloat(input)) {
+                    try {
+                        jsonObject.put("weight", input);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    sendPutRequest(jsonObject, username);
+                }
+
+                }
+
+            private boolean isFloat(String input) {
                 try {
-                    // Try to parse the input as an integer
-                    int height = Integer.parseInt(input);
-                    jsonObject.put("height", height);
-                    sendPostRequest(jsonObject, username);
-                } catch (NumberFormatException | JSONException e1) {
-                    // Not an integer, try to parse as a float
-                    try {
-                        float height = Float.parseFloat(input);
-                        jsonObject.put("height", height);
-                        sendPostRequest(jsonObject, username);
-                    } catch (NumberFormatException | JSONException e2) {
-
-                    }
-                    try {
-                        // Not a float either, so treat as a String
-                        jsonObject.put("height", input); // Treat the input as a String
-                        sendPostRequest(jsonObject, username);
-                    }
-                    catch (NumberFormatException | JSONException e3) {
-
-                    }
+                    Float.parseFloat(input);
+                    return true;
+                } catch (NumberFormatException e) {
+                    return false;
                 }
+            }
+
+            private boolean isInteger(String input) {
+                try {
+                    Integer.parseInt(input);
+                    return true;
+                } catch (NumberFormatException e) {
+                    return false;
                 }
-            });
+
+            }
+        });
 
 
 
@@ -341,12 +364,12 @@ private boolean isbicpsRegion(int x, int y) {
     return "Bronze";
     }
 
-    private void sendPostRequest(JSONObject jsonObject, String username) {
-        String url = "http://coms-3090-058.class.las.iastate.edu:8080/bodyweights/" + username;
+    private void sendPutRequest(JSONObject jsonObject, String username) {
+        String url = "http://coms-3090-058.class.las.iastate.edu:8080/profile/" + username;
 
 
         JsonObjectRequest request = new JsonObjectRequest(
-                    Request.Method.POST, url, jsonObject,
+                    Request.Method.PUT, url, jsonObject,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
