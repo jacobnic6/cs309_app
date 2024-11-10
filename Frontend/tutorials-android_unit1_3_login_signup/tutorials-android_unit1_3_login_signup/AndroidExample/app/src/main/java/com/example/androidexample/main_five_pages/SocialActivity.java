@@ -56,12 +56,12 @@ public class SocialActivity extends AppCompatActivity {
         searchButton = findViewById(R.id.search_button);
         friendsListText = findViewById(R.id.friendslist_text);
 
-        username = getIntent().getStringExtra("USERNAME");
+        username = getIntent().getStringExtra("Username");
 
 
         Button chatButton = findViewById(R.id.chat_button);
 
-        getFriends();
+        getFriends(username);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,14 +178,15 @@ public class SocialActivity extends AppCompatActivity {
     }
 
     private void postRequest(EditText searchBar) {
-        String url = "http://coms-3090-058.class.las.iastate.edu:8080/friends/1/add";
+        String searchQuery = searchBar.getText().toString();
+        String url = "http://coms-3090-058.class.las.iastate.edu:8080/friends/add?userId=" + searchQuery;
         // Convert input to JSONObject
-        JSONObject postBody = null;
+        JSONObject postBody = new JSONObject();
         try {
             // etRequest should contain a JSON object string as your POST body
             // similar to what you would have in POSTMAN-body field
             // and the fields should match with the object structure of @RequestBody on sb
-            postBody = new JSONObject(searchBar.getText().toString());
+            postBody.put("username", searchQuery);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -227,8 +228,9 @@ public class SocialActivity extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
         }
 
-        private void getFriends() {
-            String url = "http://coms-3090-058.class.las.iastate.edu:8080/users/username";
+        private void getFriends(String username) {
+
+            String url = "http://coms-3090-058.class.las.iastate.edu:8080/friends/?userId=" + username;
             JsonObjectRequest jsonObjReq = new JsonObjectRequest( Request.Method.GET, url, null,
                     new Response.Listener<JSONObject>() {
                         @Override

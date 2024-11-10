@@ -59,7 +59,7 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userprofile);
 
-        username = getIntent().getStringExtra("USERNAME");
+        username = getIntent().getStringExtra("Username");
 
         weightInput = findViewById(R.id.weight_input);
         postWeightButton = findViewById(R.id.post_weight_button);
