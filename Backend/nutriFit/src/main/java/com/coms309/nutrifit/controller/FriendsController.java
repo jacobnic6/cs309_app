@@ -59,6 +59,27 @@ public class FriendsController {
 
     }
 
+//newest
+    @PostMapping("/addFriend/{userId}/{friendId}")
+    public String addFriendByUsernameOrId(@PathVariable String userId,
+                                   @PathVariable String friendId) {
+        if(userId.isEmpty() || friendId.isEmpty()){
+            return "Incorrect path. User and friend cannot be empty";
+
+        }
+        if(ServiceHandler.isNumeric(userId) ){
+            int userIdInt = Integer.parseInt(userId);
+            userId = userServiceHandler.getUserById(userIdInt).getUsername();
+        }
+        if(ServiceHandler.isNumeric(friendId)){
+            int friendIdInt = Integer.parseInt(friendId);
+            friendId = userServiceHandler.getUserById(friendIdInt).getUsername();
+        }
+        return userServiceHandler.addFriends(userId, friendId);
+
+
+    }
+
 
     /**
      * Gets friends by id.
@@ -67,7 +88,7 @@ public class FriendsController {
      * @return the friends by id
      */
     @GetMapping(path = "/{userId}")
-    public List<User> getFriendsById(@PathVariable int userId) {
+    public List<UserDto> getFriendsById(@PathVariable int userId) {
         return userServiceHandler.getFriendsById(userId);
     }
 
@@ -77,37 +98,40 @@ public class FriendsController {
      * @param userId the user id
      * @return the friends by id
      */
-    @GetMapping(path = "/")
-    public List<User> getUserFriends(@RequestParam String userId) {
+    @GetMapping(path = "/get")
+    public List<UserDto> getUserFriends(@RequestParam String userId) {
         if(userId.isEmpty()  ){
             throw new IllegalArgumentException("UserId cannot be empty");
         }
-        int id = 0;
+        String id = "";
         if (ServiceHandler.isNumeric(userId)) {
-            id = Integer.parseInt(userId);
-            return userServiceHandler.getFriendsById(id);
+           id = userServiceHandler.getUserById(Integer.parseInt(userId)).getUsername();
+            return userServiceHandler.getFriendsByUsername(id);
         }
         return userServiceHandler.getFriendsByUsername(userId);
 
     }
 
-
-    /**
-     * Gets list of friends. Path looks like /friends/get?id=bob123
-     *
-     * @param id the id
-     * @return the friends
-     */
-    @GetMapping(path = "/get")
-    public List<User> getFriends(@RequestParam String id) {
-
-        if (ServiceHandler.isNumeric(id)) {
-            int userId = Integer.parseInt(id);
-
-            return userServiceHandler.getFriendsById(userId);
-        }
-        return userServiceHandler.getFriendsByUsername(id);
-    }
+//
+//    /**
+//     * Gets list of friends. Path looks like /friends/get?id=bob123
+//     *
+//     * @param id the id
+//     * @return the friends
+//     */
+//    @GetMapping(path = "/get")
+//    public List<UserDto> getFriends(@RequestParam String id) {
+//        if(id.isEmpty()  ){
+//
+//        }
+//
+//        if (ServiceHandler.isNumeric(id)) {
+//            int userId = Integer.parseInt(id);
+//
+//            return userServiceHandler.getFriendsById(userId);
+//        }
+//        return userServiceHandler.getFriendsByUsername(id);
+//    }
 
     /**
      * Gets friends by username.
@@ -116,7 +140,7 @@ public class FriendsController {
      * @return the friends by username
      */
     @GetMapping(path = "/list/{username}")
-    public List<User> getFriendsByUsername(@PathVariable String username) {
+    public List<UserDto> getFriendsByUsername(@PathVariable String username) {
         if(ServiceHandler.isNumeric(username)){
             return userServiceHandler.getFriendsById(Integer.parseInt(username));
         }

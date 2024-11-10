@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,15 +43,5 @@ public class Friend {
     @JoinColumn(referencedColumnName = "id")
    private User secondUser;
 
-    /**
-     * Instantiates a new Friend.
-     *
-     * @param firstUser  the first user
-     * @param secondUser the second user
-     */
-    public Friend(User firstUser, User secondUser) {
-        this.firstUser = firstUser;
-        this.secondUser = secondUser;
-        dateAdded = LocalDate.now();
-    }
+
 }

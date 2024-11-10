@@ -25,7 +25,13 @@ public class UserMuscleProgress {
     private UserMuscles muscle;
 
     @JsonProperty(value = "progress", defaultValue = "0")
-    private int progress;
+    private int percentage;
+
+
+    @JsonProperty(value = "tier", defaultValue = "0")
+    private int tier;
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")

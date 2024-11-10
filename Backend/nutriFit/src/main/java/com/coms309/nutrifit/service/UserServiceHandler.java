@@ -23,9 +23,10 @@ import java.util.List;
 @Service
 public class UserServiceHandler extends ServiceHandler {
 
-
-    private final UserRepository userRepository;
-    private final UserSettingsRepository userSettingsRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserSettingsRepository userSettingsRepository;
 
     @Autowired
     private FriendRepository friendRepository;
@@ -34,16 +35,6 @@ public class UserServiceHandler extends ServiceHandler {
     private ObjectMapper mapper;
 
 
-    /**
-     * Instantiates a new User service handler.
-     *
-     * @param userRepository         the user repository
-     * @param userSettingsRepository the user settings repository
-     */
-    public UserServiceHandler(UserRepository userRepository, UserSettingsRepository userSettingsRepository) {
-        this.userRepository = userRepository;
-        this.userSettingsRepository = userSettingsRepository;
-    }
 
 
     /**
@@ -236,7 +227,7 @@ public class UserServiceHandler extends ServiceHandler {
      * @param userId the user id
      * @return the friends by id
      */
-    public List<User> getFriendsById(int userId) {
+    public List<UserDto> getFriendsById(int userId) {
 
         User user = userRepository.findById(userId);
 
@@ -250,8 +241,13 @@ public class UserServiceHandler extends ServiceHandler {
         for (Friend friend : friendsBySecond) {
             friends.add(userRepository.findById(friend.getFirstUser().getId()));
         }
+        List<UserDto> userDtoList = new ArrayList<>();
+        for(User u : friends){
+            userDtoList.add(mapper.convertValue(u, UserDto.class));
 
-        return friends;
+        }
+
+        return userDtoList;
     }
 
     /**
@@ -269,9 +265,11 @@ public class UserServiceHandler extends ServiceHandler {
      * @param username the username
      * @return the friends by username
      */
-    public List<User> getFriendsByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        return getFriendsById(user.getId());
+    public List<UserDto> getFriendsByUsername(String username) {
+      User user = userRepository.findByUsername(username);
+    return getFriendsById(user.getId());
+
+
     }
 
     public String removeFriend(String userId, String friendId) {
@@ -288,4 +286,42 @@ public class UserServiceHandler extends ServiceHandler {
         friendRepository.delete(friendship);
         return "Friendship deleted";
     }
+
+    public String addFriends(String userId, String friendId) {
+        User user = userRepository.findByUsername(userId);
+        User friendUser = userRepository.findByUsername(friendId);
+
+        if(user == null || friendUser  == null){
+            return "User does not exist";
+        }
+
+        if (friendRepository.findFriendshipBetween(user.getId(), friendUser.getId()) != null) {
+            return "Friendship already exists";
+        }
+
+
+
+        Friend newFriend = new Friend();
+
+        User initiatingUser = user;
+        User receivingUser = friendUser;
+        if (user.getId() > friendUser.getId()) {
+            initiatingUser = friendUser;
+            receivingUser = user;
+        }
+
+        if (!friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser)) {
+            newFriend.setDateAdded(LocalDate.now());
+            newFriend.setFirstUser(initiatingUser);
+            newFriend.setSecondUser(receivingUser);
+            friendRepository.save(newFriend);
+        }
+
+        if (friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser)) {
+            return success;
+        }
+        return failure;
+    }
+
+
 }

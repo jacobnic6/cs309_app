@@ -4,6 +4,7 @@ import com.coms309.nutrifit.entity.ImageData;
 import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.service.ImageService;
 import com.coms309.nutrifit.service.ProfileServiceHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +31,8 @@ public class ProfileController {
      */
     @Autowired
     ImageService imageService;
+    @Autowired
+    private ObjectMapper jacksonObjectMapper;
 
 
     /**
@@ -92,6 +95,10 @@ public class ProfileController {
      */
     @PutMapping("/{username}")
     public String updateProfile(@PathVariable String username, @RequestBody Profile profile) {
+
+
+
+
         return profileServiceHandler.updateProfile(username, profile);
     }
 

@@ -10,13 +10,13 @@ import lombok.*;
  * Acts as an exercise
  */
 @Builder
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 public class WorkoutSet {
 
+    @JsonIgnore
     @Id
     private int id;
 
@@ -31,13 +31,13 @@ public class WorkoutSet {
     @JsonProperty("exerciseName")
     private String exerciseName;
 
-    @JsonProperty("weight")
+    @JsonProperty(value = "weight", defaultValue = "0")
     private int weight;
 
-    @JsonProperty("sets")
+    @JsonProperty(value = "sets", defaultValue = "0")
     private int sets;
 
-    @JsonProperty("reps")
+    @JsonProperty(value = "reps", defaultValue = "0")
     private int reps;
 
 

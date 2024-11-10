@@ -1,6 +1,9 @@
 package com.coms309.nutrifit.entity;
 
-import lombok.Value;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Embedded;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -9,9 +12,18 @@ import java.util.List;
 /**
  * DTO for {@link Workout}
  */
-@Value
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class WorkoutDto implements Serializable {
-    List<WorkoutSetDto> activities;
-    double totalWeight;
-    LocalDate dateTracked;
+
+        @Embedded
+        private  List<WorkoutSetDto> activities;
+        @JsonProperty("totalWeight")
+        private double totalWeight;
+
+     @JsonProperty(value = "dateTracked")
+     @JsonFormat(pattern = "yyyy-MM-dd")
+    private String dateTracked;
 }

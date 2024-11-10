@@ -46,7 +46,7 @@ public class Profile {
     @Column
     private double weight;
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     private List<Workout> workouts;
 
     @Column

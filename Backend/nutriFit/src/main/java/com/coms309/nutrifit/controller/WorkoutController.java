@@ -3,6 +3,7 @@ package com.coms309.nutrifit.controller;
 import com.coms309.nutrifit.entity.Workout;
 import com.coms309.nutrifit.entity.WorkoutDto;
 import com.coms309.nutrifit.entity.WorkoutSet;
+import com.coms309.nutrifit.entity.WorkoutSetDto;
 import com.coms309.nutrifit.service.ProfileServiceHandler;
 import com.coms309.nutrifit.service.WorkoutServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,9 @@ public class WorkoutController {
 
 
     /**
-     * Create workout workout.
+     * Create workout.
      *
      * @param username the username
-     * @param workout  the workout
      * @return the workout
      */
 
@@ -46,12 +46,26 @@ public class WorkoutController {
     }
 
     @PostMapping("/add/{date}/{username}")
-    public Workout addActivity(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                               @PathVariable String username, @RequestBody WorkoutSet set) {
-        return workoutServiceHandler.addSet(date, username, set);
+    public Workout addActivity(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") String date,
+                               @PathVariable String username, @RequestBody WorkoutDto set) throws Exception {
+        LocalDate d = LocalDate.parse(date);
+        if (d == null) {
+            d= LocalDate.now();
+        }
+
+
+            return workoutServiceHandler.addSet(d, username, set);
     }
 
-    @GetMapping()
+//    @PostMapping("/addSet/{date}/{username}")
+//    public Workout addActivity(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+//                               @PathVariable String username, @RequestBody WorkoutSet set) {
+//
+//
+//        return workoutServiceHandler.addSet(date, username, set);
+//    }
+
+    @GetMapping("/")
     public List<Workout> getAllWorkouts() {
         return workoutServiceHandler.getAllWorkouts();
     }

@@ -1,18 +1,15 @@
 package com.coms309.nutrifit.service;
 
-import com.coms309.nutrifit.entity.Profile;
-import com.coms309.nutrifit.entity.User;
-import com.coms309.nutrifit.entity.Workout;
-import com.coms309.nutrifit.entity.WorkoutSet;
+import com.coms309.nutrifit.entity.*;
 import com.coms309.nutrifit.repo.ProfileRepository;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.repo.WorkoutRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -139,28 +136,64 @@ public class WorkoutServiceHandler {
 
     }
 
-    public Workout addSet(LocalDate date, String username, WorkoutSet set) {
-
+    public Workout addSet(LocalDate date, String username, WorkoutDto set) throws Exception {
         Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
+        Workout workout;
+      if(workoutRepository.existsByProfileAndDateTracked(profile, date)){
+          workout = workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
+      }else{
+          workout = objectMapper.convertValue(set, Workout.class);
+          profile.addWorkout(workout);
 
-      Workout workout =  workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
-
-
-
-       set.setWorkout(workout);
-       workout.addActivity(set);
-       workout.updateTotalWeight();
-
-
-
-
-
+      }
+//     for ()
+//
+//        Workout w =  objectMapper.convertValue(set, Workout.class);
+//
+//      workout.setDateTracked(date);
+//      workout.
+//        // Fetch user by username
+//        User user = userRepository.findByUsername(username);
+//        if(!userRepository.existsByUsername(username)){
+//            return null;
+//        }
+//
+//        // Fetch profile by user
+//        Profile profile = profileRepository.findByUser(user);
+//        if (profile == null) {
+//            throw new EntityNotFoundException("Profile not found for user");
+//        }
+//        if(!profile.getWorkouts().isEmpty()){
+//
+//        }
+//
+//        // Fetch or create new Workout
+//        Workout workout = workoutRepository
+//                .findByProfile_User_UsernameAndDateTracked(username, date)
+//                .orElseGet(() -> {
+//                    Workout newWorkout = new Workout(profile);
+//                    if (set != null) {
+//                        set.setWorkout(newWorkout);
+//                    }
+//                    profile.addWorkout(newWorkout);
+//                    workoutRepository.save(newWorkout);
+//                    return newWorkout;
+//                });
+//
+//        // Add set and update weights if `set` is not null
+//        if (set != null) {
+//            set.setWorkout(workout);
+//            workout.addActivity(set);
+//            workout.updateTotalWeight();
+//        }
 
         return workoutRepository.save(workout);
 
     }
 
     public Workout getWorkoutsByUserAndDate(String username, LocalDate date) {
+
+
         return workoutRepository.findByProfile_User_UsernameAndDateTracked(username, date).get();
 
     }
