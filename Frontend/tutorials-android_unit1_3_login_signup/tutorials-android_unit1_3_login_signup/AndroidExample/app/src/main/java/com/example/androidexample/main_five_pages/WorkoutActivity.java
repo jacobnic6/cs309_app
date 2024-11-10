@@ -18,17 +18,20 @@ import com.example.androidexample.LogWorkoutActivity;
 import com.example.androidexample.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.example.androidexample.WorkoutDatabase;
 
 public class WorkoutActivity extends AppCompatActivity {
 
     private EditText workoutIdEditText, deleteWorkoutIdEditText;
     private Button editWorkoutButton, deleteWorkoutButton, addWorkoutButton;
     private final String BASE_URL = "https://06e76ef4-a66e-49e1-89ff-719066ed57f5.mock.pstmn.io//workouts";
+    private WorkoutDatabase workoutDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
+        workoutDatabase = new WorkoutDatabase(this);
 
         initializeViews();
         setupButtons();
@@ -92,6 +95,8 @@ public class WorkoutActivity extends AppCompatActivity {
     private void deleteWorkout() {
         int workoutId = getValidatedWorkoutId(deleteWorkoutIdEditText);
         if (workoutId == -1) return;
+
+        workoutDatabase.deleteWorkout(workoutId);
 
         String url = BASE_URL + "/" + workoutId;
 

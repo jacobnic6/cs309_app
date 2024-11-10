@@ -23,12 +23,14 @@ public class EditWorkoutActivity extends AppCompatActivity {
     private List<Exercise> exercisesList;
     private final String BASE_URL = "https://06e76ef4-a66e-49e1-89ff-719066ed57f5.mock.pstmn.io//workouts";
     private int currentWorkoutId = -1;
+    private WorkoutDatabase workoutDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_workout);
 
+        workoutDatabase = new WorkoutDatabase(this);
         exercisesList = new ArrayList<>();
         initializeViews();
         setupRecyclerView();
@@ -36,7 +38,7 @@ public class EditWorkoutActivity extends AppCompatActivity {
         // Get workout ID from intent
         currentWorkoutId = getIntent().getIntExtra("WORKOUT_ID", -1);
         if (currentWorkoutId != -1) {
-            fetchWorkoutDetails(currentWorkoutId);
+            fetchWorkoutDetailsFromLocalDatabase(currentWorkoutId);
         } else {
             Toast.makeText(this, "No workout ID provided", Toast.LENGTH_SHORT).show();
             finish();
@@ -54,7 +56,21 @@ public class EditWorkoutActivity extends AppCompatActivity {
         exerciseListRecyclerView.setAdapter(adapter);
     }
 
-    private void fetchWorkoutDetails(int workoutId) {
+    private void fetchWorkoutDetailsFromLocalDatabase(int workoutId) {
+        Workout workout = workoutDatabase.getWorkoutById(workoutId);
+        if (workout != null) {
+            workoutNameEditText.setText(workout.getName());
+            // Fetch exercises from local database based on workout ID
+            exercisesList.clear();
+            exercisesList.addAll(workoutDatabase.getExercisesByWorkoutId(workoutId));
+            adapter.notifyDataSetChanged();
+            Toast.makeText(this, "Workout loaded from local database", Toast.LENGTH_SHORT).show();
+        } else {
+            fetchWorkoutDetailsFromBackend(workoutId);
+        }
+    }
+
+    private void fetchWorkoutDetailsFromBackend(int workoutId) {
         String url = BASE_URL + "/" + workoutId;
 
         JsonObjectRequest request = new JsonObjectRequest(
@@ -83,7 +99,11 @@ public class EditWorkoutActivity extends AppCompatActivity {
                         }
 
                         adapter.notifyDataSetChanged();
-                        Toast.makeText(this, "Workout loaded successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Workout loaded from backend", Toast.LENGTH_SHORT).show();
+
+                        // Save workout details to local database
+                        saveWorkoutToLocalDatabase(workoutId, response.getString("workoutName"));
+                        saveExercisesToLocalDatabase(workoutId, exercisesList);
 
                     } catch (Exception e) {
                         Log.e(TAG, "Error parsing workout: " + e.getMessage());
@@ -97,6 +117,15 @@ public class EditWorkoutActivity extends AppCompatActivity {
         );
 
         Volley.newRequestQueue(this).add(request);
+    }
+
+    private void saveWorkoutToLocalDatabase(int workoutId, String workoutName) {
+        Workout workout = new Workout(workoutId, workoutName, "", exercisesList.size());
+        workoutDatabase.saveWorkout(workout);
+    }
+
+    private void saveExercisesToLocalDatabase(int workoutId, List<Exercise> exercises) {
+        workoutDatabase.saveExercises(workoutId, exercises);
     }
 
     private void saveWorkoutChanges() {
@@ -135,6 +164,9 @@ public class EditWorkoutActivity extends AppCompatActivity {
                     workoutData,
                     response -> {
                         Toast.makeText(this, "Workout updated successfully!", Toast.LENGTH_SHORT).show();
+                        // Update workout details in local database
+                        saveWorkoutToLocalDatabase(currentWorkoutId, workoutName);
+                        saveExercisesToLocalDatabase(currentWorkoutId, exercisesList);
                         finish();
                     },
                     error -> {

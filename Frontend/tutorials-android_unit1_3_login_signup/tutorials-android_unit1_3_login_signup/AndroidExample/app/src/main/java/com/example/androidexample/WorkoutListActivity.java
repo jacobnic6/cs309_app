@@ -23,16 +23,20 @@ public class WorkoutListActivity extends AppCompatActivity implements WorkoutAda
     private View emptyStateText;
     private WorkoutAdapter adapter;
     private final String BASE_URL = "https://06e76ef4-a66e-49e1-89ff-719066ed57f5.mock.pstmn.io//workouts";
+    private WorkoutDatabase workoutDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout_list);
 
+        workoutDatabase = new WorkoutDatabase(this);
+
         initializeViews();
         setupRecyclerView();
         setupAddButton();
-        fetchWorkouts();
+        fetchWorkoutsFromLocalDatabase();
+        fetchWorkoutsFromBackend();
     }
 
     private void initializeViews() {
@@ -55,35 +59,31 @@ public class WorkoutListActivity extends AppCompatActivity implements WorkoutAda
     @Override
     protected void onResume() {
         super.onResume();
-        fetchWorkouts();
+        fetchWorkoutsFromLocalDatabase();
     }
 
-    private void fetchWorkouts() {
+    private void fetchWorkoutsFromLocalDatabase() {
+        List<Workout> workouts = workoutDatabase.getAllWorkouts();
+        updateWorkoutList(workouts);
+    }
+
+    private void fetchWorkoutsFromBackend() {
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, BASE_URL, null,
                 response -> {
                     List<Workout> workouts = new ArrayList<>();
                     try {
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject workout = response.getJSONObject(i);
-                            workouts.add(new Workout(
+                            Workout fetchedWorkout = new Workout(
                                     workout.getInt("id"),
                                     workout.getString("workoutName"),
                                     workout.getString("dateTracked"),
                                     workout.getJSONArray("exercises").length()
-                            ));
+                            );
+                            workouts.add(fetchedWorkout);
+                            workoutDatabase.saveWorkout(fetchedWorkout);
                         }
-                        adapter = new WorkoutAdapter(workouts, this);
-                        workoutListRecyclerView.setAdapter(adapter);
-
-                        // Update empty state visibility
-                        if (workouts.isEmpty()) {
-                            emptyStateText.setVisibility(View.VISIBLE);
-                            workoutListRecyclerView.setVisibility(View.GONE);
-                        } else {
-                            emptyStateText.setVisibility(View.GONE);
-                            workoutListRecyclerView.setVisibility(View.VISIBLE);
-                        }
-
+                        updateWorkoutList(workouts);
                     } catch (Exception e) {
                         Toast.makeText(this, "Error parsing workouts", Toast.LENGTH_SHORT).show();
                     }
@@ -92,6 +92,20 @@ public class WorkoutListActivity extends AppCompatActivity implements WorkoutAda
         );
 
         Volley.newRequestQueue(this).add(request);
+    }
+
+    private void updateWorkoutList(List<Workout> workouts) {
+        adapter = new WorkoutAdapter(workouts, this);
+        workoutListRecyclerView.setAdapter(adapter);
+
+        // Update empty state visibility
+        if (workouts.isEmpty()) {
+            emptyStateText.setVisibility(View.VISIBLE);
+            workoutListRecyclerView.setVisibility(View.GONE);
+        } else {
+            emptyStateText.setVisibility(View.GONE);
+            workoutListRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -103,11 +117,13 @@ public class WorkoutListActivity extends AppCompatActivity implements WorkoutAda
 
     @Override
     public void onDeleteWorkout(int workoutId) {
+        workoutDatabase.deleteWorkout(workoutId);
+        fetchWorkoutsFromLocalDatabase();
+
         String deleteUrl = BASE_URL + "/" + workoutId;
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, deleteUrl,
                 response -> {
                     Toast.makeText(this, "Workout deleted successfully", Toast.LENGTH_SHORT).show();
-                    fetchWorkouts();
                 },
                 error -> Toast.makeText(this, "Error deleting workout", Toast.LENGTH_SHORT).show()
         );

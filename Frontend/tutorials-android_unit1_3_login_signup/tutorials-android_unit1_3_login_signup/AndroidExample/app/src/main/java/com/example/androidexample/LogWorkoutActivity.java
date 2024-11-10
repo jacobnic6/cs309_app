@@ -35,6 +35,7 @@ public class LogWorkoutActivity extends AppCompatActivity {
     private final String BASE_URL = "https://06e76ef4-a66e-49e1-89ff-719066ed57f5.mock.pstmn.io//workouts";
     private List<Exercise> exercisesList;
     private ExerciseAdapter adapter;
+    private WorkoutDatabase workoutDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class LogWorkoutActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate started");
 
         try {
+            workoutDatabase = new WorkoutDatabase(this);
             exercisesList = new ArrayList<>();
             initializeViews();
             setupSpinner();
@@ -162,6 +164,14 @@ public class LogWorkoutActivity extends AppCompatActivity {
                     BASE_URL,
                     workoutData,
                     response -> {
+                        int workoutId = response.optInt("id");
+                        Workout savedWorkout = new Workout(
+                                workoutId,
+                                workoutName,
+                                getCurrentDate(),
+                                exercisesList.size()
+                        );
+                        workoutDatabase.saveWorkout(savedWorkout);
                         Toast.makeText(this, "Workout saved successfully!", Toast.LENGTH_SHORT).show();
                         finish();
                     },
