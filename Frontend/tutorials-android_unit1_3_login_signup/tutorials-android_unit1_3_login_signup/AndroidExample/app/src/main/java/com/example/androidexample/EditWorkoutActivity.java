@@ -1,131 +1,152 @@
 package com.example.androidexample;
 
-
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import org.json.JSONException;
+import com.google.android.material.textfield.TextInputEditText;
+import org.json.JSONArray;
 import org.json.JSONObject;
-
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditWorkoutActivity extends AppCompatActivity {
-
-
-    private EditText workoutIdEditText, totalWeightEditText, exerciseNameEditText;
-    private Button fetchWorkoutButton, saveWorkoutButton;
+    private static final String TAG = "EditWorkoutActivity";
+    private TextInputEditText workoutNameEditText;
+    private RecyclerView exerciseListRecyclerView;
+    private ExerciseAdapter adapter;
+    private List<Exercise> exercisesList;
     private final String BASE_URL = "https://06e76ef4-a66e-49e1-89ff-719066ed57f5.mock.pstmn.io//workouts";
-
+    private int currentWorkoutId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_workout);
 
+        exercisesList = new ArrayList<>();
+        initializeViews();
+        setupRecyclerView();
 
-        // Initialize UI elements
-        workoutIdEditText = findViewById(R.id.edit_workout_id_edt);
-        totalWeightEditText = findViewById(R.id.edit_total_weight_edt);
-        exerciseNameEditText = findViewById(R.id.edit_exercise_name_edt);
-        fetchWorkoutButton = findViewById(R.id.fetch_workout_btn);
-        saveWorkoutButton = findViewById(R.id.save_workout_btn);
-
-
-        // Fetch button click listener
-        fetchWorkoutButton.setOnClickListener(v -> {
-            int workoutId = getValidatedWorkoutId();
-            if (workoutId != -1) {
-                fetchWorkoutDetails(workoutId);
-            }
-        });
-
-
-        // Save button click listener
-        saveWorkoutButton.setOnClickListener(v -> updateWorkoutDetails());
+        // Get workout ID from intent
+        currentWorkoutId = getIntent().getIntExtra("WORKOUT_ID", -1);
+        if (currentWorkoutId != -1) {
+            fetchWorkoutDetails(currentWorkoutId);
+        } else {
+            Toast.makeText(this, "No workout ID provided", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 
+    private void initializeViews() {
+        workoutNameEditText = findViewById(R.id.workout_name_edt);
+        exerciseListRecyclerView = findViewById(R.id.exercise_list_recycler);
+    }
 
-    // Fetch the workout details from the server based on the ID
+    private void setupRecyclerView() {
+        adapter = new ExerciseAdapter(exercisesList);
+        exerciseListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        exerciseListRecyclerView.setAdapter(adapter);
+    }
+
     private void fetchWorkoutDetails(int workoutId) {
         String url = BASE_URL + "/" + workoutId;
 
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
                 response -> {
                     try {
-                        // Populate the form fields with the fetched workout data
-                        totalWeightEditText.setText(String.valueOf(response.getDouble("totalWeight")));
-                        exerciseNameEditText.setText(response.getString("exerciseName"));
+                        // Set workout name
+                        workoutNameEditText.setText(response.getString("workoutName"));
 
+                        // Parse exercises
+                        JSONArray exercisesArray = response.getJSONArray("exercises");
+                        exercisesList.clear();
 
-                        Toast.makeText(EditWorkoutActivity.this, "Workout details fetched and ready to edit!", Toast.LENGTH_SHORT).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(EditWorkoutActivity.this, "Failed to parse workout details.", Toast.LENGTH_SHORT).show();
+                        for (int i = 0; i < exercisesArray.length(); i++) {
+                            JSONObject exerciseJson = exercisesArray.getJSONObject(i);
+                            Exercise exercise = new Exercise(
+                                    exerciseJson.getString("category"),
+                                    exerciseJson.getString("exerciseName"),
+                                    exerciseJson.getDouble("weight"),
+                                    exerciseJson.getInt("sets"),
+                                    exerciseJson.getInt("reps")
+                            );
+                            exercisesList.add(exercise);
+                        }
+
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(this, "Workout loaded successfully", Toast.LENGTH_SHORT).show();
+
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing workout: " + e.getMessage());
+                        Toast.makeText(this, "Error loading workout details", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Log.e("EditWorkoutActivity", "Failed to fetch workout: " + error.getMessage())
+                error -> {
+                    Log.e(TAG, "Error fetching workout: " + error.getMessage());
+                    Toast.makeText(this, "Error fetching workout", Toast.LENGTH_SHORT).show();
+                }
         );
 
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(jsonObjectRequest);
+        Volley.newRequestQueue(this).add(request);
     }
 
-
-    // Update the workout details on the server based on the input fields
-    private void updateWorkoutDetails() {
-        int workoutId = getValidatedWorkoutId();
-        if (workoutId == -1) return;
-
-
-        String url = BASE_URL + "/" + workoutId;
-
-
+    private void saveWorkoutChanges() {
         try {
-            JSONObject workoutDetails = new JSONObject();
-            workoutDetails.put("totalWeight", Double.parseDouble(totalWeightEditText.getText().toString()));
-            workoutDetails.put("exerciseName", exerciseNameEditText.getText().toString());
+            String workoutName = workoutNameEditText.getText().toString();
+            if (workoutName.isEmpty()) {
+                Toast.makeText(this, "Please enter a workout name", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
+            if (exercisesList.isEmpty()) {
+                Toast.makeText(this, "Cannot save workout without exercises", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, workoutDetails,
-                    response -> Toast.makeText(EditWorkoutActivity.this, "Workout updated successfully!", Toast.LENGTH_SHORT).show(),
-                    error -> Log.e("EditWorkoutActivity", "Failed to update workout: " + error.getMessage())
+            JSONObject workoutData = new JSONObject();
+            workoutData.put("workoutName", workoutName);
+
+            JSONArray exercisesArray = new JSONArray();
+            for (Exercise exercise : exercisesList) {
+                JSONObject exerciseJson = new JSONObject();
+                exerciseJson.put("category", exercise.getCategory());
+                exerciseJson.put("exerciseName", exercise.getName());
+                exerciseJson.put("weight", exercise.getWeight());
+                exerciseJson.put("sets", exercise.getSets());
+                exerciseJson.put("reps", exercise.getReps());
+                exercisesArray.put(exerciseJson);
+            }
+            workoutData.put("exercises", exercisesArray);
+
+            String url = BASE_URL + "/" + currentWorkoutId;
+
+            JsonObjectRequest request = new JsonObjectRequest(
+                    Request.Method.PUT,
+                    url,
+                    workoutData,
+                    response -> {
+                        Toast.makeText(this, "Workout updated successfully!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    },
+                    error -> {
+                        Log.e(TAG, "Error updating workout: " + error.getMessage());
+                        Toast.makeText(this, "Error updating workout", Toast.LENGTH_SHORT).show();
+                    }
             );
 
-
-            RequestQueue queue = Volley.newRequestQueue(this);
-            queue.add(jsonObjectRequest);
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Failed to create JSON request.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
-    // Helper method to validate the Workout ID input
-    private int getValidatedWorkoutId() {
-        String input = workoutIdEditText.getText().toString().trim();
-        if (input.isEmpty()) {
-            Toast.makeText(this, "Workout ID cannot be empty", Toast.LENGTH_SHORT).show();
-            return -1;
-        }
-
-
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Invalid Workout ID. Please enter a numeric value.", Toast.LENGTH_SHORT).show();
-            return -1;
+            Volley.newRequestQueue(this).add(request);
+        } catch (Exception e) {
+            Log.e(TAG, "Error saving workout: " + e.getMessage());
+            Toast.makeText(this, "Error saving changes", Toast.LENGTH_SHORT).show();
         }
     }
 }
