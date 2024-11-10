@@ -22,7 +22,7 @@ public class WorkoutListActivity extends AppCompatActivity implements WorkoutAda
     private FloatingActionButton addWorkoutFab;
     private View emptyStateText;
     private WorkoutAdapter adapter;
-    private final String BASE_URL = "https://06e76ef4-a66e-49e1-89ff-719066ed57f5.mock.pstmn.io//workouts";
+    private final String BASE_URL = "http://coms-3090-058.class.las.iastate.edu:8080";
     private WorkoutDatabase workoutDatabase;
 
     @Override
@@ -120,7 +120,7 @@ public class WorkoutListActivity extends AppCompatActivity implements WorkoutAda
         workoutDatabase.deleteWorkout(workoutId);
         fetchWorkoutsFromLocalDatabase();
 
-        String deleteUrl = BASE_URL + "/" + workoutId;
+        String deleteUrl = BASE_URL + "/workout/id" + workoutId;
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, deleteUrl,
                 response -> {
                     Toast.makeText(this, "Workout deleted successfully", Toast.LENGTH_SHORT).show();

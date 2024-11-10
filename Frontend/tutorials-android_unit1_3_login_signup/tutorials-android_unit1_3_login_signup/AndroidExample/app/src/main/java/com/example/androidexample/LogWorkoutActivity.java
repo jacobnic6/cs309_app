@@ -32,7 +32,7 @@ public class LogWorkoutActivity extends AppCompatActivity {
     private Button addExerciseButton;
     private Button saveWorkoutButton;
     private RecyclerView exerciseListRecyclerView;
-    private final String BASE_URL = "https://06e76ef4-a66e-49e1-89ff-719066ed57f5.mock.pstmn.io//workouts";
+    private final String BASE_URL = "http://coms-3090-058.class.las.iastate.edu:8080/workout/add/2024-11-10/billy123";
     private List<Exercise> exercisesList;
     private ExerciseAdapter adapter;
     private WorkoutDatabase workoutDatabase;
