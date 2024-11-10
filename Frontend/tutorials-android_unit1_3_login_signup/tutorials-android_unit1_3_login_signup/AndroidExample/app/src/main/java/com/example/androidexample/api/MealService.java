@@ -124,7 +124,7 @@ public class MealService {
 
     // Delete a meal
     public void deleteMeal(String date, String userId, String mealType, MealServiceCallback callback) {
-        String url = String.format("%s/meals/meal/2", BASE_URL, date, userId);
+        String url = String.format("%s/meals/meal/6", BASE_URL, date, userId);
         Log.d(TAG, "Deleting meal at URL: " + url);
 
         JSONObject deleteData = new JSONObject();
