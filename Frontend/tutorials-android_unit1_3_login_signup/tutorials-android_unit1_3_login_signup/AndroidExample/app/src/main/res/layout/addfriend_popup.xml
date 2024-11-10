@@ -6,21 +6,22 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/progress_text"
+        android:id="@+id/Add_friend_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Muscle Group Progress" />
+        android:textSize="20dp"
+        android:text="Do You Want To Add This User" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/add_friend_yes_button"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        style="?android:attr/progressBarStyleHorizontal" />
+        android:text="Yes"/>
 
-    <TextView
-        android:id="@+id/tier_text"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/add_friend_no_button"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:text="Tier: " />
+        android:text="No" />
 
 </LinearLayout>

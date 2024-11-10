@@ -48,6 +48,10 @@
         <activity
             android:name=".main_five_pages.NutritionActivity"
             android:exported="false"/>
+
+        <activity
+            android:name=".main_five_pages.SocialActivity"
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">

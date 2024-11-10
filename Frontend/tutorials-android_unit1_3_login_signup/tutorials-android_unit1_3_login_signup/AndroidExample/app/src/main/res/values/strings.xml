@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AndroidExample</string>
+    <string name="app_label">app_label</string>
+    <string name="search_hint">search_hint</string>
 </resources>
