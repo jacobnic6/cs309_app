@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "friends")
+@Table(name = "friends", uniqueConstraints = @UniqueConstraint( columnNames = {"first_user_id", "second_user_id"}))
 public class Friend {
 
     @Id

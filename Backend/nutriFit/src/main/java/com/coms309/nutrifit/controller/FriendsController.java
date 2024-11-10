@@ -34,6 +34,31 @@ public class FriendsController {
 
 
     }
+    /**
+     * Add friend string.
+     *
+     * @param userId    the user id
+     * @param friendDto the friend dto
+     * @return the string
+     */
+    @PostMapping(path = "/add")
+    public String addFriendBody(@RequestParam String userId, @RequestBody UserDto friendDto) {
+        if(userId.isEmpty()  ){
+            return "UserId cannot be empty";
+        }
+        if (friendDto.getUsername().isEmpty()) {
+            return "Friend username cannot be empty";
+        }
+
+        if(ServiceHandler.isNumeric(userId)){
+            return userServiceHandler.addFriend(Integer.parseInt(userId), friendDto);
+        }
+        User user = userServiceHandler.getByUsername(userId);
+        return userServiceHandler.addFriend(user.getId(), friendDto);
+
+
+    }
+
 
     /**
      * Gets friends by id.
@@ -44,6 +69,26 @@ public class FriendsController {
     @GetMapping(path = "/{userId}")
     public List<User> getFriendsById(@PathVariable int userId) {
         return userServiceHandler.getFriendsById(userId);
+    }
+
+    /**
+     * Gets friends by id.
+     *
+     * @param userId the user id
+     * @return the friends by id
+     */
+    @GetMapping(path = "/")
+    public List<User> getUserFriends(@RequestParam String userId) {
+        if(userId.isEmpty()  ){
+            throw new IllegalArgumentException("UserId cannot be empty");
+        }
+        int id = 0;
+        if (ServiceHandler.isNumeric(userId)) {
+            id = Integer.parseInt(userId);
+            return userServiceHandler.getFriendsById(id);
+        }
+        return userServiceHandler.getFriendsByUsername(userId);
+
     }
 
 
@@ -70,8 +115,11 @@ public class FriendsController {
      * @param username the username
      * @return the friends by username
      */
-    @GetMapping(path = "username/{username}")
+    @GetMapping(path = "/list/{username}")
     public List<User> getFriendsByUsername(@PathVariable String username) {
+        if(ServiceHandler.isNumeric(username)){
+            return userServiceHandler.getFriendsById(Integer.parseInt(username));
+        }
         return userServiceHandler.getFriendsByUsername(username);
     }
 
@@ -83,6 +131,26 @@ public class FriendsController {
     @GetMapping
     public List<Friend> getAllFriendships() {
         return userServiceHandler.getAllFriends();
+    }
+
+    @DeleteMapping("/{userId}/{friendId}")
+    public String removeFriendship(@PathVariable String userId,
+                                   @PathVariable String friendId) {
+        if(userId.isEmpty() || friendId.isEmpty()){
+            return "Incorrect path. User and friend cannot be empty";
+
+        }
+        if(ServiceHandler.isNumeric(userId) ){
+            int userIdInt = Integer.parseInt(userId);
+            userId = userServiceHandler.getUserById(userIdInt).getUsername();
+        }
+        if(ServiceHandler.isNumeric(friendId)){
+            int friendIdInt = Integer.parseInt(friendId);
+            friendId = userServiceHandler.getUserById(friendIdInt).getUsername();
+        }
+        return userServiceHandler.removeFriend(userId, friendId);
+
+
     }
 
 

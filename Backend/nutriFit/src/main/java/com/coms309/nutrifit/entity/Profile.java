@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Entity
 public class Profile {
+
     @Id
     @Column(name = "user_id")
     private int id;
@@ -27,9 +29,11 @@ public class Profile {
     @Column(name = "name")
     private String name;
 
+    @OneToMany(mappedBy = "profile")
+    private List<UserMuscleProgress> muscleProgress = new ArrayList<>();
 
-    @ElementCollection
-    private Map<String, Integer> muscleProgress;
+//    @ElementCollection
+//    private Map<String, Integer> muscleProgress;
 
 
     @OneToOne
@@ -42,7 +46,7 @@ public class Profile {
     private double weight;
 
     @OneToMany(mappedBy = "profile")
-    private List<Workout> workouts;
+    private List<Workout> workouts = new ArrayList<>();
 
     @Column
     private int height;
@@ -58,10 +62,13 @@ public class Profile {
      * @param user the user
      */
     public Profile(User user) {
+        if(user!=null){
+
+        }
         this.user = user;
         this.name = user.getFirstName() + " " + user.getLastName();
-        if (user.getBodyWeights().size() != 0) {
-            this.weight = user.getBodyWeights().get(0).getWeight();
+        if (user.getBodyWeights() != null &&user.getBodyWeights().size() != 0 ) {
+            this.weight = user.getBodyWeights().get(user.getBodyWeights().size() - 1).getWeight();
         }
 
 
@@ -78,6 +85,8 @@ public class Profile {
         }
         workouts.add(workout);
     }
+
+
 
 
 }

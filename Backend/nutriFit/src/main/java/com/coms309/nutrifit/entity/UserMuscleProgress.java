@@ -25,6 +25,7 @@ public class UserMuscleProgress {
     private UserMuscles muscle;
 
 
+
     private int progress;
 
     @ManyToOne(fetch = FetchType.LAZY)

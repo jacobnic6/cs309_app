@@ -1,5 +1,8 @@
 package com.coms309.nutrifit.util;
 
+import com.coms309.nutrifit.exercises.Muscle;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+
 /**
  * The enum User muscles.
  */
@@ -7,6 +10,7 @@ public enum UserMuscles {
     /**
      * Quads user muscles.
      */
+
     QUADS,
     /**
      * Abs user muscles.
@@ -35,5 +39,7 @@ public enum UserMuscles {
     /**
      * Calves user muscles.
      */
-    CALVES
+    CALVES;
+
+
 }

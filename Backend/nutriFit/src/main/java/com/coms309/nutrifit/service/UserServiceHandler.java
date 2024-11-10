@@ -184,28 +184,36 @@ public class UserServiceHandler extends ServiceHandler {
      * @return the string
      */
     public String addFriend(int userId, UserDto friendDto) {
+        User friendUser = userRepository.findByUsername(friendDto.getUsername());
+        if (friendRepository.findFriendshipBetween(userId, friendUser.getId()) != null) {
+            return "Friendship already exists";
+        }
+
         User user = userRepository.findById(userId);
+        if (user == null) {
+            return failure;
+        }
+
         UserDto userDto = mapper.convertValue(user, UserDto.class);
+        Friend newFriend = new Friend();
 
-        Friend friend = new Friend();
-        User user2 = userRepository.findByUsername(friendDto.getUsername());
-        User temp1 = user;
-        User temp2 = user2;
-        if (user.getId() > user2.getId()) {
-            temp1 = user2;
-            temp2 = user;
+        User initiatingUser = user;
+        User receivingUser = friendUser;
+        if (user.getId() > friendUser.getId()) {
+            initiatingUser = friendUser;
+            receivingUser = user;
         }
-        if (!(friendRepository.existsByFirstUserAndSecondUser(temp1, temp2))) {
 
-            friend.setDateAdded(LocalDate.now());
-            friend.setFirstUser(temp1);
-            friend.setSecondUser(temp2);
-            friendRepository.save(friend);
+        if (!friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser)) {
+            newFriend.setDateAdded(LocalDate.now());
+            newFriend.setFirstUser(initiatingUser);
+            newFriend.setSecondUser(receivingUser);
+            friendRepository.save(newFriend);
         }
-        if (friendRepository.existsByFirstUserAndSecondUser(temp1, temp2)) {
+
+        if (friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser)) {
             return success;
         }
-
 
         return failure;
     }
@@ -254,5 +262,18 @@ public class UserServiceHandler extends ServiceHandler {
         return getFriendsById(user.getId());
     }
 
+    public String removeFriend(String userId, String friendId) {
+        User user = userRepository.findByUsername(userId);
 
+//        for(Friend friend : user.getFriends()){
+//            if(friend.getSecondUser().getUsername().equals(friendId)){}
+//        }
+//
+        User friend = userRepository.findByUsername(friendId);
+
+        Friend friendship = friendRepository.findFriendshipBetween(user.getId(), friend.getId());
+
+        friendRepository.delete(friendship);
+        return "Friendship deleted";
+    }
 }
