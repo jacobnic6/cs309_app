@@ -1,13 +1,11 @@
 package com.coms309.nutrifit.service;
 
-import com.coms309.nutrifit.dto.FoodDto;
 import com.coms309.nutrifit.dto.MealDto;
+import com.coms309.nutrifit.dto.NutrientTotalsDto;
 import com.coms309.nutrifit.dto.UserMealsDto;
 import com.coms309.nutrifit.entity.User;
-import com.coms309.nutrifit.entity.nutrition.Food;
 import com.coms309.nutrifit.entity.nutrition.Meal;
 import com.coms309.nutrifit.entity.nutrition.UserMeals;
-import com.coms309.nutrifit.repo.FoodRepository;
 import com.coms309.nutrifit.repo.MealRepository;
 import com.coms309.nutrifit.repo.UserMealsRepository;
 import com.coms309.nutrifit.repo.UserRepository;
@@ -20,7 +18,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 /**
  * The type Nutrition service.
@@ -46,11 +43,7 @@ public class NutritionService {
     @Autowired
     MealRepository mealRepository;
 
-    /**
-     * The Food repository.
-     */
-    @Autowired
-    FoodRepository foodRepository;
+
 
     /**
      * The Object mapper.
@@ -116,35 +109,38 @@ public class NutritionService {
      * @return the user meals
      */
     public UserMeals addMeal(LocalDate date, String username, MealDto mealDto) {
-        UserMeals meals = getMealsByDate(date, username);
-        if(meals == null) {
-            meals = createMealList(date, username);
 
+        if(!userRepository.existsByUsername(username)) {
+            throw new RuntimeException("User with username " + username + " does not exist");
         }
 
+        UserMeals meals = getUserMealList(username, date);
 
-      Meal meal = objectMapper.convertValue(mealDto, Meal.class);
+        Meal meal = objectMapper.convertValue(mealDto, Meal.class);
+        List<Meal> mealList = meals.getMealList();
+        if(mealList == null) {
+            mealList = new ArrayList<>();
 
-        List<FoodDto> foodDtoList = mealDto.getFoods();
-        List<Food> food = new ArrayList<>();
-        for(FoodDto foodDto : foodDtoList){
-            mealDto.combineNutrients(foodDto.getFoodNutrients());
-            Food f = objectMapper.convertValue(foodDto, Food.class);
-            f.setMeal(meal);
-            food.add(f);
         }
-
-     meal.setFoods(food);
-    mealDto.setMealNutrients(mealDto.getMealNutrients());
-    Map<String, Integer>map = meals.getNutrientTotals();
-
-    UserMealsDto d = new UserMealsDto();
-    d.setNutrientTotals(map);
-    d.combineNutrients(mealDto.getMealNutrients());
-    meals.setNutrientTotals(d.getNutrientTotals());
+        mealList.add(meal);
+        meals.setMealList(mealList);
         meal.setUserMeals(meals);
-        meals.getMealList().add(meal);
-        mealRepository.save(meal);
+
+        Map<String, Integer> nutrients = mealDto.getNutrients();
+        Map<String, Integer> totals = meals.getNutrientTotals();
+        if(totals == null ||totals.isEmpty()) {
+            meals.setNutrientTotals(nutrients);
+        }else {
+            for(String key : nutrients.keySet()) {
+                if(totals.containsKey(key)) {
+                    totals.put(key, totals.get(key) + nutrients.get(key));
+                }else{
+                    totals.put(key, nutrients.get(key));
+                }
+            }
+        }
+        meals.setNutrientTotals(totals);
+
 
         return userMealsRepository.save(meals);
     }
@@ -213,4 +209,59 @@ public class NutritionService {
         return null;
 
     }
+
+    private UserMeals getUserMealList(String username, LocalDate date) {
+        return userMealsRepository
+                .findUserMealsByUser_UsernameAndDate(username, date)
+                .orElse( new UserMeals());
+    }
+
+    private Meal getMeal(LocalDate date, String username, String mealType) {
+       return mealRepository
+                .findFirstByUserMeals_User_UsernameAndUserMeals_DateAndMealTypeAllIgnoreCaseOrderByUserMeals_User_UsernameAscUserMeals_DateAscUserMeals_MealList_MealTypeAsc(
+                        username,date, mealType).orElse(new Meal());
+    }
+
+    public NutrientTotalsDto getDailyTotals(LocalDate date, String username) {
+        if(!userRepository.existsByUsername(username)) {
+            throw new RuntimeException("User with username " + username + " does not exist");
+        }
+        User user = userRepository.findByUsername(username);
+
+        UserMeals meals = userMealsRepository.findByUserAndDate(user, date);
+        if(meals == null) {
+            throw new RuntimeException("User with username " + username + " does not exist");
+        }
+        NutrientTotalsDto totals = new NutrientTotalsDto();
+        totals.setDate(date);
+        mealRepository.findByUserMeals(meals).stream().forEach(meal -> {
+
+            totals.addCalories(meal.getCalories());
+            totals.addCarbs(meal.getCarbs());
+            totals.addProtein(meal.getProtein());
+            totals.addFats(meal.getFat());
+            String mealType = meal.getMealType().toLowerCase();
+            switch (mealType) {
+                case "breakfast":
+                    totals.addBreakfastCalories(meal.getCalories());
+                    break;
+                case "lunch":
+                    totals.addLunchCalories(meal.getCalories());
+                    break;
+                case "dinner":
+                    totals.addDinnerCalories(meal.getCalories());
+                    break;
+                   default:
+                       totals.addSnackCalories(meal.getCalories());
+                       break;
+            }
+
+        }) ;
+        return totals;
+
+    }
+
+
+
+
 }

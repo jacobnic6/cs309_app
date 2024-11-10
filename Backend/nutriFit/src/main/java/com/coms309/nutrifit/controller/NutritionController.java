@@ -1,8 +1,8 @@
 package com.coms309.nutrifit.controller;
 
 import com.coms309.nutrifit.dto.MealDto;
+import com.coms309.nutrifit.dto.NutrientTotalsDto;
 import com.coms309.nutrifit.dto.UserMealsDto;
-import com.coms309.nutrifit.entity.nutrition.Meal;
 import com.coms309.nutrifit.entity.nutrition.UserMeals;
 import com.coms309.nutrifit.service.NutritionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,6 +46,8 @@ public class NutritionController {
 
     }
 
+
+
     /**
      * Add meal response entity.
      *
@@ -55,10 +56,16 @@ public class NutritionController {
      * @param meal     the meal
      * @return the response entity
      */
-    @PostMapping("/add/{date}/{username}")
-    public ResponseEntity<?> addMeal(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                                     @PathVariable("username") String username, @RequestBody MealDto meal) {
-       return  ResponseEntity.status(HttpStatus.OK).body(nutritionService.addMeal(date, username, meal ));
+    @PostMapping("/food/{date}/{username}")
+    public UserMeals addMeal(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                     @PathVariable("username" ) String username, @RequestBody MealDto mealDto) {
+        if(username == null || mealDto == null){
+            throw new RuntimeException("Invalid input ")  ;
+        }
+        if(date == null){
+            date = LocalDate.now();
+        }
+       return  nutritionService.addMeal(date, username, mealDto );
     }
 
     /**
@@ -69,8 +76,8 @@ public class NutritionController {
      * @return the meals by date
      */
 //Read
-    @GetMapping("/{date}/{username}")
-    public UserMeals getMealsByDate(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @PathVariable("username") String username) {
+    @GetMapping("/{date}/")
+    public UserMeals getMealsByDate(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam String username) {
 
 
        return nutritionService.getMealsByDate(date, username);
@@ -90,6 +97,8 @@ public class NutritionController {
         return nutritionService.updateMealListByDate(id, mealsDto);
 
     }
+
+
 
     //Delete
 
@@ -121,9 +130,26 @@ public class NutritionController {
      *
      * @return the all meals
      */
-//List
-    @GetMapping
-    public List<UserMeals> getAllMeals() {
+    //List
+    @GetMapping()
+    public List<UserMeals> getAllMealLists() {
         return nutritionService.getAllUserMeals();
     }
+
+    @GetMapping("/totals/{date}/")
+    public NutrientTotalsDto getNutrientTotals(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                   LocalDate date, @RequestParam String username) {
+
+        if(username == null ){
+           throw new RuntimeException("Invalid input ")  ;
+        }
+        if(date == null){
+            date = LocalDate.now();
+        }
+        return nutritionService.getDailyTotals(date, username);
+
+    }
+
+
+
 }

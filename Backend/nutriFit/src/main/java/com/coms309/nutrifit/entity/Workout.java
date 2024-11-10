@@ -3,10 +3,7 @@ package com.coms309.nutrifit.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -20,6 +17,7 @@ import java.util.Set;
 /**
  * The type Workout.
  */
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -93,7 +91,7 @@ public class Workout
             if(activities != null){
                 double tempTotal = 0;
                 for(WorkoutSet set : activities){
-                    double weight = set.getWeightLifted() * set.getRepetitions();
+                    double weight = set.getWeight() * set.getReps() * set.getSets();
                     tempTotal += weight;
                 }
                 totalWeight = tempTotal;

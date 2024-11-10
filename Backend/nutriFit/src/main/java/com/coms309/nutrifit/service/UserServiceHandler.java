@@ -57,15 +57,22 @@ public class UserServiceHandler extends ServiceHandler
                 return failure;
             }
             user.setLastLogin(LocalDateTime.now());
-
-
             UserSettings settings = new UserSettings();
+
             user.setSettings(settings);
+
+            Profile profile = new Profile();
+            user.setProfile(profile);
+            profile.setUser(user);
+
             //user.setProfile(new Profile());
             userRepository.saveAndFlush(user);
-            userSettingsRepository.saveAndFlush(settings);
+            //userSettingsRepository.saveAndFlush(settings);
+            if(userRepository.existsByUsername(user.getUsername())){
+                return success;
+            }
 
-            return success;
+            return failure;
         }
 
         /**
@@ -244,6 +251,8 @@ public class UserServiceHandler extends ServiceHandler
             User user = userRepository.findByUsername(username);
             return getFriendsById(user.getId());
         }
+
+
 
 
     }

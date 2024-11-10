@@ -2,12 +2,15 @@ package com.coms309.nutrifit.controller;
 
 import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.entity.Workout;
+import com.coms309.nutrifit.entity.WorkoutSet;
 import com.coms309.nutrifit.repo.WorkoutRepository;
 import com.coms309.nutrifit.service.ProfileServiceHandler;
 import com.coms309.nutrifit.service.WorkoutServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -43,6 +46,16 @@ public class WorkoutController
             return workoutServiceHandler.addWorkoutByUsername(username, workout);
         }
 
+        @PostMapping("/set/{date}/")
+        public Workout addActivity(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                   @RequestParam String username, @RequestBody WorkoutSet set){
+            return workoutServiceHandler.addSet(date, username, set);
+        }
+
+        @GetMapping()
+        public List<Workout> getAllWorkouts(){
+            return workoutServiceHandler.getAllWorkouts();
+        }
 
         /**
          * Get all workouts list.
@@ -51,7 +64,7 @@ public class WorkoutController
          * @return the list
          */
         @GetMapping("/{username}")
-        public List<Workout> getAllWorkouts(@PathVariable String username){
+        public List<Workout> getAllWorkoutsForUser(@PathVariable String username){
         return workoutServiceHandler.getWorkoutsByUser(username);
         }
 

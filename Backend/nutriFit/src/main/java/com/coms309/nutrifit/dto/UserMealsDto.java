@@ -1,10 +1,14 @@
 package com.coms309.nutrifit.dto;
 
 import com.coms309.nutrifit.entity.nutrition.Trackable;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.ElementCollection;
 import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,48 +20,23 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserMealsDto extends AbstractNutritionDto {
+public class UserMealsDto implements Serializable{
 
     @EqualsAndHashCode.Exclude
     private int id;
+
+    @JsonProperty("date")
+    @JsonFormat( pattern = "yyyy-MM-dd")
     private LocalDate date;
-    private List<MealDto> meals;
-    private Map<String, Integer> nutrientTotals;
+
+    @ElementCollection
+    private List<MealDto> meals = new ArrayList<>();
 
 
-    /**
-     * Instantiates a new User meals dto.
-     *
-     * @param meals the meals
-     */
-    UserMealsDto(List<MealDto> meals){
-        date = LocalDate.now();
-        this.meals = meals;
-        nutrientTotals = new HashMap<>();
-        for(MealDto m : meals){
-            combineNutrients(m.getMealNutrients());
-        }
+    @JsonProperty(value = "nutrientTotals", required = true, defaultValue = "{}")
+    private Map<String, Integer> nutrientTotals = new HashMap<>();
 
-    }
-    @Override
-    public void addNutrient(String nutrient, int amount) {
-        if(nutrientTotals.containsKey(nutrient)){
-            nutrientTotals.put(nutrient, nutrientTotals.get(nutrient) + amount);
-        }else{
-            nutrientTotals.put(nutrient, amount);
-        }
-    }
 
-    @Override
-    public void combineNutrients(Map<String, Integer> nutrients) {
-        if(nutrients != null){
-            for(String n : nutrients.keySet()){
-                if(nutrientTotals.containsKey(n)){
-                    nutrientTotals.put(n, nutrientTotals.get(n) + nutrients.get(n));
-                }else{
-                    nutrientTotals.put(n, nutrients.get(n));
-                }
-            }
-        }
-    }
+
+
 }

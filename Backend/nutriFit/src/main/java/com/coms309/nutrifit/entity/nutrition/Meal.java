@@ -1,13 +1,13 @@
 package com.coms309.nutrifit.entity.nutrition;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,32 +31,30 @@ public class Meal {
     @JsonIgnore
     private UserMeals userMeals;
 
-    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Food> foods;
+
+    @JsonProperty("foodName")
+    private String foodName;
+
+    @JsonProperty("servingSize")
+    private String servingSize;
 
 
-    @ElementCollection
-    private Map<String, Integer> mealNutrients = new HashMap<>();
+    @JsonProperty(value = "calories", defaultValue = "0", required = true)
+    private int calories;
+
+    @JsonProperty(value = "protein", defaultValue = "0", required = true)
+    private int protein;
 
 
-    @Enumerated(EnumType.STRING )
-    private MealType mealType;
+    @JsonProperty(value = "carbs", defaultValue = "0", required = true)
+    private int carbs;
 
-    /**
-     * Instantiates a new Meal.
-     *
-     * @param userMeals       the user meals
-     * @param foods           the foods
-     * @param nutrientAmounts the nutrient amounts
-     * @param mealType        the meal type
-     */
-    public Meal(UserMeals userMeals, List<Food> foods, Map<String, Integer> nutrientAmounts, String mealType){
-        this.userMeals = userMeals;
-        this.foods = foods;
-        this.mealNutrients = nutrientAmounts;
-        mealType.toUpperCase();
-        this.mealType = MealType.valueOf(mealType);
-    }
+    @JsonProperty(value = "fat", defaultValue = "0", required = true)
+    private int fat;
+
+    @JsonProperty("mealType")
+    private String mealType;
+
 
 
 }

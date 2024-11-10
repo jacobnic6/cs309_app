@@ -25,7 +25,8 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserMeals  {
+public class UserMeals
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +41,7 @@ public class UserMeals  {
     private User user;
 
     @OneToMany(mappedBy = "userMeals", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Meal> mealList  ;
+    private List<Meal> mealList = new ArrayList<>() ;
 
     @ElementCollection
     private Map<String, Integer> nutrientTotals = new HashMap<>();

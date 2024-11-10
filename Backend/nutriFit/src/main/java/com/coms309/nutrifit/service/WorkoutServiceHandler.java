@@ -1,6 +1,7 @@
 package com.coms309.nutrifit.service;
 
 import com.coms309.nutrifit.entity.Profile;
+import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.entity.Workout;
 import com.coms309.nutrifit.entity.WorkoutSet;
 import com.coms309.nutrifit.repo.ProfileRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The type Workout service handler.
@@ -44,14 +46,17 @@ public class WorkoutServiceHandler {
 
         Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
 
-        double weightLifted = 0;
-
-       List<WorkoutSet> setList = workout.getActivities();
-       for (WorkoutSet set : setList) {
-           double temp = set.getWeightLifted() * set.getRepetitions();
-           weightLifted += temp;
+       if(!workout.getActivities().isEmpty()){
+           workout.updateTotalWeight();
        }
-       workout.setTotalWeight(weightLifted);
+
+
+//       List<WorkoutSet> setList = workout.getActivities();
+//       for (WorkoutSet set : setList) {
+//           double temp = set.getWeightLifted() * set.getRepetitions();
+//           weightLifted += temp;
+//       }
+//       workout.setTotalWeight(weightLifted);
 
 
         profile.AddWorkout(workout);
@@ -130,4 +135,40 @@ public class WorkoutServiceHandler {
 
 
     }
+
+    public Workout addSet(LocalDate date, String username, WorkoutSet set) {
+
+        Workout workout = workoutRepository
+                .findByProfile_User_UsernameAndDateTracked(username, date).orElse(new Workout());
+        Profile profile = profileRepository
+                .findByUser_Username(username).orElse(new Profile(userRepository.findByUsername(username)));
+        profileRepository.save(profile);
+
+        workout.setProfile(profile);
+        workout.setDateTracked(date);
+        workout.addActivity(set);
+        workout.updateTotalWeight();
+        return   workoutRepository.save(workout);
+
+    }
+
+    public Workout getWorkoutsByUserAndDate(String username, LocalDate date) {
+      return workoutRepository.findByProfile_User_UsernameAndDateTracked(username, date).get();
+
+    }
+
+    public List<Workout> getAllWorkouts() {
+        return workoutRepository.findAll();
+    }
+
+//    public Workout addSet(String username, WorkoutSet set) {
+//        User user = userRepository.findByUsername(username);
+//        if(user == null){
+//            return null;
+//        }
+//        Profile profile = profileRepository.findByUser(user);
+//        if(profile == null){
+//            profile = new Profile(user);
+//        }
+//    }
 }

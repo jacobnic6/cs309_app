@@ -1,8 +1,7 @@
 package com.coms309.nutrifit.entity;
 
 import com.coms309.nutrifit.entity.nutrition.UserMeals;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +22,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonRootName("user")
 public class User {
 
 
@@ -30,15 +30,9 @@ public class User {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int id;
 
-
-//    @ManyToMany
-//    @JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
-//    @JsonIgnore
-//    private Set<User> friends;
-
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserMeals> meals;
+    private List<UserMeals> meals = new ArrayList<>();
 
     @OneToMany(mappedBy = "firstUser")
     @JsonIgnore
@@ -60,7 +54,8 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, unique = true)
+
+    @Column(nullable = false, unique = true )
     private String username;
 
     @Column(nullable = false)
@@ -69,12 +64,9 @@ public class User {
    @DateTimeFormat
     private LocalDateTime lastLogin;
 
-
-
    @OneToMany(cascade = CascadeType.ALL)
    @JsonIgnore
-   private List<ImageData> imageData;
-
+   private List<ImageData> imageData = new ArrayList<>();
 
     /**
      * The Body weights.
@@ -82,7 +74,7 @@ public class User {
     @JsonProperty("bodyweights")
    @OneToMany(cascade = CascadeType.ALL)
    @Column
-   List<UserWeight> bodyWeights;
+   List<UserWeight> bodyWeights = new ArrayList<>();
 
 
     /**
@@ -99,17 +91,7 @@ public class User {
             bodyWeights.add(weightDto);
         }
 
-    /**
-     * Add picture.
-     *
-     * @param imageData the image data
-     */
-    public void addPicture(ImageData imageData){
-        if(this.imageData == null){
-            this.imageData = new ArrayList<>();
-        }
-        this.imageData.add(imageData);
-    }
+
 
 
     /**
@@ -130,13 +112,13 @@ public class User {
             this.password = password;
 
             this.lastLogin = LocalDateTime.now();
-//        bodyWeights = new ArrayList<>();
-//        imageData = new ArrayList<>();
-//        profile = new Profile(this);
-
-
+            meals = new ArrayList<>();
+            friends = new ArrayList<>();
+            imageData = new ArrayList<>();
+            bodyWeights = new ArrayList<>();
 
 
         }
+
 
 }
