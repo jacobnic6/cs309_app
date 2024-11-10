@@ -1,9 +1,5 @@
 package com.coms309.nutrifit.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * The type Friend.
@@ -43,7 +38,7 @@ public class Friend {
      * The Second user.
      */
     @ManyToOne
-    @JoinColumn(referencedColumnName = "id", nullable = false )
+    @JoinColumn(referencedColumnName = "id", nullable = false)
     User secondUser;
 
     /**

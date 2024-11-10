@@ -2,12 +2,13 @@ package com.coms309.nutrifit.exercises;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Type;
-import org.springframework.lang.NonNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The type Exercise.
@@ -17,92 +18,90 @@ import java.util.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Exercise
- {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+public class Exercise {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-  @Column(nullable = false, unique = true)
-  @JsonProperty("name")
-  private String name;
+    @Column(nullable = false, unique = true)
+    @JsonProperty("name")
+    private String name;
 
-  @Column(columnDefinition = "MEDIUMTEXT COLLATE utf8mb4_general_ci")
-  @JsonProperty("description")
-  private String description;
-
-
- @ManyToOne
- @JoinColumn(name = "category_name")
- @JsonProperty("category")
-  private Category category;
-
-  @Column(nullable = false)
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JsonProperty("equipment")
-  private List<Equipment> equipment;
-
-  @Column( columnDefinition = "MEDIUMTEXT")
-  @ElementCollection
-  @JsonProperty("instructions")
-  private List<String> instructions;
-
-  @Column(nullable = false)
-  @ManyToMany
-  @JsonProperty("primary_muscles")
-  private List<Muscle> primaryMuscles;
-
-  @Column(nullable = false)
-  @ManyToMany
-  @JsonProperty("secondary_muscles")
-  private List<Muscle> secondaryMuscles;
-
-  @Column
-  @JsonProperty("video")
-  private String videoUrl;
-
-  @Column
-  @ElementCollection
-  @JsonProperty("variation_on")
-  private List<String> variationOn;
-
-  @Column
-  @JsonProperty("variation_id")
-  private int variationId;
-
-  @Column
-  @JsonProperty("license_author")
-  private String licenseAuthor;
-
-     /**
-      * The License.
-      */
-     @Column
-  @ElementCollection
-  @JsonProperty("license")
-  Map<String, String> license;
-
-     /**
-      * Instantiates a new Exercise.
-      *
-      * @param category         the category
-      * @param name             the name
-      * @param equipment        the equipment
-      * @param instructions     the instructions
-      * @param primaryMuscles   the primary muscles
-      * @param secondaryMuscles the secondary muscles
-      */
-     public Exercise(Category category, String name, List<Equipment> equipment, List<String> instructions,
-                  List<Muscle> primaryMuscles, List<Muscle> secondaryMuscles){
-   this.category = category;
-   this.name = name;
-   this.equipment = equipment;
-   this.instructions = instructions;
-   this.primaryMuscles = primaryMuscles;
-   this.secondaryMuscles = secondaryMuscles;
-
-  }
+    @Column(columnDefinition = "MEDIUMTEXT COLLATE utf8mb4_general_ci")
+    @JsonProperty("description")
+    private String description;
 
 
+    @ManyToOne
+    @JoinColumn(name = "category_name")
+    @JsonProperty("category")
+    private Category category;
 
- }
+    @Column(nullable = false)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonProperty("equipment")
+    private List<Equipment> equipment;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+    @ElementCollection
+    @JsonProperty("instructions")
+    private List<String> instructions;
+
+    @Column(nullable = false)
+    @ManyToMany
+    @JsonProperty("primary_muscles")
+    private List<Muscle> primaryMuscles;
+
+    @Column(nullable = false)
+    @ManyToMany
+    @JsonProperty("secondary_muscles")
+    private List<Muscle> secondaryMuscles;
+
+    @Column
+    @JsonProperty("video")
+    private String videoUrl;
+
+    @Column
+    @ElementCollection
+    @JsonProperty("variation_on")
+    private List<String> variationOn;
+
+    @Column
+    @JsonProperty("variation_id")
+    private int variationId;
+
+    @Column
+    @JsonProperty("license_author")
+    private String licenseAuthor;
+
+    /**
+     * The License.
+     */
+    @Column
+    @ElementCollection
+    @JsonProperty("license")
+    Map<String, String> license;
+
+    /**
+     * Instantiates a new Exercise.
+     *
+     * @param category         the category
+     * @param name             the name
+     * @param equipment        the equipment
+     * @param instructions     the instructions
+     * @param primaryMuscles   the primary muscles
+     * @param secondaryMuscles the secondary muscles
+     */
+    public Exercise(Category category, String name, List<Equipment> equipment, List<String> instructions,
+                    List<Muscle> primaryMuscles, List<Muscle> secondaryMuscles) {
+        this.category = category;
+        this.name = name;
+        this.equipment = equipment;
+        this.instructions = instructions;
+        this.primaryMuscles = primaryMuscles;
+        this.secondaryMuscles = secondaryMuscles;
+
+    }
+
+
+}

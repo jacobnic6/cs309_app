@@ -1,17 +1,14 @@
 package com.coms309.nutrifit.dto;
 
-import com.coms309.nutrifit.entity.nutrition.MealType;
-import com.coms309.nutrifit.entity.nutrition.Trackable;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonKey;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,7 +19,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MealDto implements Serializable{
+public class MealDto implements Serializable {
 
 
     @JsonProperty("foodName")
@@ -45,11 +42,11 @@ public class MealDto implements Serializable{
     @JsonProperty(value = "fat", defaultValue = "0", required = true)
     private int fat;
 
-    @JsonProperty(value = "mealType",defaultValue = "SNACK", required = true)
+    @JsonProperty(value = "mealType", defaultValue = "SNACK", required = true)
     private String mealType;
 
 
-    public Map<String, Integer> getNutrients(){
+    public Map<String, Integer> getNutrients() {
         Map<String, Integer> nutrients = new HashMap<>();
         nutrients.put("calories", calories);
         nutrients.put("protein", protein);

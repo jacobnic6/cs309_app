@@ -38,14 +38,13 @@ public class NutritionController {
     @PostMapping("/{date}/{username}")
     public ResponseEntity<?> createMealList(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @PathVariable("username") String username) {
 
-       UserMeals meals = nutritionService.createMealList(date, username);
+        UserMeals meals = nutritionService.createMealList(date, username);
 
 
-      return ResponseEntity.status(HttpStatus.OK).body(meals);
+        return ResponseEntity.status(HttpStatus.OK).body(meals);
 
 
     }
-
 
 
     /**
@@ -53,19 +52,19 @@ public class NutritionController {
      *
      * @param date     the date
      * @param username the username
-     * @param meal     the meal
+     * @param mealDto  the mealDto
      * @return the response entity
      */
     @PostMapping("/food/{date}/{username}")
     public UserMeals addMeal(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                                     @PathVariable("username" ) String username, @RequestBody MealDto mealDto) {
-        if(username == null || mealDto == null){
-            throw new RuntimeException("Invalid input ")  ;
+                             @PathVariable("username") String username, @RequestBody MealDto mealDto) {
+        if (username == null || mealDto == null) {
+            throw new RuntimeException("Invalid input ");
         }
-        if(date == null){
+        if (date == null) {
             date = LocalDate.now();
         }
-       return  nutritionService.addMeal(date, username, mealDto );
+        return nutritionService.addMeal(date, username, mealDto);
     }
 
     /**
@@ -80,7 +79,7 @@ public class NutritionController {
     public UserMeals getMealsByDate(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam String username) {
 
 
-       return nutritionService.getMealsByDate(date, username);
+        return nutritionService.getMealsByDate(date, username);
 
     }
 
@@ -93,11 +92,10 @@ public class NutritionController {
      */
 //Update
     @PutMapping("/{Id}")
-    public UserMeals updateMealListById(@PathVariable("Id")int id,  @RequestBody UserMealsDto mealsDto) {
+    public UserMeals updateMealListById(@PathVariable("Id") int id, @RequestBody UserMealsDto mealsDto) {
         return nutritionService.updateMealListByDate(id, mealsDto);
 
     }
-
 
 
     //Delete
@@ -110,7 +108,7 @@ public class NutritionController {
      */
     @DeleteMapping("/{id}")
     public String deleteMealListById(@PathVariable int id) {
-        return   nutritionService.deleteMealListById(id);
+        return nutritionService.deleteMealListById(id);
     }
 
     /**
@@ -121,7 +119,7 @@ public class NutritionController {
      */
     @DeleteMapping("/meal/{id}")
     public String deleteMealById(@PathVariable int id) {
-      return   nutritionService.deleteMealById(id);
+        return nutritionService.deleteMealById(id);
     }
 
 
@@ -138,18 +136,17 @@ public class NutritionController {
 
     @GetMapping("/totals/{date}/")
     public NutrientTotalsDto getNutrientTotals(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                   LocalDate date, @RequestParam String username) {
+                                               LocalDate date, @RequestParam String username) {
 
-        if(username == null ){
-           throw new RuntimeException("Invalid input ")  ;
+        if (username == null) {
+            throw new RuntimeException("Invalid input ");
         }
-        if(date == null){
+        if (date == null) {
             date = LocalDate.now();
         }
         return nutritionService.getDailyTotals(date, username);
 
     }
-
 
 
 }

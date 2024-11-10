@@ -1,8 +1,8 @@
 package com.coms309.nutrifit.service;
 
+import com.coms309.nutrifit.entity.UserSettings;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.repo.UserSettingsRepository;
-import com.coms309.nutrifit.entity.UserSettings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +17,8 @@ public class UserSettingsServiceHandler {
     private final UserSettingsRepository userSettingsRepository;
     private final UserRepository userRepository;
 
-    private String success = "{\"message\":\"success\"}";
-    private String failure = "{\"message\":\"failure\"}";
+    private final String success = "{\"message\":\"success\"}";
+    private final String failure = "{\"message\":\"failure\"}";
 
     /**
      * Instantiates a new User settings service handler.
@@ -52,7 +52,7 @@ public class UserSettingsServiceHandler {
 //CREATE
     public String createUserSettings(UserSettings settings) {
 
-        if(settings == null){
+        if (settings == null) {
             return failure;
         }
         userSettingsRepository.saveAndFlush(settings);
@@ -71,7 +71,7 @@ public class UserSettingsServiceHandler {
     @Transactional
     public UserSettings updateSettings(int id, UserSettings settings) {
 
-        if(!userSettingsRepository.existsById(id)){
+        if (!userSettingsRepository.existsById(id)) {
             return null;
         }
 
@@ -110,10 +110,10 @@ public class UserSettingsServiceHandler {
 //DELETE
     @Transactional
     public String deleteSettings(int id) {
-        if(!userSettingsRepository.existsById(id) ){
+        if (!userSettingsRepository.existsById(id)) {
             return "User " + id + " does not exist";
         }
-        if(userRepository.existsById(id)){
+        if (userRepository.existsById(id)) {
             return "Cannot delete existing user " + id + " settings. ";
         }
 

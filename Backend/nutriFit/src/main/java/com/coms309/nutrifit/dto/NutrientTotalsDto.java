@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class NutrientTotalsDto {
 
     @JsonProperty("date")
-    @JsonFormat( pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
     @JsonProperty(value = "totalCalories", defaultValue = "0")
@@ -44,28 +44,35 @@ public class NutrientTotalsDto {
     private int snacksCalories;
 
 
-    public void addCalories(int calories){
+    public void addCalories(int calories) {
         this.totalCalories += calories;
     }
-    public void addProtein(int protein){
+
+    public void addProtein(int protein) {
         this.totalProtein += protein;
     }
-    public void addCarbs(int carbs){
+
+    public void addCarbs(int carbs) {
         this.totalCarbs += carbs;
     }
-    public void addFats(int fats){
+
+    public void addFats(int fats) {
         this.totalFat += fats;
     }
-    public void addBreakfastCalories(int calories){
+
+    public void addBreakfastCalories(int calories) {
         this.breakfastCalories += calories;
     }
-    public void addLunchCalories(int calories){
+
+    public void addLunchCalories(int calories) {
         this.lunchCalories += calories;
     }
-    public void addDinnerCalories(int calories){
+
+    public void addDinnerCalories(int calories) {
         this.dinnerCalories += calories;
     }
-    public void addSnackCalories(int calories){
+
+    public void addSnackCalories(int calories) {
         this.snacksCalories += calories;
     }
 

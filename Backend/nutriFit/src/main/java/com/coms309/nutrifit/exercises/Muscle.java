@@ -35,8 +35,8 @@ public class Muscle {
      * @param name the name
      */
     public Muscle(String name) {
-    this.name = name;
-}
+        this.name = name;
+    }
 
     /**
      * Instantiates a new Muscle.

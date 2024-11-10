@@ -3,7 +3,7 @@ package com.coms309.nutrifit.util;
 /**
  * The enum Measurement units.
  */
-public enum MeasurementUnits{
+public enum MeasurementUnits {
     /**
      * Imperial measurement units.
      */

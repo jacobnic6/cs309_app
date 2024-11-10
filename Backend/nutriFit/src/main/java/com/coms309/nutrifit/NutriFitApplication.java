@@ -17,9 +17,9 @@ public class NutriFitApplication {
      * @param args the input arguments
      */
     public static void main(String[] args) {
-		SpringApplication.run(NutriFitApplication.class, args);
+        SpringApplication.run(NutriFitApplication.class, args);
 
-	}
+    }
 
 
     /**
@@ -29,12 +29,12 @@ public class NutriFitApplication {
      * @return the command line runner
      */
     @Bean
-	CommandLineRunner run(DataLoader dataLoader) {
-		return args -> {
-			dataLoader.loadData();
+    CommandLineRunner run(DataLoader dataLoader) {
+        return args -> {
+            dataLoader.loadData();
 
-		};
-	}
+        };
+    }
 
 }
 

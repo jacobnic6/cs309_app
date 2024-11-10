@@ -16,9 +16,9 @@ public class MealService {
      *
      * @param mealRepository the meal repository
      */
-    public MealService(MealRepository mealRepository){
-       this.mealRepository = mealRepository;
-   }
+    public MealService(MealRepository mealRepository) {
+        this.mealRepository = mealRepository;
+    }
 
 
 }

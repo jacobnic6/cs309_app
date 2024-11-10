@@ -1,7 +1,7 @@
 package com.coms309.nutrifit.controller;
 
-import com.coms309.nutrifit.service.UserSettingsServiceHandler;
 import com.coms309.nutrifit.entity.UserSettings;
+import com.coms309.nutrifit.service.UserSettingsServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,7 +66,7 @@ public class UserSettingsController {
     @GetMapping(path = "/settings")
     public List<UserSettings> getAllUserSettings() {
 
-        return  settingsServiceHandler.listAllUserSettings();
+        return settingsServiceHandler.listAllUserSettings();
     }
 
     /**
@@ -77,7 +77,7 @@ public class UserSettingsController {
      */
 //DELETE
     @DeleteMapping("/settings/{id}")
-    public String deleteUserSettings(@PathVariable int id){
+    public String deleteUserSettings(@PathVariable int id) {
 
         return settingsServiceHandler.deleteSettings(id);
     }

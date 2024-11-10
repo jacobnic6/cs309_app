@@ -44,7 +44,6 @@ public class NutritionService {
     MealRepository mealRepository;
 
 
-
     /**
      * The Object mapper.
      */
@@ -59,16 +58,16 @@ public class NutritionService {
      * @param username the username
      * @return the user meals
      */
-    public UserMeals createMealList(LocalDate date, String username ) {
+    public UserMeals createMealList(LocalDate date, String username) {
 
         User user = userRepository.findByUsername(username);
 
-        if(user == null) {
+        if (user == null) {
             return null;
         }
 
         UserMeals meals = userMealsRepository.findByUserAndDate(user, date);
-        if(meals == null) {
+        if (meals == null) {
             meals = new UserMeals();
             meals.setDate(date);
             meals.setUser(user);
@@ -110,7 +109,7 @@ public class NutritionService {
      */
     public UserMeals addMeal(LocalDate date, String username, MealDto mealDto) {
 
-        if(!userRepository.existsByUsername(username)) {
+        if (!userRepository.existsByUsername(username)) {
             throw new RuntimeException("User with username " + username + " does not exist");
         }
 
@@ -118,7 +117,7 @@ public class NutritionService {
 
         Meal meal = objectMapper.convertValue(mealDto, Meal.class);
         List<Meal> mealList = meals.getMealList();
-        if(mealList == null) {
+        if (mealList == null) {
             mealList = new ArrayList<>();
 
         }
@@ -128,13 +127,13 @@ public class NutritionService {
 
         Map<String, Integer> nutrients = mealDto.getNutrients();
         Map<String, Integer> totals = meals.getNutrientTotals();
-        if(totals == null ||totals.isEmpty()) {
+        if (totals == null || totals.isEmpty()) {
             meals.setNutrientTotals(nutrients);
-        }else {
-            for(String key : nutrients.keySet()) {
-                if(totals.containsKey(key)) {
+        } else {
+            for (String key : nutrients.keySet()) {
+                if (totals.containsKey(key)) {
                     totals.put(key, totals.get(key) + nutrients.get(key));
-                }else{
+                } else {
                     totals.put(key, nutrients.get(key));
                 }
             }
@@ -154,8 +153,8 @@ public class NutritionService {
      */
     public String deleteMealById(int id) {
 
-        if(!mealRepository.existsById(id)) {
-           return "meal with id " + id + " does not exist";
+        if (!mealRepository.existsById(id)) {
+            return "meal with id " + id + " does not exist";
         }
         mealRepository.deleteById(id);
         return "meal with id " + id + " deleted";
@@ -169,7 +168,7 @@ public class NutritionService {
      * @return the string
      */
     public String deleteMealListById(int id) {
-        if(!userMealsRepository.existsById(id)) {
+        if (!userMealsRepository.existsById(id)) {
             return "meal list with id " + id + " does not exist";
         }
 
@@ -186,24 +185,24 @@ public class NutritionService {
      * @return the user meals
      */
     public UserMeals updateMealListByDate(int id, UserMealsDto mealsDto) {
-        if(!userMealsRepository.existsById(id)) {
+        if (!userMealsRepository.existsById(id)) {
             return null;
         }
         UserMeals meals = userMealsRepository.findById(id).orElse(null);
-        if(meals != null) {
-           int i = meals.getId();
-           UserMeals.UserMealsBuilder builder = UserMeals.builder();
-           for(Field field : mealsDto.getClass().getDeclaredFields()) {
+        if (meals != null) {
+            int i = meals.getId();
+            UserMeals.UserMealsBuilder builder = UserMeals.builder();
+            for (Field field : mealsDto.getClass().getDeclaredFields()) {
 
-           }
-           builder.id(i);
+            }
+            builder.id(i);
 
-           builder.date(mealsDto.getDate());
-           builder.user(meals.getUser());
-           builder.mealList(meals.getMealList());
-           builder.nutrientTotals(mealsDto.getNutrientTotals());
-           UserMeals mealsB = builder.build();
-          return userMealsRepository.save(mealsB);
+            builder.date(mealsDto.getDate());
+            builder.user(meals.getUser());
+            builder.mealList(meals.getMealList());
+            builder.nutrientTotals(mealsDto.getNutrientTotals());
+            UserMeals mealsB = builder.build();
+            return userMealsRepository.save(mealsB);
 
         }
         return null;
@@ -213,23 +212,23 @@ public class NutritionService {
     private UserMeals getUserMealList(String username, LocalDate date) {
         return userMealsRepository
                 .findUserMealsByUser_UsernameAndDate(username, date)
-                .orElse( new UserMeals());
+                .orElse(new UserMeals());
     }
 
     private Meal getMeal(LocalDate date, String username, String mealType) {
-       return mealRepository
+        return mealRepository
                 .findFirstByUserMeals_User_UsernameAndUserMeals_DateAndMealTypeAllIgnoreCaseOrderByUserMeals_User_UsernameAscUserMeals_DateAscUserMeals_MealList_MealTypeAsc(
-                        username,date, mealType).orElse(new Meal());
+                        username, date, mealType).orElse(new Meal());
     }
 
     public NutrientTotalsDto getDailyTotals(LocalDate date, String username) {
-        if(!userRepository.existsByUsername(username)) {
+        if (!userRepository.existsByUsername(username)) {
             throw new RuntimeException("User with username " + username + " does not exist");
         }
         User user = userRepository.findByUsername(username);
 
         UserMeals meals = userMealsRepository.findByUserAndDate(user, date);
-        if(meals == null) {
+        if (meals == null) {
             throw new RuntimeException("User with username " + username + " does not exist");
         }
         NutrientTotalsDto totals = new NutrientTotalsDto();
@@ -251,17 +250,15 @@ public class NutritionService {
                 case "dinner":
                     totals.addDinnerCalories(meal.getCalories());
                     break;
-                   default:
-                       totals.addSnackCalories(meal.getCalories());
-                       break;
+                default:
+                    totals.addSnackCalories(meal.getCalories());
+                    break;
             }
 
-        }) ;
+        });
         return totals;
 
     }
-
-
 
 
 }

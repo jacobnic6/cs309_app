@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      * @param id the id
      * @return the user
      */
-    public User findById(int id);
+    User findById(int id);
 
 
     /**
@@ -25,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      *
      * @param id the id
      */
-    public void deleteById(int id);
+    void deleteById(int id);
 
     /**
      * Gets id by username.
@@ -33,7 +33,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      * @param username the username
      * @return the id by username
      */
-    public int getIdByUsername(String username);
+    int getIdByUsername(String username);
 
 
     /**

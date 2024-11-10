@@ -1,16 +1,12 @@
 package com.coms309.nutrifit.entity.nutrition;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Cascade;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The type Meal.
@@ -54,7 +50,6 @@ public class Meal {
 
     @JsonProperty("mealType")
     private String mealType;
-
 
 
 }

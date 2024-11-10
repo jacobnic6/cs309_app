@@ -1,7 +1,9 @@
 package com.coms309.nutrifit.entity;
 
 import com.coms309.nutrifit.entity.nutrition.UserMeals;
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +14,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The type User.
@@ -27,7 +28,7 @@ public class User {
 
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @JsonIgnore
@@ -55,26 +56,26 @@ public class User {
     private String email;
 
 
-    @Column(nullable = false, unique = true )
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-   @DateTimeFormat
+    @DateTimeFormat
     private LocalDateTime lastLogin;
 
-   @OneToMany(cascade = CascadeType.ALL)
-   @JsonIgnore
-   private List<ImageData> imageData = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ImageData> imageData = new ArrayList<>();
 
     /**
      * The Body weights.
      */
     @JsonProperty("bodyweights")
-   @OneToMany(cascade = CascadeType.ALL)
-   @Column
-   List<UserWeight> bodyWeights = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @Column
+    List<UserWeight> bodyWeights = new ArrayList<>();
 
 
     /**
@@ -82,16 +83,13 @@ public class User {
      *
      * @param weightDto the weight dto
      */
-    public void addBodyWeight(UserWeight weightDto)
-        {
-            if(bodyWeights == null){
-                bodyWeights = new ArrayList<>();
-            }
-
-            bodyWeights.add(weightDto);
+    public void addBodyWeight(UserWeight weightDto) {
+        if (bodyWeights == null) {
+            bodyWeights = new ArrayList<>();
         }
 
-
+        bodyWeights.add(weightDto);
+    }
 
 
     /**
@@ -103,22 +101,21 @@ public class User {
      * @param username  the username
      * @param password  the password
      */
-    public User(String firstName, String lastName, String email, String username, String password)
-        {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.email = email;
-            this.username = username;
-            this.password = password;
+    public User(String firstName, String lastName, String email, String username, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.username = username;
+        this.password = password;
 
-            this.lastLogin = LocalDateTime.now();
-            meals = new ArrayList<>();
-            friends = new ArrayList<>();
-            imageData = new ArrayList<>();
-            bodyWeights = new ArrayList<>();
+        this.lastLogin = LocalDateTime.now();
+        meals = new ArrayList<>();
+        friends = new ArrayList<>();
+        imageData = new ArrayList<>();
+        bodyWeights = new ArrayList<>();
 
 
-        }
+    }
 
 
 }

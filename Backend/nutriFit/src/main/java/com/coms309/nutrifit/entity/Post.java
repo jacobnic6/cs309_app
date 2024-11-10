@@ -1,11 +1,9 @@
 package com.coms309.nutrifit.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.awt.*;
 import java.time.LocalDateTime;
 
 /**
@@ -16,7 +14,7 @@ import java.time.LocalDateTime;
 public class Post {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne

@@ -3,8 +3,6 @@ package com.coms309.nutrifit.service;
 import com.coms309.nutrifit.entity.ImageData;
 import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.entity.User;
-import com.coms309.nutrifit.exercises.Muscle;
-import com.coms309.nutrifit.exercises.MuscleGroup;
 import com.coms309.nutrifit.repo.*;
 import com.coms309.nutrifit.util.ImageUtils;
 import com.coms309.nutrifit.util.UserMuscles;
@@ -19,156 +17,150 @@ import java.util.Map;
  * The type Profile service handler.
  */
 @Service
-public class ProfileServiceHandler
-    {
-        @Autowired
-        private ProfileRepository profileRepository;
+public class ProfileServiceHandler {
+    @Autowired
+    private ProfileRepository profileRepository;
 
-        /**
-         * The User repository.
-         */
-        @Autowired
-        UserRepository userRepository;
-        /**
-         * The Image repository.
-         */
-        @Autowired
-        ImageRepository imageRepository;
-        /**
-         * The Muscle repository.
-         */
-        @Autowired
-        MuscleRepository muscleRepository;
-        /**
-         * The Group repository.
-         */
-        @Autowired
-        MuscleGroupRepository groupRepository;
-        @Autowired
-        private MuscleGroupRepository muscleGroupRepository;
+    /**
+     * The User repository.
+     */
+    @Autowired
+    UserRepository userRepository;
+    /**
+     * The Image repository.
+     */
+    @Autowired
+    ImageRepository imageRepository;
+    /**
+     * The Muscle repository.
+     */
+    @Autowired
+    MuscleRepository muscleRepository;
+    /**
+     * The Group repository.
+     */
+    @Autowired
+    MuscleGroupRepository groupRepository;
+    @Autowired
+    private MuscleGroupRepository muscleGroupRepository;
 
-        /**
-         * Add profile profile.
-         *
-         * @param profile the profile
-         * @return the profile
-         */
-        public Profile addProfile(Profile profile)
-            {
+    /**
+     * Add profile profile.
+     *
+     * @param profile the profile
+     * @return the profile
+     */
+    public Profile addProfile(Profile profile) {
 
-                if(profileRepository.findByUser(profile.getUser()) == null){
-                    profile.setMuscleProgress(getMusclesMap());
-                    return profileRepository.save(profile);
-                }
-                return profileRepository.findByUser(profile.getUser());
+        if (profileRepository.findByUser(profile.getUser()) == null) {
+            profile.setMuscleProgress(getMusclesMap());
+            return profileRepository.save(profile);
+        }
+        return profileRepository.findByUser(profile.getUser());
 
-            }
+    }
 
-        /**
-         * Gets profiles.
-         *
-         * @return the profiles
-         */
-        public List<Profile> getProfiles()
-            {
-                return profileRepository.findAll();
-            }
+    /**
+     * Gets profiles.
+     *
+     * @return the profiles
+     */
+    public List<Profile> getProfiles() {
+        return profileRepository.findAll();
+    }
 
-        /**
-         * Gets user profile.
-         *
-         * @param username the username
-         * @return the user profile
-         */
-        public Profile getUserProfile(String username)
-            {
-                User user = userRepository.findByUsername(username);
-                Profile profile = profileRepository.findByUser(user);
-                if(profile != null && profile.getProfileImageData() != null){
-                    ImageData imageData = profile.getProfileImageData();
-                    byte[] img = ImageUtils.decompressImage(imageData.getPictureData());
+    /**
+     * Gets user profile.
+     *
+     * @param username the username
+     * @return the user profile
+     */
+    public Profile getUserProfile(String username) {
+        User user = userRepository.findByUsername(username);
+        Profile profile = profileRepository.findByUser(user);
+        if (profile != null && profile.getProfileImageData() != null) {
+            ImageData imageData = profile.getProfileImageData();
+            byte[] img = ImageUtils.decompressImage(imageData.getPictureData());
 
-                }
-                return profile;
-            }
+        }
+        return profile;
+    }
 
-        /**
-         * Create profile by name profile.
-         *
-         * @param username the username
-         * @return the profile
-         */
-        public Profile createProfileByName(String username)
-            {
+    /**
+     * Create profile by name profile.
+     *
+     * @param username the username
+     * @return the profile
+     */
+    public Profile createProfileByName(String username) {
 
 
-              User user =  userRepository.findByUsername(username);
-                Profile profile = user.getProfile();
-              if(user == null ){
-                  return null;
-              }
+        User user = userRepository.findByUsername(username);
+        Profile profile = user.getProfile();
+        if (user == null) {
+            return null;
+        }
 
-              if(profile == null){
-                  profile = new Profile(user);
-                    profile.setMuscleProgress(getMusclesMap());
-                  user.setProfile(profile);
-                   userRepository.saveAndFlush(user);
-              }else {
-
-              }
-
-
-              return userRepository.findByUsername(username).getProfile();
-            }
-
-        /**
-         * Update profile string.
-         *
-         * @param username the username
-         * @param profile  the profile
-         * @return the string
-         */
-        public String updateProfile(String username, Profile profile)
-            {
-                User user = userRepository.findByUsername(username);
-                if(user == null){
-                    return "User not found";
-                }
-                user.setProfile(profile);
-                userRepository.save(user);
-                return "Profile updated";
-            }
-
-
-        /**
-         * Assign image.
-         *
-         * @param upload   the upload
-         * @param username the username
-         */
-        public void assignImage(ImageData upload, String username) {
-            User user = userRepository.findByUsername(username);
-            Profile profile = profileRepository.findByUser(user);
-
-            ImageData imageData = imageRepository.findByName(upload.getName());
-
-            profile.setProfileImageData(imageData);
-
-            profileRepository.save(profile);
+        if (profile == null) {
+            profile = new Profile(user);
+            profile.setMuscleProgress(getMusclesMap());
+            user.setProfile(profile);
+            userRepository.saveAndFlush(user);
+        } else {
 
         }
 
-        private Map<String, Integer> getMusclesMap(){
-            Map<String, Integer> muscleMap = new HashMap<>();
-            UserMuscles muscles;
 
-            for(UserMuscles muscle : UserMuscles.values()){
+        return userRepository.findByUsername(username).getProfile();
+    }
 
-                muscleMap.put(muscle.name(), 0);
-            }
-            return muscleMap;
-
+    /**
+     * Update profile string.
+     *
+     * @param username the username
+     * @param profile  the profile
+     * @return the string
+     */
+    public String updateProfile(String username, Profile profile) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            return "User not found";
         }
+        user.setProfile(profile);
+        userRepository.save(user);
+        return "Profile updated";
+    }
+
+
+    /**
+     * Assign image.
+     *
+     * @param upload   the upload
+     * @param username the username
+     */
+    public void assignImage(ImageData upload, String username) {
+        User user = userRepository.findByUsername(username);
+        Profile profile = profileRepository.findByUser(user);
+
+        ImageData imageData = imageRepository.findByName(upload.getName());
+
+        profile.setProfileImageData(imageData);
+
+        profileRepository.save(profile);
+
+    }
+
+    private Map<String, Integer> getMusclesMap() {
+        Map<String, Integer> muscleMap = new HashMap<>();
+        UserMuscles muscles;
+
+        for (UserMuscles muscle : UserMuscles.values()) {
+
+            muscleMap.put(muscle.name(), 0);
+        }
+        return muscleMap;
+
+    }
 
 
 //        private Map<String, Integer> getMusclesMap(){
@@ -187,4 +179,4 @@ public class ProfileServiceHandler
 //            }
 //            return map;
 //        }
-    }
+}

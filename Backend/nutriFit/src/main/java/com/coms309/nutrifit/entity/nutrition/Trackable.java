@@ -13,13 +13,13 @@ public interface Trackable {
      * @param nutrient the nutrient
      * @param amount   the amount
      */
-    public void addNutrient(String nutrient, int amount);
+    void addNutrient(String nutrient, int amount);
 
     /**
      * Combine nutrients.
      *
      * @param nutrients the nutrients
      */
-    public void combineNutrients(Map<String, Integer> nutrients );
+    void combineNutrients(Map<String, Integer> nutrients);
 
 }

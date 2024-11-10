@@ -1,6 +1,5 @@
 package com.coms309.nutrifit.entity;
 
-import jakarta.persistence.Embedded;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

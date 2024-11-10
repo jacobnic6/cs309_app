@@ -2,7 +2,7 @@ package com.coms309.nutrifit.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
 import lombok.*;
 
 /**
@@ -17,23 +17,21 @@ import lombok.*;
 public class WorkoutSet {
 
 
+    @JsonProperty("category")
+    private String category;
+
+    @JsonProperty("exerciseName")
+    private String exerciseName;
+
+    @JsonProperty("weight")
+    private int weight;
+
+    @JsonProperty("reps")
+    private int reps;
 
 
-        @JsonProperty("category")
-        private String category;
-
-        @JsonProperty("exerciseName")
-        private String exerciseName;
-
-        @JsonProperty("weight")
-        private int weight;
-
-        @JsonProperty("reps")
-        private int reps;
-
-
-        @JsonProperty("sets")
-        private int sets;
+    @JsonProperty("sets")
+    private int sets;
 
 
 }

@@ -3,14 +3,12 @@ package com.coms309.nutrifit.entity.nutrition;
 import com.coms309.nutrifit.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.crossstore.HashMapChangeSet;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.crypto.MacSpi;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,8 +23,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserMeals
-{
+public class UserMeals {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,14 +38,10 @@ public class UserMeals
     private User user;
 
     @OneToMany(mappedBy = "userMeals", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Meal> mealList = new ArrayList<>() ;
+    private List<Meal> mealList = new ArrayList<>();
 
     @ElementCollection
     private Map<String, Integer> nutrientTotals = new HashMap<>();
-
-
-
-
 
 
 }

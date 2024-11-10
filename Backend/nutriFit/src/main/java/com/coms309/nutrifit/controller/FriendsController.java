@@ -3,11 +3,8 @@ package com.coms309.nutrifit.controller;
 import com.coms309.nutrifit.dto.UserDto;
 import com.coms309.nutrifit.entity.Friend;
 import com.coms309.nutrifit.entity.User;
-import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.service.ServiceHandler;
 import com.coms309.nutrifit.service.UserServiceHandler;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +30,7 @@ public class FriendsController {
      */
     @PostMapping(path = "/{userId}/add")
     public String addFriend(@PathVariable int userId, @RequestBody UserDto friendDto) {
-      return userServiceHandler.addFriend(userId, friendDto);
+        return userServiceHandler.addFriend(userId, friendDto);
 
 
     }
@@ -46,7 +43,7 @@ public class FriendsController {
      */
     @GetMapping(path = "/{userId}")
     public List<User> getFriendsById(@PathVariable int userId) {
-       return userServiceHandler.getFriendsById(userId);
+        return userServiceHandler.getFriendsById(userId);
     }
 
 
@@ -59,11 +56,11 @@ public class FriendsController {
     @GetMapping(path = "/get")
     public List<User> getFriends(@RequestParam String id) {
 
-    if(ServiceHandler.isNumeric(id)){
-        int userId = Integer.parseInt(id);
+        if (ServiceHandler.isNumeric(id)) {
+            int userId = Integer.parseInt(id);
 
-        return userServiceHandler.getFriendsById(userId);
-    }
+            return userServiceHandler.getFriendsById(userId);
+        }
         return userServiceHandler.getFriendsByUsername(id);
     }
 
@@ -85,7 +82,7 @@ public class FriendsController {
      */
     @GetMapping
     public List<Friend> getAllFriendships() {
-       return userServiceHandler.getAllFriends();
+        return userServiceHandler.getAllFriends();
     }
 
 

@@ -1,11 +1,11 @@
 package com.coms309.nutrifit.controller;
 
+import com.coms309.nutrifit.entity.User;
+import com.coms309.nutrifit.entity.UserSettings;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.service.ServiceHandler;
-import com.coms309.nutrifit.service.UserSettingsServiceHandler;
-import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.service.UserServiceHandler;
-import com.coms309.nutrifit.entity.UserSettings;
+import com.coms309.nutrifit.service.UserSettingsServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
 
 
     @Autowired
@@ -39,7 +38,7 @@ public class UserController {
     @PostMapping
     String createUser(@RequestBody User user) {
 
-       return userServiceHandler.createUser(user);
+        return userServiceHandler.createUser(user);
     }
 
 
@@ -54,8 +53,9 @@ public class UserController {
     public User getUserById(@PathVariable int id) {
 
 
-                return userServiceHandler.getUserById(id);
+        return userServiceHandler.getUserById(id);
     }
+
     /**
      * Gets user by id.
      *
@@ -66,7 +66,7 @@ public class UserController {
     @GetMapping(path = "/")
     public User getUser(@RequestParam String id) {
 
-        if(ServiceHandler.isNumeric(id)){
+        if (ServiceHandler.isNumeric(id)) {
             int userId = Integer.parseInt(id);
 
             return userServiceHandler.getUserById(userId);
@@ -111,7 +111,7 @@ public class UserController {
 //DELETE
     @DeleteMapping(path = "/{id}")
     String deleteUser(@PathVariable int id) {
-       // userRepository.deleteById(id);
+        // userRepository.deleteById(id);
 
 
         return userServiceHandler.deleteUser(id);
@@ -126,8 +126,8 @@ public class UserController {
 //LIST
     @GetMapping()
     public List<User> getAllUsers() {
-       // return userRepository.findAll();
-        return  userServiceHandler.listAllUsers();
+        // return userRepository.findAll();
+        return userServiceHandler.listAllUsers();
     }
 
 

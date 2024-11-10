@@ -2,7 +2,6 @@ package com.coms309.nutrifit.dto;
 
 import com.coms309.nutrifit.entity.User;
 import lombok.Data;
-import lombok.Value;
 
 import java.io.Serializable;
 

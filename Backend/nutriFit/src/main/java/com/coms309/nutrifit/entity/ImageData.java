@@ -3,7 +3,6 @@ package com.coms309.nutrifit.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 /**
  * The type Image data.
@@ -15,21 +14,19 @@ import org.hibernate.annotations.Type;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ImageData
-    {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private int id;
+public class ImageData {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
 
+    @Lob
+    @JsonIgnore
+    private byte[] pictureData;
 
-        @Lob
-        @JsonIgnore
-        private byte[] pictureData;
+    private String name;
 
-        private String name;
-
-        private String type;
+    private String type;
 
 
-    }
+}

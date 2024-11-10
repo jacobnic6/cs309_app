@@ -2,7 +2,6 @@ package com.coms309.nutrifit.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
@@ -17,20 +16,20 @@ public class ImageUtils {
      * @param image the image
      * @return the byte [ ]
      */
-    public static byte[]  compressImage(byte[] image) {
+    public static byte[] compressImage(byte[] image) {
         Deflater deflater = new Deflater();
         deflater.setLevel(Deflater.BEST_COMPRESSION);
         deflater.setInput(image);
         deflater.finish();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(image.length);
-        byte[] buffer = new byte[4*1024];
+        byte[] buffer = new byte[4 * 1024];
         while (!deflater.finished()) {
             int count = deflater.deflate(buffer);
             outputStream.write(buffer, 0, count);
 
         }
-        try{
+        try {
             outputStream.close();
         } catch (IOException e) {
 
@@ -52,8 +51,8 @@ public class ImageUtils {
         try {
             while (!inflater.finished()) {
 
-                    int count = inflater.inflate(buffer);
-               outputStream.write(buffer, 0, count);
+                int count = inflater.inflate(buffer);
+                outputStream.write(buffer, 0, count);
             }
         } catch (Exception e) {
 

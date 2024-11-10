@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * The type Image service.
@@ -28,17 +27,12 @@ public class ImageService {
      */
     public ImageData saveImage(MultipartFile file) throws IOException {
 
-            ImageData imageData = imageRepository.save(ImageData.builder()
-                    .name(file.getOriginalFilename()).type(file.getContentType())
-                    .pictureData(ImageUtils.compressImage(file.getBytes())).build() );
+        ImageData imageData = imageRepository.save(ImageData.builder()
+                .name(file.getOriginalFilename()).type(file.getContentType())
+                .pictureData(ImageUtils.compressImage(file.getBytes())).build());
 
 
-
-
-       if(imageData != null) {
-           return  imageData;
-       }
-       return null;
+        return imageData;
     }
 
 
@@ -49,8 +43,8 @@ public class ImageService {
      * @return the byte [ ]
      */
     public byte[] downloadImage(String fileName) {
-       ImageData dbImg = imageRepository.findByName(fileName);
-       byte[] imageData = ImageUtils.decompressImage(dbImg.getPictureData());
-       return imageData;
+        ImageData dbImg = imageRepository.findByName(fileName);
+        byte[] imageData = ImageUtils.decompressImage(dbImg.getPictureData());
+        return imageData;
     }
 }

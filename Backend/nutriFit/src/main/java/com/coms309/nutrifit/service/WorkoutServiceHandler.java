@@ -1,7 +1,6 @@
 package com.coms309.nutrifit.service;
 
 import com.coms309.nutrifit.entity.Profile;
-import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.entity.Workout;
 import com.coms309.nutrifit.entity.WorkoutSet;
 import com.coms309.nutrifit.repo.ProfileRepository;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The type Workout service handler.
@@ -46,9 +44,9 @@ public class WorkoutServiceHandler {
 
         Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
 
-       if(!workout.getActivities().isEmpty()){
-           workout.updateTotalWeight();
-       }
+        if (!workout.getActivities().isEmpty()) {
+            workout.updateTotalWeight();
+        }
 
 
 //       List<WorkoutSet> setList = workout.getActivities();
@@ -60,8 +58,8 @@ public class WorkoutServiceHandler {
 
 
         profile.AddWorkout(workout);
-       workout.setProfile(profile);
-      return workoutRepository.save(workout);
+        workout.setProfile(profile);
+        return workoutRepository.save(workout);
 
 
     }
@@ -74,7 +72,7 @@ public class WorkoutServiceHandler {
      */
     public List<Workout> getWorkoutsByUser(String username) {
 
-      Profile profile =  profileRepository.findByUser(userRepository.findByUsername(username));
+        Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
         return workoutRepository.findWorkoutsByProfile(profile);
     }
 
@@ -101,7 +99,7 @@ public class WorkoutServiceHandler {
      */
     public Workout updateWorkout(int workoutId, Workout workout) {
 
-        if(workout == null) {
+        if (workout == null) {
             return null;
         }
 
@@ -129,9 +127,9 @@ public class WorkoutServiceHandler {
         if (!workoutRepository.existsById(workoutId)) {
             return "Workout with id " + workoutId + " does not exist";
         }
-       workoutRepository.deleteById(workoutId);
+        workoutRepository.deleteById(workoutId);
 
-           return "Workout with id " + workoutId + " has been deleted";
+        return "Workout with id " + workoutId + " has been deleted";
 
 
     }
@@ -148,12 +146,12 @@ public class WorkoutServiceHandler {
         workout.setDateTracked(date);
         workout.addActivity(set);
         workout.updateTotalWeight();
-        return   workoutRepository.save(workout);
+        return workoutRepository.save(workout);
 
     }
 
     public Workout getWorkoutsByUserAndDate(String username, LocalDate date) {
-      return workoutRepository.findByProfile_User_UsernameAndDateTracked(username, date).get();
+        return workoutRepository.findByProfile_User_UsernameAndDateTracked(username, date).get();
 
     }
 
