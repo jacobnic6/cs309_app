@@ -24,30 +24,34 @@
             android:id="@+id/meal_type_spinner"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="#1A1A1A"
+            android:background="#2C2C2C"
             android:layout_marginBottom="16dp"
-            android:popupBackground="#1A1A1A"/>
+            android:popupBackground="#2C2C2C"/>
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/food_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Food Name"
-            android:textColorHint="#808080"
+            android:hint="Search food name"
+            android:textColorHint="#AAAAAA"
             android:textColor="#FFFFFF"
+            android:completionThreshold="3"
             android:padding="12dp"
-            android:background="#1A1A1A"
-            android:layout_marginBottom="16dp"/>
+            android:background="#2C2C2C"
+            android:layout_marginBottom="16dp"
+            android:popupBackground="#2C2C2C"
+            android:maxLines="1"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/serving_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Serving Size"
-            android:textColorHint="#808080"
+            android:textColorHint="#AAAAAA"
             android:textColor="#FFFFFF"
             android:padding="12dp"
-            android:background="#1A1A1A"
+            android:background="#2C2C2C"
             android:layout_marginBottom="16dp"/>
 
         <EditText
@@ -56,10 +60,10 @@
             android:layout_height="wrap_content"
             android:hint="Calories"
             android:inputType="number"
-            android:textColorHint="#808080"
+            android:textColorHint="#AAAAAA"
             android:textColor="#FFFFFF"
             android:padding="12dp"
-            android:background="#1A1A1A"
+            android:background="#2C2C2C"
             android:layout_marginBottom="16dp"/>
 
         <EditText
@@ -68,10 +72,10 @@
             android:layout_height="wrap_content"
             android:hint="Protein (g)"
             android:inputType="numberDecimal"
-            android:textColorHint="#808080"
+            android:textColorHint="#AAAAAA"
             android:textColor="#FFFFFF"
             android:padding="12dp"
-            android:background="#1A1A1A"
+            android:background="#2C2C2C"
             android:layout_marginBottom="16dp"/>
 
         <EditText
@@ -80,10 +84,10 @@
             android:layout_height="wrap_content"
             android:hint="Carbs (g)"
             android:inputType="numberDecimal"
-            android:textColorHint="#808080"
+            android:textColorHint="#AAAAAA"
             android:textColor="#FFFFFF"
             android:padding="12dp"
-            android:background="#1A1A1A"
+            android:background="#2C2C2C"
             android:layout_marginBottom="16dp"/>
 
         <EditText
@@ -92,10 +96,10 @@
             android:layout_height="wrap_content"
             android:hint="Fat (g)"
             android:inputType="numberDecimal"
-            android:textColorHint="#808080"
+            android:textColorHint="#AAAAAA"
             android:textColor="#FFFFFF"
             android:padding="12dp"
-            android:background="#1A1A1A"
+            android:background="#2C2C2C"
             android:layout_marginBottom="24dp"/>
 
         <LinearLayout
@@ -122,6 +126,5 @@
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#6366f1"/>
         </LinearLayout>
-
     </LinearLayout>
 </ScrollView>
