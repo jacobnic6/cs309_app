@@ -46,6 +46,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.Random;
+
+
 public class UserProfileActivity extends AppCompatActivity {
 
     // In Out Interface
@@ -60,6 +63,8 @@ public class UserProfileActivity extends AppCompatActivity {
     // Body diagram
     private ImageView frontAvatar;
     private ImageView backAvatar;
+
+    int rand;
 
 
 
@@ -99,7 +104,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                    sendPutRequest(jsonObject, username);
+                    sendPostRequest(jsonObject, username);
                 }
 
                 else if (input.matches("[a-zA-Z]+")) {
@@ -108,7 +113,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                    sendPutRequest(jsonObject, username);
+                    sendPostRequest(jsonObject, username);
                 }
 
                 else if (isFloat(input)) {
@@ -117,7 +122,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                    sendPutRequest(jsonObject, username);
+                    sendPostRequest(jsonObject, username);
                 }
 
                 }
@@ -335,9 +340,9 @@ private boolean isbicpsRegion(int x, int y) {
 
          */
         // Set progress data and update progress bar
-        progressText.setText(muscleGroup + " Progress: " + getProgressForMuscle(muscleGroup) + "%");
+        progressText.setText(muscleGroup + " Progress: " + getBarPercentage(muscleGroup) + "%");
 
-        progressBar.setProgress(getProgressPercentageForMuscle(muscleGroup));
+        progressBar.setProgress(rand);
 
 
         // Set tier text
@@ -347,29 +352,30 @@ private boolean isbicpsRegion(int x, int y) {
 
 }
 
-    // Helper method to get progress for a specific muscle group
-    private int getProgressForMuscle(String muscleGroup) {
-
-    return 75;
-    }
-
     // Helper method to get progress percentage for a specific muscle group
-    private int getProgressPercentageForMuscle(String muscleGroup) {
-
-    return 75;
+    private int getBarPercentage(String muscleGroup) {
+        Random random = new Random();
+        rand = random.nextInt(101);
+    return rand;
     }
 
     private String getTier(String muscleGroup) {
 
-    return "Bronze";
+        if (rand >= 61) {
+            return "Gold";
+        } else if (rand >= 31) {
+            return "Silver";
+        } else {
+            return "Bronze";
+        }
     }
 
-    private void sendPutRequest(JSONObject jsonObject, String username) {
+    private void sendPostRequest(JSONObject jsonObject, String username) {
         String url = "http://coms-3090-058.class.las.iastate.edu:8080/profile/" + username;
 
 
         JsonObjectRequest request = new JsonObjectRequest(
-                    Request.Method.PUT, url, jsonObject,
+                    Request.Method.POST, url, jsonObject,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
