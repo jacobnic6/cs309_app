@@ -84,27 +84,39 @@ public class UserProfileActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String input = inputField.getText().toString().trim();
+                JSONObject jsonObject = new JSONObject();
+                // Check if the input is empty
+                if (input.isEmpty()) {
+                    Toast.makeText(UserProfileActivity.this, "Input cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Try to parse the input as an Integer
                 try {
-                    String name = inputField.getText().toString();
-                    float weight = Float.parseFloat(inputField.getText().toString());
-                    int height = Integer.parseInt(inputField.getText().toString());
-
-                    // Create JSON object
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("name", name);
-                    jsonObject.put("weight", weight);
+                    // Try to parse the input as an integer
+                    int height = Integer.parseInt(input);
                     jsonObject.put("height", height);
+                    sendPostRequest(jsonObject, username);
+                } catch (NumberFormatException | JSONException e1) {
+                    // Not an integer, try to parse as a float
+                    try {
+                        float height = Float.parseFloat(input);
+                        jsonObject.put("height", height);
+                        sendPostRequest(jsonObject, username);
+                    } catch (NumberFormatException | JSONException e2) {
 
-                    sendPostRequest(jsonObject);
+                    }
+                    try {
+                        // Not a float either, so treat as a String
+                        jsonObject.put("height", input); // Treat the input as a String
+                        sendPostRequest(jsonObject, username);
+                    }
+                    catch (NumberFormatException | JSONException e3) {
 
+                    }
                 }
-                catch (NumberFormatException e) {
-                    Toast.makeText(UserProfileActivity.this, "Invalid input format", Toast.LENGTH_SHORT).show();
                 }
-                catch (JSONException e) {
-                    Toast.makeText(UserProfileActivity.this, "Error creating JSON object", Toast.LENGTH_SHORT).show();
-                }
-            }
             });
 
 
@@ -329,8 +341,46 @@ private boolean isbicpsRegion(int x, int y) {
     return "Bronze";
     }
 
-    private void sendPostRequest(JSONObject jsonObject) {
+    private void sendPostRequest(JSONObject jsonObject, String username) {
+        String url = "http://coms-3090-058.class.las.iastate.edu:8080/bodyweights/" + username;
 
-    }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                    Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Toast.makeText(UserProfileActivity.this, "data Uploaded", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(UserProfileActivity.this, "Error posting request: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            )
+            {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    //                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+                    //                headers.put("Content-Type", "application/json");
+                    return headers;
+                }
+
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<String, String>();
+                    //                params.put("param1", "value1");
+                    //                params.put("param2", "value2");
+                    return params;
+                }
+            };
+
+            // Adding request to request queue
+            VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+        }
+
 
     }
