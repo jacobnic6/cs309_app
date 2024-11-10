@@ -100,7 +100,7 @@ public class MealService {
 
     // Update an existing meal
     public void updateMeal(String date, String userId, String mealType, JSONObject mealData, MealServiceCallback callback) {
-        String url = String.format("%s/meals/%s/%s", BASE_URL, date, userId);
+        String url = String.format("%s/meals/", BASE_URL,userId);
         Log.d(TAG, "Updating meal at URL: " + url);
         Log.d(TAG, "Meal data: " + mealData.toString());
 
@@ -124,7 +124,7 @@ public class MealService {
 
     // Delete a meal
     public void deleteMeal(String date, String userId, String mealType, MealServiceCallback callback) {
-        String url = String.format("%s/meals/%s/%s", BASE_URL, date, userId);
+        String url = String.format("%s/meals/meal/2", BASE_URL, date, userId);
         Log.d(TAG, "Deleting meal at URL: " + url);
 
         JSONObject deleteData = new JSONObject();
