@@ -21,12 +21,17 @@ import com.example.androidexample.api.MealService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class NutritionActivity extends AppCompatActivity {
     private static final String TAG = "NutritionActivity";
@@ -140,26 +145,7 @@ public class NutritionActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void deleteMeal(String mealType) {
-        String userId = getUserId();
-        String currentDate = getCurrentDate();
 
-        loadingDialog.show();
-        mealService.deleteMeal(currentDate, userId, mealType, new MealService.MealServiceCallback() {
-            @Override
-            public void onSuccess(JSONObject response) {
-                loadingDialog.dismiss();
-                Toast.makeText(NutritionActivity.this, "Meal deleted successfully", Toast.LENGTH_SHORT).show();
-                fetchDailyMeals();
-            }
-
-            @Override
-            public void onError(String error) {
-                loadingDialog.dismiss();
-                Toast.makeText(NutritionActivity.this, "Error deleting meal: " + error, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -338,18 +324,53 @@ public class NutritionActivity extends AppCompatActivity {
             }
         });
     }
-
     private void fetchIndividualMeals() {
         mealService.getMealsByDate(getCurrentDate(), getUserId(), new MealService.MealServiceCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 loadingDialog.dismiss();
                 try {
-                    // Update individual meal displays
-                    updateMealDisplay(breakfastCalories, response.optJSONObject("breakfast"));
-                    updateMealDisplay(lunchCalories, response.optJSONObject("lunch"));
-                    updateMealDisplay(dinnerCalories, response.optJSONObject("dinner"));
-                    updateMealDisplay(snacksCalories, response.optJSONObject("snacks"));
+                    // Initialize counters for each meal type
+                    int breakfastCals = 0;
+                    int lunchCals = 0;
+                    int dinnerCals = 0;
+                    int snacksCals = 0;
+
+                    // Get the meal list array
+                    JSONArray mealList = response.getJSONArray("mealList");
+
+                    // Iterate through each meal and categorize by mealType
+                    for (int i = 0; i < mealList.length(); i++) {
+                        JSONObject meal = mealList.getJSONObject(i);
+                        String mealType = meal.getString("mealType").toLowerCase();
+                        int calories = meal.getInt("calories");
+
+                        // Add calories to appropriate category
+                        switch (mealType) {
+                            case "breakfast":
+                                breakfastCals += calories;
+                                break;
+                            case "lunch":
+                                lunchCals += calories;
+                                break;
+                            case "dinner":
+                                dinnerCals += calories;
+                                break;
+                            case "snacks":
+                                snacksCals += calories;
+                                break;
+                        }
+                    }
+
+                    // Update UI with categorized totals
+                    breakfastCalories.setText(String.format("%d cal", breakfastCals));
+                    lunchCalories.setText(String.format("%d cal", lunchCals));
+                    dinnerCalories.setText(String.format("%d cal", dinnerCals));
+                    snacksCalories.setText(String.format("%d cal", snacksCals));
+
+                    // Store the meal list for reference (useful for edit/delete operations)
+                    storeMealsByType(mealList);
+
                 } catch (Exception e) {
                     Log.e(TAG, "Error updating meal displays", e);
                     Toast.makeText(NutritionActivity.this, "Error updating meal displays", Toast.LENGTH_SHORT).show();
@@ -364,6 +385,93 @@ public class NutritionActivity extends AppCompatActivity {
             }
         });
     }
+
+    // Store meals by type for later reference
+    private Map<String, List<JSONObject>> mealsByType = new HashMap<>();
+
+    private void storeMealsByType(JSONArray mealList) throws JSONException {
+        // Clear existing stored meals
+        mealsByType.clear();
+        mealsByType.put("breakfast", new ArrayList<>());
+        mealsByType.put("lunch", new ArrayList<>());
+        mealsByType.put("dinner", new ArrayList<>());
+        mealsByType.put("snacks", new ArrayList<>());
+
+        // Categorize each meal
+        for (int i = 0; i < mealList.length(); i++) {
+            JSONObject meal = mealList.getJSONObject(i);
+            String mealType = meal.getString("mealType").toLowerCase();
+            if (mealsByType.containsKey(mealType)) {
+                mealsByType.get(mealType).add(meal);
+            }
+        }
+    }
+
+    // Helper method to get meals of a specific type
+    private List<JSONObject> getMealsByType(String mealType) {
+        return mealsByType.getOrDefault(mealType.toLowerCase(), new ArrayList<>());
+    }
+
+    // Update the deleteMeal method to handle stored meals
+    private void deleteMeal(String mealType) {
+        loadingDialog.show();
+
+        // Get the meals of this type
+        List<JSONObject> mealsOfType = getMealsByType(mealType);
+
+        // Reset the calories display for this meal type
+        switch(mealType.toLowerCase()) {
+            case "breakfast":
+                breakfastCalories.setText("0 cal");
+                break;
+            case "lunch":
+                lunchCalories.setText("0 cal");
+                break;
+            case "dinner":
+                dinnerCalories.setText("0 cal");
+                break;
+            case "snacks":
+                snacksCalories.setText("0 cal");
+                break;
+        }
+
+        // Remove the meals from our stored map
+        mealsByType.get(mealType.toLowerCase()).clear();
+
+        // Update nutrition totals
+        try {
+            int deletedCalories = 0;
+            int deletedProtein = 0;
+            int deletedCarbs = 0;
+            int deletedFat = 0;
+
+            // Calculate totals from the deleted meals
+            for (JSONObject meal : mealsOfType) {
+                deletedCalories += meal.getInt("calories");
+                deletedProtein += meal.getInt("protein");
+                deletedCarbs += meal.getInt("carbs");
+                deletedFat += meal.getInt("fat");
+            }
+
+            // Update current totals
+            currentCalories -= deletedCalories;
+            currentProtein -= deletedProtein;
+            currentCarbs -= deletedCarbs;
+            currentFat -= deletedFat;
+
+            // Update displays
+            updateNutritionDisplays();
+            loadingDialog.dismiss();
+            Toast.makeText(NutritionActivity.this, "Meal deleted successfully", Toast.LENGTH_SHORT).show();
+
+        } catch (JSONException e) {
+            Log.e(TAG, "Error calculating deleted meal totals", e);
+            loadingDialog.dismiss();
+            Toast.makeText(NutritionActivity.this, "Error updating meal totals", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
     private void updateMealDisplay(TextView mealTextView, JSONObject mealData) {
         if (mealData != null) {
