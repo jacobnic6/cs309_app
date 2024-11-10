@@ -110,11 +110,15 @@ public class UserController {
      */
 //DELETE
     @DeleteMapping(path = "/{id}")
-    String deleteUser(@PathVariable int id) {
-        // userRepository.deleteById(id);
+    String deleteUser(@PathVariable String id) {
+        int userId =0;
+        if(!ServiceHandler.isNumeric(id)){
+             userId = userServiceHandler.getByUsername(id).getId();
+        }else{
+            userId = Integer.parseInt(id);
+        }
 
-
-        return userServiceHandler.deleteUser(id);
+        return userServiceHandler.deleteUser(userId);
     }
 
 

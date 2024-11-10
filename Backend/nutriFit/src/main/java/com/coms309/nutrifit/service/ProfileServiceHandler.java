@@ -51,12 +51,15 @@ public class ProfileServiceHandler {
      * @return the profile
      */
     public Profile addProfile(Profile profile) {
+            if(profile == null){
+                throw new NullPointerException("profile null");
+            }
+        User user = profile.getUser();
+            user.setProfile(profile);
 
-        if (profileRepository.findByUser(profile.getUser()) == null) {
-            profile.setMuscleProgress(getMusclesMap());
-            return profileRepository.save(profile);
-        }
-        return profileRepository.findByUser(profile.getUser());
+
+
+        return userRepository.save(user).getProfile();
 
     }
 
@@ -103,11 +106,8 @@ public class ProfileServiceHandler {
 
         if (profile == null) {
             profile = new Profile(user);
-            profile.setMuscleProgress(getMusclesMap());
             user.setProfile(profile);
             userRepository.saveAndFlush(user);
-        } else {
-
         }
 
 

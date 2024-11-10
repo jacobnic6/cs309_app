@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,27 +27,27 @@ public class Profile {
     @Column(name = "user_id")
     private int id;
 
-    @Column(name = "name")
+    @Column(name = "username")
     private String name;
 
     @OneToMany(mappedBy = "profile")
-    private List<UserMuscleProgress> muscleProgress = new ArrayList<>();
-
-//    @ElementCollection
-//    private Map<String, Integer> muscleProgress;
+    private List<UserMuscleProgress> muscleProgress;
 
 
-    @OneToOne
+
+
+    @OneToOne(optional = false)
     @MapsId
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
 
 
+    @Column
     private double weight;
 
-    @OneToMany(mappedBy = "profile")
-    private List<Workout> workouts = new ArrayList<>();
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Workout> workouts;
 
     @Column
     private int height;
@@ -79,7 +80,7 @@ public class Profile {
      *
      * @param workout the workout
      */
-    public void AddWorkout(Workout workout) {
+    public void addWorkout(Workout workout) {
         if (this.workouts == null) {
             this.workouts = new ArrayList<>();
         }

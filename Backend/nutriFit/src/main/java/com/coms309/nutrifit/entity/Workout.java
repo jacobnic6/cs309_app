@@ -1,11 +1,10 @@
 package com.coms309.nutrifit.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -20,18 +19,19 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "workouts")
 public class Workout {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
 
-    @ElementCollection
+    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
     private List<WorkoutSet> activities;
 
 
+    @JsonProperty("totalWeight")
     private double totalWeight;
 
 
@@ -40,7 +40,7 @@ public class Workout {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Profile profile;
 
-    @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTracked;
 
     /**
@@ -59,11 +59,7 @@ public class Workout {
     /**
      * Instantiates a new Workout.
      */
-    public Workout() {
-        this.profile = null;
-        activities = new ArrayList<>();
-        this.dateTracked = LocalDate.now();
-    }
+
 
     /**
      * Add activity.
@@ -84,7 +80,7 @@ public class Workout {
      * Update total weight.
      */
     public void updateTotalWeight() {
-        if (activities != null) {
+        if (activities != null ) {
             double tempTotal = 0;
             for (WorkoutSet set : activities) {
                 double weight = set.getWeight() * set.getReps() * set.getSets();

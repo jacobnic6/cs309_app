@@ -1,6 +1,7 @@
 package com.coms309.nutrifit.entity;
 
-import lombok.Value;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -9,10 +10,16 @@ import java.io.Serializable;
  */
 @Value
 public class WorkoutSetDto implements Serializable {
+    @JsonProperty("category")
     String category;
+    @JsonProperty("exerciseName")
     String exerciseName;
-    int weight;
-    int reps;
+    @JsonProperty("weight")
+   int weight;
+    @JsonProperty("reps")
+     int reps;
+    @JsonProperty("sets")
     int sets;
-    int setTotal;
+    @JsonProperty("setTotal")
+     int setTotal;
 }

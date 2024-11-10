@@ -35,11 +35,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserMeals> meals = new ArrayList<>();
 
-    @OneToMany(mappedBy = "firstUser")
+    @OneToMany(mappedBy = "firstUser", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Friend> friends;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,  orphanRemoval = true)
     @JsonIgnore
     private UserSettings settings;
 
@@ -56,7 +56,7 @@ public class User {
     private String email;
 
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)

@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "friends", uniqueConstraints = @UniqueConstraint( columnNames = {"first_user_id", "second_user_id"}))
+@Table(name = "friends")
 public class Friend {
 
     @Id
@@ -32,15 +32,15 @@ public class Friend {
      * The First user.
      */
     @ManyToOne
-    @JoinColumn(referencedColumnName = "id", nullable = false)
-    User firstUser;
+    @JoinColumn(referencedColumnName = "id")
+   private User firstUser;
 
     /**
      * The Second user.
      */
     @ManyToOne
-    @JoinColumn(referencedColumnName = "id", nullable = false)
-    User secondUser;
+    @JoinColumn(referencedColumnName = "id")
+   private User secondUser;
 
     /**
      * Instantiates a new Friend.

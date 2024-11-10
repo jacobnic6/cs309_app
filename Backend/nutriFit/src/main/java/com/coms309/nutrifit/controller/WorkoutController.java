@@ -1,6 +1,7 @@
 package com.coms309.nutrifit.controller;
 
 import com.coms309.nutrifit.entity.Workout;
+import com.coms309.nutrifit.entity.WorkoutDto;
 import com.coms309.nutrifit.entity.WorkoutSet;
 import com.coms309.nutrifit.service.ProfileServiceHandler;
 import com.coms309.nutrifit.service.WorkoutServiceHandler;
@@ -36,16 +37,17 @@ public class WorkoutController {
      * @param workout  the workout
      * @return the workout
      */
-    @PostMapping("/{username}")
-    public Workout createWorkout(@PathVariable String username, @RequestBody Workout workout) {
+
+    @PostMapping("/{username}/{date}")
+    public Workout createWorkout(@PathVariable String username, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 
 
-        return workoutServiceHandler.addWorkoutByUsername(username, workout);
+        return workoutServiceHandler.createWorkout(username, date);
     }
 
-    @PostMapping("/set/{date}/")
+    @PostMapping("/add/{date}/{username}")
     public Workout addActivity(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                               @RequestParam String username, @RequestBody WorkoutSet set) {
+                               @PathVariable String username, @RequestBody WorkoutSet set) {
         return workoutServiceHandler.addSet(date, username, set);
     }
 

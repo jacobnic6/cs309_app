@@ -24,13 +24,17 @@ public class UserMuscleProgress {
     @JsonProperty("muscle")
     private UserMuscles muscle;
 
-
-
+    @JsonProperty(value = "progress", defaultValue = "0")
     private int progress;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "profile_id")
     private Profile profile;
+
+
+
+
+
 
 
 }

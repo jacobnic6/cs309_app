@@ -121,13 +121,25 @@ public class UserServiceHandler extends ServiceHandler {
      */
 //DELETE
     public String deleteUser(int id) {
-        if (userRepository.findById(id) == null) {
+        User user = userRepository.findById(id);
+        if (user == null) {
             return "User " + id + " does not exist";
         }
-        String deleteMessage = "User " + id + " has been deleted";
+        // Delete all friendships where this user is involved
+        List<Friend> friendsByFirst = friendRepository.findByFirstUser(user);
+        List<Friend> friendsBySecond = friendRepository.findBySecondUser(user);
+
+        for (Friend friend : friendsByFirst) {
+            friendRepository.delete(friend);
+        }
+        for (Friend friend : friendsBySecond) {
+            friendRepository.delete(friend);
+        }
+
+        // Now it's safe to delete the user
         userRepository.deleteById(id);
 
-        return deleteMessage;
+        return "User " + id + " has been deleted";
     }
 
     /**

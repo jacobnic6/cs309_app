@@ -1,15 +1,18 @@
 package com.coms309.nutrifit.service;
 
 import com.coms309.nutrifit.entity.Profile;
+import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.entity.Workout;
 import com.coms309.nutrifit.entity.WorkoutSet;
 import com.coms309.nutrifit.repo.ProfileRepository;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.repo.WorkoutRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,32 +36,34 @@ public class WorkoutServiceHandler {
     @Autowired
     ProfileRepository profileRepository;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     /**
      * Add workout by username workout.
      *
      * @param username the username
-     * @param workout  the workout
+     * @param date
      * @return the workout
      */
-    public Workout addWorkoutByUsername(String username, Workout workout) {
+    public Workout createWorkout(String username, LocalDate date) {
+    if(!userRepository.existsByUsername(username)){
+        throw new NullPointerException("User not found");
+    }
+    User user = userRepository.findByUsername(username);
+    Profile profile = profileRepository.findByUser(user);
+    if(workoutRepository.existsByProfileAndDateTracked(profile, date)){
+        return workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
+    }
 
-        Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
+    Workout workout = new Workout(profile);
 
-        if (!workout.getActivities().isEmpty()) {
-            workout.updateTotalWeight();
-        }
-
-
-//       List<WorkoutSet> setList = workout.getActivities();
-//       for (WorkoutSet set : setList) {
-//           double temp = set.getWeightLifted() * set.getRepetitions();
-//           weightLifted += temp;
-//       }
-//       workout.setTotalWeight(weightLifted);
+    profile.addWorkout(workout);
 
 
-        profile.AddWorkout(workout);
-        workout.setProfile(profile);
+
+
+
         return workoutRepository.save(workout);
 
 
@@ -136,16 +141,21 @@ public class WorkoutServiceHandler {
 
     public Workout addSet(LocalDate date, String username, WorkoutSet set) {
 
-        Workout workout = workoutRepository
-                .findByProfile_User_UsernameAndDateTracked(username, date).orElse(new Workout());
-        Profile profile = profileRepository
-                .findByUser_Username(username).orElse(new Profile(userRepository.findByUsername(username)));
-        profileRepository.save(profile);
+        Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
 
-        workout.setProfile(profile);
-        workout.setDateTracked(date);
-        workout.addActivity(set);
-        workout.updateTotalWeight();
+      Workout workout =  workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
+
+
+
+       set.setWorkout(workout);
+       workout.addActivity(set);
+       workout.updateTotalWeight();
+
+
+
+
+
+
         return workoutRepository.save(workout);
 
     }
