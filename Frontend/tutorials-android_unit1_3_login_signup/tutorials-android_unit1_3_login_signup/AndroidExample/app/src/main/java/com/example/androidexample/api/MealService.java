@@ -21,6 +21,33 @@ public class MealService {
     }
 
     // Get meals for a specific date
+    public void getMealTotals(String date, String userId, MealServiceCallback callback) {
+        String url = String.format("%s/meals/totals/%s/?username=%s", BASE_URL, date, userId);
+        Log.d(TAG, "Getting meal totals from URL: " + url);
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                response -> {
+                    Log.d(TAG, "Successfully fetched meal totals for date: " + date);
+                    Log.d(TAG, "Response: " + response.toString());
+                    callback.onSuccess(response);
+                },
+                error -> {
+                    Log.e(TAG, "Error fetching meal totals: " + error.toString());
+                    if (error.networkResponse != null) {
+                        Log.e(TAG, "Error status code: " + error.networkResponse.statusCode);
+                        Log.e(TAG, "Error data: " + new String(error.networkResponse.data));
+                    }
+                    callback.onError("Failed to fetch meal totals");
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    // Get meals for a specific date
     public void getMealsByDate(String date, String userId, MealServiceCallback callback) {
         String url = String.format("%s/meals/%s/%s", BASE_URL, date, userId);
         Log.d(TAG, "Getting meals from URL: " + url);
@@ -36,6 +63,10 @@ public class MealService {
                 },
                 error -> {
                     Log.e(TAG, "Error fetching meals: " + error.toString());
+                    if (error.networkResponse != null) {
+                        Log.e(TAG, "Error status code: " + error.networkResponse.statusCode);
+                        Log.e(TAG, "Error data: " + new String(error.networkResponse.data));
+                    }
                     callback.onError("Failed to fetch meals");
                 }
         );
@@ -45,7 +76,7 @@ public class MealService {
 
     // Add a new meal
     public void addMeal(String date, String userId, JSONObject mealData, MealServiceCallback callback) {
-        String url = String.format("%s/meals/add/%s/%s", BASE_URL, date, userId);
+        String url = String.format("%s/meals/food/%s/%s", BASE_URL, date, userId);
         Log.d(TAG, "Adding meal at URL: " + url);
         Log.d(TAG, "Meal data: " + mealData.toString());
 

@@ -164,10 +164,116 @@ public class NutritionActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == ADD_MEAL_REQUEST_CODE || requestCode == EDIT_MEAL_REQUEST_CODE) {
-                fetchDailyMeals();
+        if (resultCode == RESULT_OK && data != null) {
+            try {
+                if (requestCode == ADD_MEAL_REQUEST_CODE) {
+                    String newMealJson = data.getStringExtra("newMeal");
+                    String mealType = data.getStringExtra("mealType");
+                    if (newMealJson != null) {
+                        JSONObject newMeal = new JSONObject(newMealJson);
+                        updateTotalsWithNewMeal(newMeal);
+                        updateMealTypeDisplay(mealType, newMeal);
+                    }
+                } else if (requestCode == EDIT_MEAL_REQUEST_CODE) {
+                    String updatedMealJson = data.getStringExtra("updatedMeal");
+                    String mealType = data.getStringExtra("mealType");
+                    if (updatedMealJson != null) {
+                        // Full refresh since we need to recalculate everything for edits
+                        fetchDailyMeals();
+                    }
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Error processing meal data", e);
+                fetchDailyMeals(); // Fallback to full refresh
             }
+        }
+    }
+
+    private void updateTotalsWithNewMeal(JSONObject newMeal) throws JSONException {
+        // Update overall totals
+        currentCalories += newMeal.getInt("calories");
+        currentProtein += newMeal.getInt("protein");
+        currentCarbs += newMeal.getInt("carbs");
+        currentFat += newMeal.getInt("fat");
+
+        // Update nutrition displays
+        updateNutritionDisplays();
+    }
+
+    private void updateMealTypeDisplay(String mealType, JSONObject meal) throws JSONException {
+        TextView targetTextView;
+        switch (mealType.toLowerCase()) {
+            case "breakfast":
+                targetTextView = breakfastCalories;
+                break;
+            case "lunch":
+                targetTextView = lunchCalories;
+                break;
+            case "dinner":
+                targetTextView = dinnerCalories;
+                break;
+            case "snacks":
+                targetTextView = snacksCalories;
+                break;
+            default:
+                return;
+        }
+
+        // Get current calories from TextView
+        String currentText = targetTextView.getText().toString();
+        int currentCalories = 0;
+        try {
+            currentCalories = Integer.parseInt(currentText.replaceAll("[^0-9]", ""));
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Error parsing current calories", e);
+        }
+
+        // Add new calories
+        int newTotalCalories = currentCalories + meal.getInt("calories");
+        targetTextView.setText(String.format("%d cal", newTotalCalories));
+    }
+
+    private void updateNutritionDisplays() {
+        // Update progress bars
+        caloriesProgress.setProgress((currentCalories * 100) / DAILY_CALORIES_GOAL);
+        proteinProgress.setProgress((currentProtein * 100) / DAILY_PROTEIN_GOAL);
+        carbsProgress.setProgress((currentCarbs * 100) / DAILY_CARBS_GOAL);
+        fatProgress.setProgress((currentFat * 100) / DAILY_FAT_GOAL);
+
+        // Update remaining calories
+        int remainingCalories = DAILY_CALORIES_GOAL - currentCalories;
+        caloriesRemaining.setText(String.format("%d calories remaining", remainingCalories));
+
+        // Log the update for debugging
+        Log.d(TAG, String.format("Updated totals - Cal: %d, Pro: %d, Carbs: %d, Fat: %d",
+                currentCalories, currentProtein, currentCarbs, currentFat));
+    }
+
+    // Add convenience method to update a single meal type's macros
+    private void updateMealTypeMacros(String mealType, JSONObject mealData) {
+        try {
+            TextView targetTextView = null;
+            switch (mealType.toLowerCase()) {
+                case "breakfast":
+                    targetTextView = breakfastCalories;
+                    break;
+                case "lunch":
+                    targetTextView = lunchCalories;
+                    break;
+                case "dinner":
+                    targetTextView = dinnerCalories;
+                    break;
+                case "snacks":
+                    targetTextView = snacksCalories;
+                    break;
+            }
+
+            if (targetTextView != null) {
+                int calories = mealData.getInt("calories");
+                targetTextView.setText(String.format("%d cal", calories));
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error updating meal macros", e);
         }
     }
 
@@ -200,58 +306,82 @@ public class NutritionActivity extends AppCompatActivity {
         String currentDate = getCurrentDate();
 
         loadingDialog.show();
-        mealService.getMealsByDate(currentDate, userId, new MealService.MealServiceCallback() {
+
+        // First fetch the totals
+        mealService.getMealTotals(currentDate, userId, new MealService.MealServiceCallback() {
             @Override
             public void onSuccess(JSONObject response) {
-                loadingDialog.dismiss();
                 try {
+                    // Update the UI with totals
                     currentCalories = response.getInt("totalCalories");
                     currentProtein = response.getInt("totalProtein");
                     currentCarbs = response.getInt("totalCarbs");
                     currentFat = response.getInt("totalFat");
 
-                    updateMealDisplay(breakfastCalories, response.getInt("breakfastCalories"));
-                    updateMealDisplay(lunchCalories, response.getInt("lunchCalories"));
-                    updateMealDisplay(dinnerCalories, response.getInt("dinnerCalories"));
-                    updateMealDisplay(snacksCalories, response.getInt("snacksCalories"));
+                    // Now fetch individual meals
+                    fetchIndividualMeals();
 
+                    // Update the progress bars and remaining calories
                     updateNutritionDisplays();
                 } catch (JSONException e) {
-                    Log.e(TAG, "Error parsing meal data", e);
-                    Toast.makeText(NutritionActivity.this, "Error parsing meal data", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error parsing meal totals", e);
+                    loadingDialog.dismiss();
+                    Toast.makeText(NutritionActivity.this, "Error parsing meal totals", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "Error fetching meal totals: " + error);
+                loadingDialog.dismiss();
+                Toast.makeText(NutritionActivity.this, "Error fetching meal totals", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchIndividualMeals() {
+        mealService.getMealsByDate(getCurrentDate(), getUserId(), new MealService.MealServiceCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                loadingDialog.dismiss();
+                try {
+                    // Update individual meal displays
+                    updateMealDisplay(breakfastCalories, response.optJSONObject("breakfast"));
+                    updateMealDisplay(lunchCalories, response.optJSONObject("lunch"));
+                    updateMealDisplay(dinnerCalories, response.optJSONObject("dinner"));
+                    updateMealDisplay(snacksCalories, response.optJSONObject("snacks"));
+                } catch (Exception e) {
+                    Log.e(TAG, "Error updating meal displays", e);
+                    Toast.makeText(NutritionActivity.this, "Error updating meal displays", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onError(String error) {
                 loadingDialog.dismiss();
-                Log.e(TAG, "Error fetching meals: " + error);
+                Log.e(TAG, "Error fetching individual meals: " + error);
                 Toast.makeText(NutritionActivity.this, "Error fetching meals", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void updateMealDisplay(TextView mealTextView, JSONObject mealData) {
+        if (mealData != null) {
+            int calories = mealData.optInt("calories", 0);
+            mealTextView.setText(String.format("%d cal", calories));
+        } else {
+            mealTextView.setText("0 cal");
+        }
+    }
+
+
+
     private String getUserId() {
-        // TODO: Implement actual user ID retrieval from your authentication system
+        // Make sure this matches your expected user ID
         return "Bauer6445";
     }
 
     private String getCurrentDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        return sdf.format(new Date());
-    }
-
-    private void updateMealDisplay(TextView mealTextView, int calories) {
-        mealTextView.setText(calories + " cal");
-    }
-
-    private void updateNutritionDisplays() {
-        caloriesProgress.setProgress((currentCalories * 100) / DAILY_CALORIES_GOAL);
-        proteinProgress.setProgress((currentProtein * 100) / DAILY_PROTEIN_GOAL);
-        carbsProgress.setProgress((currentCarbs * 100) / DAILY_CARBS_GOAL);
-        fatProgress.setProgress((currentFat * 100) / DAILY_FAT_GOAL);
-
-        int remainingCalories = DAILY_CALORIES_GOAL - currentCalories;
-        caloriesRemaining.setText(remainingCalories + " calories remaining");
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
     }
 }

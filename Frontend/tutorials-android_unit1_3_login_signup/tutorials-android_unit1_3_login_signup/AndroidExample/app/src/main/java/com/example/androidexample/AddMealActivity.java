@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.toolbox.Volley;
@@ -213,7 +212,9 @@ public class AddMealActivity extends AppCompatActivity {
             public void onSuccess(JSONObject response) {
                 loadingDialog.dismiss();
                 try {
+                    Log.d(TAG, "Got response for editing: " + response.toString());
                     JSONObject mealData = response.getJSONObject(mealType.toLowerCase());
+                    Log.d(TAG, "Meal data for editing: " + mealData.toString());
 
                     runOnUiThread(() -> {
                         foodNameInput.setText(mealData.optString("foodName", ""));
@@ -225,7 +226,7 @@ public class AddMealActivity extends AppCompatActivity {
                     });
 
                 } catch (JSONException e) {
-                    Log.e(TAG, "Error parsing meal data for editing", e);
+                    Log.e(TAG, "Error parsing meal data for editing: " + e.getMessage());
                     showError("Error loading meal data");
                 }
             }
@@ -260,7 +261,11 @@ public class AddMealActivity extends AppCompatActivity {
                     Integer.parseInt(carbsInput.getText().toString().trim()));
             mealData.put("fat", fatInput.getText().toString().isEmpty() ? 0 :
                     Integer.parseInt(fatInput.getText().toString().trim()));
-            mealData.put("mealType", mealTypeSpinner.getSelectedItem().toString().toLowerCase());
+
+            String selectedMealType = mealTypeSpinner.getSelectedItem().toString().toLowerCase();
+            mealData.put("mealType", selectedMealType);
+
+            Log.d(TAG, "Saving meal data: " + mealData.toString());
 
             String userId = getUserId();
             String currentDate = getCurrentDate();
@@ -271,6 +276,11 @@ public class AddMealActivity extends AppCompatActivity {
                 mealService.updateMeal(currentDate, userId, mealType, mealData, new MealService.MealServiceCallback() {
                     @Override
                     public void onSuccess(JSONObject response) {
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("updatedMeal", mealData.toString());
+                        resultIntent.putExtra("mealType", mealType);
+                        Log.d(TAG, "Setting result for edit with type: " + mealType);
+                        setResult(RESULT_OK, resultIntent);
                         handleSaveSuccess("Meal updated successfully");
                     }
 
@@ -283,6 +293,11 @@ public class AddMealActivity extends AppCompatActivity {
                 mealService.addMeal(currentDate, userId, mealData, new MealService.MealServiceCallback() {
                     @Override
                     public void onSuccess(JSONObject response) {
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("newMeal", mealData.toString());
+                        resultIntent.putExtra("mealType", selectedMealType);
+                        Log.d(TAG, "Setting result for new meal with type: " + selectedMealType);
+                        setResult(RESULT_OK, resultIntent);
                         handleSaveSuccess("Meal added successfully");
                     }
 
@@ -294,9 +309,10 @@ public class AddMealActivity extends AppCompatActivity {
             }
 
         } catch (JSONException e) {
-            Log.e(TAG, "Error creating meal JSON", e);
+            Log.e(TAG, "Error creating meal JSON: " + e.getMessage());
             showError("Error saving meal data");
         } catch (NumberFormatException e) {
+            Log.e(TAG, "Error parsing numbers: " + e.getMessage());
             showError("Please enter valid numbers");
         }
     }
@@ -305,7 +321,6 @@ public class AddMealActivity extends AppCompatActivity {
         runOnUiThread(() -> {
             loadingDialog.dismiss();
             Toast.makeText(AddMealActivity.this, message, Toast.LENGTH_SHORT).show();
-            setResult(RESULT_OK);
             finish();
         });
     }
@@ -325,7 +340,7 @@ public class AddMealActivity extends AppCompatActivity {
 
     private String getUserId() {
         // TODO: Implement actual user ID retrieval from your authentication system
-        return "Bauer6445";
+        return "Bauer6445"; // Updated to match your API
     }
 
     private String getCurrentDate() {
