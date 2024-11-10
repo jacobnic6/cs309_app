@@ -100,7 +100,7 @@ public class MealService {
 
     // Update an existing meal
     public void updateMeal(String date, String userId, String mealType, JSONObject mealData, MealServiceCallback callback) {
-        String url = String.format("%s/meals/", BASE_URL,userId);
+        String url = String.format("%s/meals/2");
         Log.d(TAG, "Updating meal at URL: " + url);
         Log.d(TAG, "Meal data: " + mealData.toString());
 
