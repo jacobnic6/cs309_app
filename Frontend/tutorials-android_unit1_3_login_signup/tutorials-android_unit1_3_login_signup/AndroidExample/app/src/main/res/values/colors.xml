@@ -7,5 +7,12 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="accent_color">#6200EE</color>  <!-- Material Design Purple -->
+    <color name="text_primary">#000000</color>
+    <color name="dark_background">#121212</color>
+    <color name="dark_surface">#FFFFFF</color>
+
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
 
 </resources>
