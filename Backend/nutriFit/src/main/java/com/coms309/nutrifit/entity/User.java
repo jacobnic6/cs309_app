@@ -40,7 +40,6 @@ public class User {
     private List<Friend> friends;
 
     @OneToOne(cascade = CascadeType.ALL,  orphanRemoval = true)
-    @JsonIgnore
     private UserSettings settings;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)

@@ -1,8 +1,12 @@
 package com.coms309.nutrifit.service;
 
+import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.entity.UserSettings;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.repo.UserSettingsRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +20,8 @@ public class UserSettingsServiceHandler {
 
     private final UserSettingsRepository userSettingsRepository;
     private final UserRepository userRepository;
+private final ObjectMapper mapper;
+
 
     private final String success = "{\"message\":\"success\"}";
     private final String failure = "{\"message\":\"failure\"}";
@@ -26,9 +32,11 @@ public class UserSettingsServiceHandler {
      * @param userSettingsRepository the user settings repository
      * @param userRepository         the user repository
      */
-    public UserSettingsServiceHandler(UserSettingsRepository userSettingsRepository, UserRepository userRepository) {
+    @Autowired
+    public UserSettingsServiceHandler(UserSettingsRepository userSettingsRepository, UserRepository userRepository, ObjectMapper mapper) {
         this.userSettingsRepository = userSettingsRepository;
         this.userRepository = userRepository;
+        this.mapper = mapper;
     }
 
     /**
@@ -63,30 +71,39 @@ public class UserSettingsServiceHandler {
     /**
      * Update settings user settings.
      *
-     * @param id       the id
+     * @param username      the username
      * @param settings the settings
      * @return the user settings
      */
 //UPDATE
     @Transactional
-    public UserSettings updateSettings(int id, UserSettings settings) {
+    public UserSettings updateUserSettings(String username, UserSettings settings) {
+        if(!userRepository.existsByUsername(username)){
+            throw new EntityNotFoundException("No user with : " + username + " exists" );
 
-        if (!userSettingsRepository.existsById(id)) {
-            return null;
+        }
+    User u = userRepository.findByUsername(username);
+
+        UserSettings existingSettings = u.getSettings();
+        if (existingSettings == null) {
+            u.setSettings(settings);
+            settings.setId(u.getId());
+        }else{
+            existingSettings.setBiometricVisibility(settings.getBiometricVisibility());
+            existingSettings.setMeasurementUnits(settings.getMeasurementUnits());
+            existingSettings.setProfileVisibility(settings.getProfileVisibility());
+            existingSettings.setMessageNotifications(settings.isMessageNotifications());
+            existingSettings.setFriendRequestNotifications(settings.isFriendRequestNotifications());
+            existingSettings.setWorkoutRemindersEnabled(settings.isWorkoutRemindersEnabled());
         }
 
-        UserSettings existingSettings = userSettingsRepository.findById(id);
 
-        existingSettings.setBiometricVisibility(settings.getBiometricVisibility());
-        existingSettings.setMeasurementUnits(settings.getMeasurementUnits());
-        existingSettings.setProfileVisibility(settings.getProfileVisibility());
 
-        existingSettings.setMessageNotifications(settings.isMessageNotifications());
-        existingSettings.setWorkoutRemindersEnabled(settings.isWorkoutRemindersEnabled());
-        existingSettings.setFriendRequestNotifications(settings.isFriendRequestNotifications());
-        userSettingsRepository.saveAndFlush(existingSettings);
 
-        return userSettingsRepository.findById(id);
+
+userRepository.saveAndFlush(u);
+     return    userSettingsRepository.saveAndFlush(existingSettings);
+
 
     }
 
@@ -120,5 +137,13 @@ public class UserSettingsServiceHandler {
         userSettingsRepository.removeUserSettingsById(id);
 
         return "Settings " + id + " successfully deleted";
+    }
+
+    public UserSettings updateSettings(int id, UserSettings settings) {
+        String username = userRepository.findById(id).getUsername();
+        if(username.isEmpty()){
+            return null;
+        }
+        return updateUserSettings(username, settings);
     }
 }

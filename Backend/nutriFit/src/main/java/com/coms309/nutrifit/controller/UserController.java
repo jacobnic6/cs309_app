@@ -7,6 +7,7 @@ import com.coms309.nutrifit.service.ServiceHandler;
 import com.coms309.nutrifit.service.UserServiceHandler;
 import com.coms309.nutrifit.service.UserSettingsServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,14 +19,16 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
+    private final UserServiceHandler userServiceHandler;
+    private final UserSettingsServiceHandler userSettingsServiceHandler;
 
     @Autowired
-    private UserServiceHandler userServiceHandler;
+    public UserController(UserServiceHandler userServiceHandler, UserSettingsServiceHandler userSettingsServiceHandler) {
+        this.userServiceHandler = userServiceHandler;
+        this.userSettingsServiceHandler = userSettingsServiceHandler;
+    }
 
-    @Autowired
-    private UserSettingsServiceHandler settingsServiceHandler;
-    @Autowired
-    private UserRepository userRepository;
+
 
 
     /**
@@ -36,11 +39,23 @@ public class UserController {
      */
 //CREATE
     @PostMapping
-    String createUser(@RequestBody User user) {
+   public String createUser(@RequestBody User user) {
 
         return userServiceHandler.createUser(user);
     }
 
+
+    /**
+     * Gets user by id.
+     *
+     * @param username the id
+     * @return the user by id
+     */
+//READ
+    @GetMapping(path = "/{username}")
+    public User getUserByUsername(@PathVariable String username) {
+        return userServiceHandler.getByUsername(username);
+    }
 
     /**
      * Gets user by id.
@@ -50,43 +65,10 @@ public class UserController {
      */
 //READ
     @GetMapping(path = "/{id}")
-    public User getUserById(@PathVariable int id) {
-
+    public User getUser(@RequestParam int id) {
 
         return userServiceHandler.getUserById(id);
     }
-
-    /**
-     * Gets user by id.
-     *
-     * @param id the id
-     * @return the user by id
-     */
-//READ
-    @GetMapping(path = "/")
-    public User getUser(@RequestParam String id) {
-
-        if (ServiceHandler.isNumeric(id)) {
-            int userId = Integer.parseInt(id);
-
-            return userServiceHandler.getUserById(userId);
-        }
-        return userServiceHandler.getByUsername(id);
-    }
-
-
-    /**
-     * Gets user by username.
-     *
-     * @param username the username
-     * @return the user by username
-     */
-    @GetMapping(path = "/username/{username}")
-    public User getUserByUsername(@PathVariable String username) {
-
-        return userServiceHandler.getByUsername(username);
-    }
-
 
     /**
      * Update user user.
@@ -97,7 +79,7 @@ public class UserController {
      */
 //UPDATE
     @PutMapping(path = "/{id}")
-    User updateUser(@PathVariable int id, @RequestBody User user) {
+  public   User updateUser(@PathVariable int id, @RequestBody User user) {
 
         return userServiceHandler.updateUser(id, user);
     }
@@ -138,16 +120,15 @@ public class UserController {
     /**
      * Update user settings string.
      *
-     * @param userId       the user id
-     * @param settingsId   the settings id
+     * @param username      the user id
      * @param userSettings the user settings
      * @return the string
      */
 //update settings
-    @PutMapping(path = "/{userId}/settings/{settingsId}")
-    public String updateUserSettings(@PathVariable int userId, @PathVariable int settingsId, @RequestBody UserSettings userSettings) {
+    @PutMapping(path = "/{username}/settings")
+    public UserSettings updateUserSettings(@PathVariable String username, @RequestBody UserSettings userSettings) {
 
 
-        return userServiceHandler.updateUserSettings(userId, settingsId, userSettings);
+        return userSettingsServiceHandler.updateUserSettings(username,  userSettings);
     }
 }
