@@ -28,17 +28,18 @@
         <activity
             android:name=".LogWorkoutActivity"
             android:exported="false"/>
-
-        <activity android:name=".EditWorkoutActivity"
+        <activity
+            android:name=".EditWorkoutActivity"
             android:exported="false"/>
         <activity
             android:name=".main_five_pages.WorkoutActivity"
             android:exported="false"/>
-
+        <activity
+            android:name=".WorkoutListActivity"
+            android:exported="false"/>
         <activity
             android:name=".main_five_pages.UserProfileActivity"
             android:exported="false"/>
-
         <activity
             android:name=".editUserActivity"
             android:exported="false"/>
@@ -53,23 +54,15 @@
             android:name=".main_five_pages.SocialActivity"
             android:exported="false"/>
         <activity
+            android:name=".main_five_pages.SocialActivity"
+            android:exported="false"/>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
-
-
-
-
-
-
-
-
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
