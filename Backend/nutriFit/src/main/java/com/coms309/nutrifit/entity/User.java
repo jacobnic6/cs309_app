@@ -76,5 +76,9 @@ public class User {
     @Column
    private List<UserWeight> bodyWeights;
 
+    public void addUserWeight(UserWeight userWeight)
+        {
+            bodyWeights.add(userWeight);
+        }
 
 }

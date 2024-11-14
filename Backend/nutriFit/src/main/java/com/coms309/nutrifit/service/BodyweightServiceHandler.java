@@ -50,7 +50,8 @@ public class BodyweightServiceHandler extends ServiceHandler {
             return null;
         }
         UserWeight userWeight = new UserWeight(weight, date, u);
-        u.addBodyWeight(userWeight);
+        u.addUserWeight(userWeight);
+        bodyweightRepository.save(userWeight);
         userRepository.save(u);
         return bodyweightRepository.getByWeightDateAndUserId(date, u.getId());
     }

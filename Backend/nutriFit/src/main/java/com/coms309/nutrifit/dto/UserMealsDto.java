@@ -29,11 +29,11 @@ public class UserMealsDto implements Serializable {
     private LocalDate date;
 
     @ElementCollection
-    private List<MealDto> meals = new ArrayList<>();
+    private List<MealDto> meals;
 
 
     @JsonProperty(value = "nutrientTotals", required = true, defaultValue = "{}")
-    private Map<String, Integer> nutrientTotals = new HashMap<>();
+    private Map<String, Integer> nutrientTotals;
 
 
 }
