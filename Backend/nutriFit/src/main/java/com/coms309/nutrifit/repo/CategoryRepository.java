@@ -4,11 +4,32 @@ import com.coms309.nutrifit.exercises.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+/**
+ * The interface Category repository.
+ */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
-  Category findByName(String category);
+    /**
+     * Find by name category.
+     *
+     * @param category the category
+     * @return the category
+     */
+    Category findByName(String category);
 
-  boolean existsByName(String text);
+    /**
+     * Exists by name boolean.
+     *
+     * @param text the text
+     * @return the boolean
+     */
+    boolean existsByName(String text);
 
-  Category getByName(String name);
+    /**
+     * Gets by name.
+     *
+     * @param name the name
+     * @return the by name
+     */
+    Category getByName(String name);
 }

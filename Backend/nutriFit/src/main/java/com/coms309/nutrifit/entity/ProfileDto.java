@@ -1,14 +1,20 @@
 package com.coms309.nutrifit.entity;
 
-import jakarta.persistence.Embedded;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.io.Serializable;
+
+/**
+ * The type Profile dto.
+ */
+@Builder
+@Data
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-public class ProfileDto {
+public class ProfileDto implements Serializable {
+
 
     private int id;
     private String name;
@@ -18,12 +24,5 @@ public class ProfileDto {
 
     private byte[] image;
 
-    public ProfileDto(Profile profile, byte[] image) {
-        this.id = profile.getId();
-        this.name = profile.getName();
-        this.weight = profile.getWeight();
-        this.height = profile.getHeight();
-        this.image = image;
 
-    }
 }

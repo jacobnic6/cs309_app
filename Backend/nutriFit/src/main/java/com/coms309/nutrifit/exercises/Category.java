@@ -1,16 +1,16 @@
 package com.coms309.nutrifit.exercises;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
+/**
+ * The type Category.
+ */
 @Entity
 @Getter
 @Setter
@@ -28,7 +28,11 @@ public class Category {
     private String name;
 
 
-
+    /**
+     * Instantiates a new Category.
+     *
+     * @param name the name
+     */
     public Category(String name) {
         this.name = name;
     }

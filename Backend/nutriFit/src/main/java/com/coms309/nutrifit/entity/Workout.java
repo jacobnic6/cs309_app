@@ -1,88 +1,97 @@
 package com.coms309.nutrifit.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-@Getter
-@Setter
+/**
+ * The type Workout.
+ */
+@Builder
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "workouts")
-public class Workout
-    {
-        @Id
-        @GeneratedValue(strategy =GenerationType.AUTO)
-        private int id;
+public class Workout {
+
+    @JsonProperty
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
+    @JsonProperty("activities")
+    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
+    private List<WorkoutSet> activities;
 
 
-        @ElementCollection
-        private List<WorkoutSet> activities;
+    @JsonProperty("totalWeight")
+    private double totalWeight;
 
 
+    @ManyToOne
+    @JoinColumn(name = "profile_id")
+    @JsonIgnore
+    private Profile profile;
 
-       private double totalWeight;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateTracked;
 
+    /**
+     * Instantiates a new Workout.
+     *
+     * @param profile the profile
+     */
+    public Workout(Profile profile) {
 
-
-        @ManyToOne(fetch = FetchType.EAGER)
-        @JsonIgnore
-        @OnDelete(action = OnDeleteAction.CASCADE)
-        private Profile profile;
-
-        @Column(nullable = false)
-        private LocalDate dateTracked;
-
-        public Workout( Profile profile){
-
-                this.profile = profile;
-                activities = new ArrayList<>();
-                this.dateTracked = LocalDate.now();
-
-        }
-        public Workout(){
-            this.profile = null;
-            activities = new ArrayList<>();
-            this.dateTracked = LocalDate.now();
-        }
-
-        public void addActivity(WorkoutSet set){
-            if(activities == null){
-                activities = new ArrayList<>();
-            }
-            if(!activities.contains(set)){
-                activities.add(set);
-            }
-
-        }
-
-        public void updateTotalWeight(){
-            if(activities != null){
-                double tempTotal = 0;
-                for(WorkoutSet set : activities){
-                    double weight = set.getWeightLifted() * set.getRepetitions();
-                    tempTotal += weight;
-                }
-                totalWeight = tempTotal;
-            }
-
-        }
-
-
-
-
+        this.profile = profile;
+        activities = new ArrayList<>();
+        this.dateTracked = LocalDate.now();
 
     }
+
+    /**
+     * Instantiates a new Workout.
+     */
+
+
+    /**
+     * Add activity.
+     *
+     * @param set the set
+     */
+    public void addActivity(WorkoutSet set) {
+        if (activities == null) {
+            activities = new ArrayList<>();
+        }
+        if (!activities.contains(set)) {
+            activities.add(set);
+        }
+
+    }
+
+    /**
+     * Update total weight.
+     */
+    public void updateTotalWeight() {
+        if (activities != null ) {
+            double tempTotal = 0;
+            for (WorkoutSet set : activities) {
+                double weight = set.getWeight() * set.getReps() * set.getSets();
+                tempTotal += weight;
+            }
+            totalWeight = tempTotal;
+        }
+
+    }
+
+
+}

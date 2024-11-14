@@ -1,7 +1,20 @@
 package com.coms309.nutrifit.util;
 
-public enum Visibility
-    {
-        PUBLIC, PRIVATE, FRIENDS
-    }
+/**
+ * The enum Visibility.
+ */
+public enum Visibility {
+    /**
+     * Public visibility.
+     */
+    PUBLIC,
+    /**
+     * Private visibility.
+     */
+    PRIVATE,
+    /**
+     * Friends visibility.
+     */
+    FRIENDS
+}
 

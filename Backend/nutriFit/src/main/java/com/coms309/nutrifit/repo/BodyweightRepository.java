@@ -12,22 +12,56 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * The interface Bodyweight repository.
+ */
 @Repository
-public interface BodyweightRepository extends JpaRepository<UserWeight, Integer>
-    {
+public interface BodyweightRepository extends JpaRepository<UserWeight, Integer> {
 
-        boolean existsByWeightDateAndUserId(LocalDate date, int userId);
+    /**
+     * Exists by weight date and user id boolean.
+     *
+     * @param date   the date
+     * @param userId the user id
+     * @return the boolean
+     */
+    boolean existsByWeightDateAndUserId(LocalDate date, int userId);
 
-        UserWeight getByWeightDateAndUserId(LocalDate date, int id);
+    /**
+     * Gets by weight date and user id.
+     *
+     * @param date the date
+     * @param id   the id
+     * @return the by weight date and user id
+     */
+    UserWeight getByWeightDateAndUserId(LocalDate date, int id);
 
 
+    /**
+     * Gets all by user id.
+     *
+     * @param id the id
+     * @return the all by user id
+     */
+    List<UserWeight> getAllByUserId(int id);
 
-        List<UserWeight> getAllByUserId(int id);
+    /**
+     * Delete by weight date and user id.
+     *
+     * @param date the date
+     * @param id   the id
+     */
+    void deleteByWeightDateAndUserId(LocalDate date, int id);
 
-        void deleteByWeightDateAndUserId(LocalDate date, int id);
-
-        @Transactional
-        @Modifying
-        @Query("delete from UserWeight u where u.weightDate = ?1 and u.user = ?2")
-        int deleteByWeightDateAndUser(@NonNull LocalDate weightDate, @NonNull User user);
-    }
+    /**
+     * Delete by weight date and user int.
+     *
+     * @param weightDate the weight date
+     * @param user       the user
+     * @return the int
+     */
+    @Transactional
+    @Modifying
+    @Query("delete from UserWeight u where u.weightDate = ?1 and u.user = ?2")
+    int deleteByWeightDateAndUser(@NonNull LocalDate weightDate, @NonNull User user);
+}

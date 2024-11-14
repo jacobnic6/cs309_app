@@ -1,12 +1,24 @@
 package com.coms309.nutrifit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
+/**
+ * The type Friend.
+ */
 //not yet used
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "friends")
 public class Friend {
 
@@ -17,11 +29,19 @@ public class Friend {
     @Column(name = "date_added")
     private LocalDate dateAdded;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    /**
+     * The First user.
+     */
+    @ManyToOne
     @JoinColumn(referencedColumnName = "id")
-    User firstUser;
+   private User firstUser;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    /**
+     * The Second user.
+     */
+    @ManyToOne
     @JoinColumn(referencedColumnName = "id")
-    User secondUser;
+   private User secondUser;
+
+
 }

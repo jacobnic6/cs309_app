@@ -1,35 +1,47 @@
 package com.coms309.nutrifit.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
+/**
+ * Acts as an exercise
+ */
+@Builder
+@Data
 @NoArgsConstructor
-@Embeddable
+@AllArgsConstructor
+@Entity
 public class WorkoutSet {
 
+    @JsonIgnore
+    @Id
+    private int id;
 
-        @JsonProperty("setNumber")
-        private int setNumber;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "workout_id", referencedColumnName = "id")
+    private Workout workout;
 
-        @JsonProperty("exerciseName")
-        private String exerciseName;
+    @JsonProperty("category")
+    private String category;
 
-        @JsonProperty("repetitions")
-        private int repetitions;
+    @JsonProperty("exerciseName")
+    private String exerciseName;
 
-        @JsonProperty("weightLifted")
-        private int weightLifted;
+    @JsonProperty(value = "weight", defaultValue = "0")
+    private int weight;
 
-        @JsonProperty("restTime")
-        private int restTime;
+    @JsonProperty(value = "sets", defaultValue = "0")
+    private int sets;
+
+    @JsonProperty(value = "reps", defaultValue = "0")
+    private int reps;
+
+
+
 
 
 }
