@@ -52,6 +52,6 @@ public interface FriendRepository extends JpaRepository<Friend, Integer> {
             + "OR (f.firstUser.id = :secondUserId AND f.secondUser.id = :firstUserId)")
     Friend findFriendshipBetween(@Param("firstUserId") Integer firstUserId, @Param("secondUserId") Integer secondUserId);
 
-    Friend findByFirstUserAndSecondUser(User user, User friend);
+
 
 }

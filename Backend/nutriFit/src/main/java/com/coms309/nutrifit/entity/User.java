@@ -42,7 +42,7 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL,  orphanRemoval = true)
     private UserSettings settings;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
 
     @Column(nullable = false)
@@ -64,9 +64,9 @@ public class User {
     @DateTimeFormat
     private LocalDateTime lastLogin;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<ImageData> imageData = new ArrayList<>();
+    private List<ImageData> imageData;
 
     /**
      * The Body weights.
@@ -74,47 +74,7 @@ public class User {
     @JsonProperty("bodyweights")
     @OneToMany(cascade = CascadeType.ALL)
     @Column
-    List<UserWeight> bodyWeights = new ArrayList<>();
-
-
-    /**
-     * Add body weight.
-     *
-     * @param weightDto the weight dto
-     */
-    public void addBodyWeight(UserWeight weightDto) {
-        if (bodyWeights == null) {
-            bodyWeights = new ArrayList<>();
-        }
-
-        bodyWeights.add(weightDto);
-    }
-
-
-    /**
-     * Instantiates a new User.
-     *
-     * @param firstName the first name
-     * @param lastName  the last name
-     * @param email     the email
-     * @param username  the username
-     * @param password  the password
-     */
-    public User(String firstName, String lastName, String email, String username, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-
-        this.lastLogin = LocalDateTime.now();
-        meals = new ArrayList<>();
-        friends = new ArrayList<>();
-        imageData = new ArrayList<>();
-        bodyWeights = new ArrayList<>();
-
-
-    }
+   private List<UserWeight> bodyWeights;
 
 
 }
