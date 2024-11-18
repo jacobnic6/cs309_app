@@ -33,7 +33,7 @@ public class Profile {
 
 //    @OneToMany(mappedBy = "profile")
 //    private List<UserMuscleProgress> muscleProgress;
-    @OneToMany(mappedBy = "profile")
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private Map<String, UserMuscleProgress> muscleProgress;
 
 

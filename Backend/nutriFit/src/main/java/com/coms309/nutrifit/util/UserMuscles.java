@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.ToString;
 
 /**
  * The enum User muscles.

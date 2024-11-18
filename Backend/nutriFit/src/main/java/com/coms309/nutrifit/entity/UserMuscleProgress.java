@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 /**
  * The type User muscle progress.
@@ -19,6 +20,7 @@ public class UserMuscleProgress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
 
@@ -36,8 +38,7 @@ public class UserMuscleProgress {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id")
-    @MapsId(value = "id")
+    @JoinColumn(name = "profile_id", referencedColumnName = "user_id")
     @JsonIgnore
     private Profile profile;
 
