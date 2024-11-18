@@ -33,7 +33,7 @@ import java.util.TimerTask;
 public class AddMealActivity extends AppCompatActivity {
     private static final String TAG = "AddMealActivity";
 
-    // UI Elements
+
     private AutoCompleteTextView foodNameInput;
     private Spinner mealTypeSpinner;
     private EditText servingSizeInput;
