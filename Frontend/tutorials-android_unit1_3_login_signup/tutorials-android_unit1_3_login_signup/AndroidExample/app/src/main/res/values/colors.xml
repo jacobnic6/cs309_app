@@ -14,5 +14,6 @@
 
     <color name="text_secondary">#757575</color>
     <color name="text_hint">#BDBDBD</color>
+    <color name="text_button">#BB86FC</color>
 
 </resources>
