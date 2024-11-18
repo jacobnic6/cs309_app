@@ -54,7 +54,7 @@ public class UserServiceHandler extends ServiceHandler {
 
         user.setSettings(settings);
 
-        Profile profile = new Profile();
+        Profile profile = new Profile(user);
         user.setProfile(profile);
         profile.setUser(user);
 
@@ -321,6 +321,10 @@ public class UserServiceHandler extends ServiceHandler {
             return success;
         }
         return failure;
+    }
+
+    public boolean existsByUsername(String username){
+        return userRepository.existsByUsername(username);
     }
 
 

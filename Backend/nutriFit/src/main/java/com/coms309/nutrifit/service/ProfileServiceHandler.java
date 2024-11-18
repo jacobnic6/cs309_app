@@ -31,18 +31,8 @@ public class ProfileServiceHandler {
      */
     @Autowired
     ImageRepository imageRepository;
-    /**
-     * The Muscle repository.
-     */
-    @Autowired
-    MuscleRepository muscleRepository;
-    /**
-     * The Group repository.
-     */
-    @Autowired
-    MuscleGroupRepository groupRepository;
-    @Autowired
-    private MuscleGroupRepository muscleGroupRepository;
+
+
 
     /**
      * Add profile profile.
@@ -147,18 +137,6 @@ public class ProfileServiceHandler {
         profile.setProfileImageData(imageData);
 
         profileRepository.save(profile);
-
-    }
-
-    private Map<String, Integer> getMusclesMap() {
-        Map<String, Integer> muscleMap = new HashMap<>();
-        UserMuscles muscles;
-
-        for (UserMuscles muscle : UserMuscles.values()) {
-
-            muscleMap.put(muscle.name(), 0);
-        }
-        return muscleMap;
 
     }
 

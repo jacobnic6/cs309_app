@@ -73,7 +73,9 @@ public class NutritionService {
             meals.setUser(user);
 
 
+
         }
+        user.getMeals().put(date, meals);
         return userMealsRepository.save(meals);
     }
 

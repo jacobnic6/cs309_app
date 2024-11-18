@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.entity;
 
+import com.coms309.nutrifit.util.UserMuscles;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,9 +31,10 @@ public class Profile {
     @Column(name = "username")
     private String name;
 
+//    @OneToMany(mappedBy = "profile")
+//    private List<UserMuscleProgress> muscleProgress;
     @OneToMany(mappedBy = "profile")
-    private List<UserMuscleProgress> muscleProgress;
-
+    private Map<String, UserMuscleProgress> muscleProgress;
 
 
 
@@ -46,8 +48,10 @@ public class Profile {
     @Column
     private double weight;
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Workout> workouts;
+
+
 
     @Column
     private int height;
@@ -67,7 +71,7 @@ public class Profile {
 
         }
         this.user = user;
-        this.name = user.getFirstName() + " " + user.getLastName();
+        this.name = user.getUsername();
         if (user.getBodyWeights() != null &&user.getBodyWeights().size() != 0 ) {
             this.weight = user.getBodyWeights().get(user.getBodyWeights().size() - 1).getWeight();
         }
@@ -86,6 +90,8 @@ public class Profile {
         }
         workouts.add(workout);
     }
+
+
 
 
 

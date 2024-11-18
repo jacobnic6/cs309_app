@@ -31,8 +31,7 @@ public class ProfileController {
      */
     @Autowired
     ImageService imageService;
-    @Autowired
-    private ObjectMapper jacksonObjectMapper;
+
 
 
     /**

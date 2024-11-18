@@ -11,9 +11,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type User.
@@ -23,7 +25,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonRootName("user")
 public class User {
 
 
@@ -31,9 +32,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @JsonIgnore
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<UserMeals> meals = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserMeals> meals = new ArrayList<>();
+    @JsonIgnore
+    private Map<LocalDate, UserMeals> meals;
 
     @OneToMany(mappedBy = "firstUser", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

@@ -32,14 +32,14 @@ public class Friend {
     /**
      * The First user.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(referencedColumnName = "id")
    private User firstUser;
 
     /**
      * The Second user.
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(referencedColumnName = "id")
    private User secondUser;
 

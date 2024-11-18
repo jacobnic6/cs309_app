@@ -30,10 +30,11 @@ public class UserMeals {
     private int id;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @MapKey
     private LocalDate date;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
     private User user;
 
