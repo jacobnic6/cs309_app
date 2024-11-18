@@ -1,6 +1,6 @@
 package com.coms309.nutrifit.controller;
 
-import com.coms309.nutrifit.entity.UserWeight;
+import com.coms309.nutrifit.entity.fitness.UserWeight;
 import com.coms309.nutrifit.service.BodyweightServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

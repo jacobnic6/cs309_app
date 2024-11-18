@@ -5,6 +5,8 @@ import com.coms309.nutrifit.entity.Friend;
 import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.service.ServiceHandler;
 import com.coms309.nutrifit.service.UserServiceHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ import java.util.List;
  * The type Friends controller.
  */
 @RestController
+@Tag(name = "Friend Management")
 @RequestMapping("/friends")
 public class FriendsController {
 
@@ -28,6 +31,7 @@ public class FriendsController {
      * @param friendDto the friend dto
      * @return the string
      */
+    @Operation(summary = "Add a friend to a user")
     @PostMapping(path = "/{userId}/add")
     public String addFriend(@PathVariable int userId, @RequestBody UserDto friendDto) {
         return userServiceHandler.addFriend(userId, friendDto);

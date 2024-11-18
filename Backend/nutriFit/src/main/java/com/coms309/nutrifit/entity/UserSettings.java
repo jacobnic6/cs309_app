@@ -5,6 +5,7 @@ import com.coms309.nutrifit.util.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class UserSettings {
     @OneToOne(mappedBy = "settings", optional = false)
     @JsonIgnore
     private User user;
+
 
 
     @Enumerated(EnumType.STRING)

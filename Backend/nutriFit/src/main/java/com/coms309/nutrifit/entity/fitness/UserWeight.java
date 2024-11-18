@@ -1,5 +1,6 @@
-package com.coms309.nutrifit.entity;
+package com.coms309.nutrifit.entity.fitness;
 
+import com.coms309.nutrifit.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

@@ -1,9 +1,7 @@
 package com.coms309.nutrifit.controller;
 
-import com.coms309.nutrifit.entity.Workout;
-import com.coms309.nutrifit.entity.WorkoutDto;
-import com.coms309.nutrifit.entity.WorkoutSet;
-import com.coms309.nutrifit.entity.WorkoutSetDto;
+import com.coms309.nutrifit.entity.fitness.Workout;
+import com.coms309.nutrifit.entity.fitness.WorkoutDto;
 import com.coms309.nutrifit.service.ProfileServiceHandler;
 import com.coms309.nutrifit.service.WorkoutServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;

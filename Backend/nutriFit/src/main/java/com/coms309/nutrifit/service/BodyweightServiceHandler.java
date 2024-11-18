@@ -1,7 +1,7 @@
 package com.coms309.nutrifit.service;
 
 import com.coms309.nutrifit.entity.User;
-import com.coms309.nutrifit.entity.UserWeight;
+import com.coms309.nutrifit.entity.fitness.UserWeight;
 import com.coms309.nutrifit.repo.BodyweightRepository;
 import com.coms309.nutrifit.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

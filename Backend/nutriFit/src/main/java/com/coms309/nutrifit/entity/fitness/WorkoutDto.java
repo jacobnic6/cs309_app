@@ -1,4 +1,4 @@
-package com.coms309.nutrifit.entity;
+package com.coms309.nutrifit.entity.fitness;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,7 +6,6 @@ import jakarta.persistence.Embedded;
 import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.List;
 
 /**

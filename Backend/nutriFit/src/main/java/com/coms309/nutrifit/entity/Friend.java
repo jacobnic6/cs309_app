@@ -2,6 +2,7 @@ package com.coms309.nutrifit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,12 +27,14 @@ public class Friend {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotBlank
     @Column(name = "date_added")
     private LocalDate dateAdded;
 
     /**
      * The First user.
      */
+    @NotBlank
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(referencedColumnName = "id")
    private User firstUser;
@@ -39,6 +42,7 @@ public class Friend {
     /**
      * The Second user.
      */
+    @NotBlank
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(referencedColumnName = "id")
    private User secondUser;

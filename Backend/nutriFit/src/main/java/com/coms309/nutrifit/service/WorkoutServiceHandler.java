@@ -1,11 +1,12 @@
 package com.coms309.nutrifit.service;
 
 import com.coms309.nutrifit.entity.*;
+import com.coms309.nutrifit.entity.fitness.Workout;
+import com.coms309.nutrifit.entity.fitness.WorkoutDto;
 import com.coms309.nutrifit.repo.ProfileRepository;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.repo.WorkoutRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

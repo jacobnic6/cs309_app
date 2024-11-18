@@ -1,7 +1,7 @@
 package com.coms309.nutrifit.repo;
 
 import com.coms309.nutrifit.entity.Profile;
-import com.coms309.nutrifit.entity.Workout;
+import com.coms309.nutrifit.entity.fitness.Workout;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;

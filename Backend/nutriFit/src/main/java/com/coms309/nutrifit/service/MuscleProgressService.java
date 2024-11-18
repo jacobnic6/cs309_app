@@ -1,8 +1,8 @@
 package com.coms309.nutrifit.service;
 
 import com.coms309.nutrifit.entity.Profile;
-import com.coms309.nutrifit.entity.UserMuscleProgress;
-import com.coms309.nutrifit.entity.UserMuscleProgressDto;
+import com.coms309.nutrifit.entity.fitness.UserMuscleProgress;
+import com.coms309.nutrifit.entity.fitness.UserMuscleProgressDto;
 import com.coms309.nutrifit.repo.ProfileRepository;
 import com.coms309.nutrifit.repo.UserMuscleProgressRepository;
 import com.coms309.nutrifit.util.UserMuscles;
@@ -81,5 +81,9 @@ private final ProfileRepository profileRepository;
 
     public List<UserMuscleProgress> getAllUserProgress(String username) {
         return userMuscleProgressRepository.findAllByProfile_Name(username);
+    }
+
+    public UserMuscleProgress getByMuscle(String musclename, String username) {
+        return userMuscleProgressRepository.findUserMuscleProgressByProfile_NameAndAndMuscle(username, musclename);
     }
 }
