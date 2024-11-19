@@ -2,6 +2,8 @@ package com.coms309.nutrifit.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +20,7 @@ public class NutrientTotalsDto {
     @JsonProperty("date")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
+
 
     @JsonProperty(value = "totalCalories", defaultValue = "0")
     private int totalCalories;
