@@ -45,4 +45,12 @@ public class UserMeals {
     private Map<String, Integer> nutrientTotals = new HashMap<>();
 
 
+    public void addNutrient(String nutrient, int amount) {
+        if (nutrientTotals.containsKey(nutrient)) {
+            nutrientTotals.put(nutrient, nutrientTotals.get(nutrient) + amount);
+        } else {
+            nutrientTotals.put(nutrient, amount);
+        }
+    }
+
 }
