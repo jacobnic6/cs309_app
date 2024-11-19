@@ -1,30 +1,14 @@
-/**
- * Activity for managing and displaying daily nutrition information.
- * This activity provides functionality to track daily meals, nutritional goals,
- * and meal-specific information including calories, protein, carbs, and fat intake.
- *
- * Features include:
- * - Daily nutrition goal tracking
- * - Meal-specific calorie tracking (breakfast, lunch, dinner, snacks)
- * - Adding, editing, and deleting meals
- * - Progress visualization for different nutritional metrics
- * - Bottom navigation for app-wide navigation
- *
- * @author Michael Becker
- * @version 1.0
- * @since 2024-03-20
- */
+
 package com.example.androidexample.main_five_pages;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
+
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,7 +18,6 @@ import com.example.androidexample.AddMealActivity;
 import com.example.androidexample.R;
 import com.example.androidexample.api.MealService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +28,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
+/**
+ * Activity for managing and displaying daily nutrition information.
+ * Provides meal tracking functionality including logging, editing, and deleting meals
+ * while monitoring nutritional goals and progress.
+ *
+ * Core Features:
+ * <ul>
+ *   <li>Daily nutrition goal tracking</li>
+ *   <li>Meal management (breakfast, lunch, dinner, snacks)</li>
+ *   <li>Progress visualization</li>
+ *   <li>Real-time nutritional calculations</li>
+ * </ul>
+ *
+ * @author Michael Becker
+ * @version 1.0
+ * @since 2024-03-20
+ *
+ */
 public class NutritionActivity extends AppCompatActivity {
     /** Tag for logging purposes */
     private static final String TAG = "NutritionActivity";
@@ -66,8 +66,8 @@ public class NutritionActivity extends AppCompatActivity {
     /** TextViews displaying calories for each meal type */
     private TextView breakfastCalories, lunchCalories, dinnerCalories, snacksCalories;
 
-    /** Buttons for meal management */
-    private Button addMealButton, scanBarcodeButton, quickAddButton;
+    /** Buttons for adding meals */
+    private Button addMealButton;
 
     /** Dialog for showing loading states */
     private ProgressDialog loadingDialog;
@@ -180,7 +180,7 @@ public class NutritionActivity extends AppCompatActivity {
     }
 
     /**
-     * Launches the AddMealActivity in edit mode for a specific meal type.
+     * Launches the AddMealActivity for a specific meal type.
      *
      * @param mealType The type of meal to edit ("breakfast", "lunch", "dinner", "snacks")
      */
@@ -192,7 +192,7 @@ public class NutritionActivity extends AppCompatActivity {
     }
 
     /**
-     * Shows a confirmation dialog before deleting a meal.
+     * Asks if you want to confirm deleting a meal before deleting a meal.
      *
      * @param mealType The type of meal to delete
      */
@@ -406,7 +406,7 @@ public class NutritionActivity extends AppCompatActivity {
 
     /**
      * Fetches and processes individual meals for the current day.
-     * Categorizes meals by type and updates the UI accordingly.
+     * Categorizes meals by type and updates the UI in the specific meal category
      */
     private void fetchIndividualMeals() {
         mealService.getMealsByDate(getCurrentDate(), getUserId(), new MealService.MealServiceCallback() {
@@ -490,14 +490,14 @@ public class NutritionActivity extends AppCompatActivity {
      * Retrieves meals of a specific type from the stored meals map.
      *
      * @param mealType The type of meals to retrieve
-     * @return List of JSONObjects containing the meals of the specified type
+     * @return List of JSONObjects containing the meals of said type
      */
     private List<JSONObject> getMealsByType(String mealType) {
         return mealsByType.getOrDefault(mealType.toLowerCase(), new ArrayList<>());
     }
 
     /**
-     * Deletes all meals of a specified type and updates the UI accordingly.
+     * Deletes all meals of a type and updates UI.
      *
      * @param mealType The type of meals to delete
      */
@@ -555,7 +555,7 @@ public class NutritionActivity extends AppCompatActivity {
     /**
      * Updates the calorie display for a specific meal TextView.
      *
-     * @param mealTextView The TextView to update
+     * @param mealTextView Updates
      * @param mealData JSONObject containing the meal data, or null to reset to 0
      */
     private void updateMealDisplay(TextView mealTextView, JSONObject mealData) {
