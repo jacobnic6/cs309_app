@@ -1,4 +1,4 @@
-package com.coms309.nutrifit.entity;
+package com.coms309.nutrifit.dto;
 
 import lombok.*;
 

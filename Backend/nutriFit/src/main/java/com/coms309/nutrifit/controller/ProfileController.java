@@ -5,6 +5,12 @@ import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.service.ImageService;
 import com.coms309.nutrifit.service.ProfileServiceHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,25 +19,33 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
  * The type Profile controller.
  */
+
 @RestController
+@Tag(name = "Profile Management")
 @RequestMapping("/profile")
 public class ProfileController {
     /**
      * The Profile service handler.
      */
-    @Autowired
-    ProfileServiceHandler profileServiceHandler;
+
+   private final ProfileServiceHandler profileServiceHandler;
     /**
      * The Image service.
      */
-    @Autowired
-    ImageService imageService;
 
+    private final ImageService imageService;
+
+    @Autowired
+    public ProfileController(ProfileServiceHandler profileServiceHandler, ImageService imageService) {
+        this.profileServiceHandler = profileServiceHandler;
+        this.imageService = imageService;
+    }
 
 
     /**
@@ -40,6 +54,8 @@ public class ProfileController {
      * @param profile the profile
      * @return the profile
      */
+    @Operation(summary = "Create a user profile",
+    description = "Tries to create profile. Not necessarily needed as profiles are created automatically upon user creation.")
     @PostMapping
     public Profile addProfile(@RequestBody Profile profile) {
         return profileServiceHandler.addProfile(profile);
@@ -51,6 +67,8 @@ public class ProfileController {
      * @param username the username
      * @return the profile
      */
+    @Operation(summary = "Create a user profile",
+            description = "Tries to create profile for the given username.")
     @PostMapping("/{username}")
     public Profile addProfile(@PathVariable String username) {
 
@@ -62,6 +80,8 @@ public class ProfileController {
      *
      * @return the list
      */
+    @Operation(summary = "Get all profiles",
+            description = "Returns a list of all profiles")
     @GetMapping
     public List<Profile> getAllProfiles() {
         return profileServiceHandler.getProfiles();
@@ -74,6 +94,8 @@ public class ProfileController {
      * @param username the username
      * @return the profile
      */
+    @Operation(summary = "Get a specific user profile",
+            description = "Finds and returns a specific profile by username")
     @GetMapping("/{username}")
     public Profile getUserProfile(@PathVariable String username) {
 
@@ -92,6 +114,8 @@ public class ProfileController {
      * @param profile  the profile
      * @return the string
      */
+    @Operation(summary = "Update a specific user profile",
+            description = "Finds and updates a specific profile by username")
     @PutMapping("/{username}")
     public String updateProfile(@PathVariable String username, @RequestBody Profile profile) {
 
@@ -101,57 +125,11 @@ public class ProfileController {
         return profileServiceHandler.updateProfile(username, profile);
     }
 
-    /**
-     * Upload picture response entity.
-     *
-     * @param file     the file
-     * @param username the username
-     * @return the response entity
-     * @throws IOException the io exception
-     */
-    @PostMapping("/image/{username}")
-    public ResponseEntity<?> uploadPicture(@RequestParam("image") MultipartFile file, @PathVariable String username) throws IOException {
 
 
-        ImageData img = imageService.saveImage(file);
-        if (img != null) {
-            profileServiceHandler.assignImage(img, username);
-        }
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(img);
-    }
 
-    /**
-     * Download picture response entity.
-     *
-     * @param fileName the file name
-     * @return the response entity
-     */
-//Get a specific image
-    @GetMapping("/image/{fileName}")
-    public ResponseEntity<?> downloadPicture(@PathVariable String fileName) {
-        byte[] imgData = imageService.downloadImage(fileName);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imgData);
-
-
-    }
-
-    /**
-     * Get profile picture response entity.
-     *
-     * @param username the username
-     * @return the response entity
-     */
-    @GetMapping("/{username}/pic")
-    public ResponseEntity<?> getProfilePicture(@PathVariable String username) {
-
-        Profile profile = profileServiceHandler.getUserProfile(username);
-        byte[] imgData = imageService.downloadImage(profile.getProfileImageData().getName());
-
-
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imgData);
-    }
 
 
 }

@@ -1,4 +1,4 @@
-package com.coms309.nutrifit.entity;
+package com.coms309.nutrifit.entity.fitness;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

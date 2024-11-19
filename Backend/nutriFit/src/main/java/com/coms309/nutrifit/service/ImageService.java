@@ -14,8 +14,13 @@ import java.io.IOException;
  */
 @Service
 public class ImageService {
+
+    private final ImageRepository imageRepository;
+
     @Autowired
-    private ImageRepository imageRepository;
+    public ImageService(ImageRepository imageRepository) {
+        this.imageRepository = imageRepository;
+    }
 
 
     /**
@@ -26,6 +31,10 @@ public class ImageService {
      * @throws IOException the io exception
      */
     public ImageData saveImage(MultipartFile file) throws IOException {
+        ImageData existing = imageRepository.findByName(file.getOriginalFilename());
+    if(existing != null){
+        return existing;
+    }
 
         ImageData imageData = imageRepository.save(ImageData.builder()
                 .name(file.getOriginalFilename()).type(file.getContentType())
@@ -33,6 +42,9 @@ public class ImageService {
 
 
         return imageData;
+    }
+    public boolean imageExists(String fileName){
+        return imageRepository.existsByNameAndTypeAllIgnoreCase(fileName);
     }
 
 
@@ -44,6 +56,12 @@ public class ImageService {
      */
     public byte[] downloadImage(String fileName) {
         ImageData dbImg = imageRepository.findByName(fileName);
+        byte[] imageData = ImageUtils.decompressImage(dbImg.getPictureData());
+        return imageData;
+    }
+
+    public byte[] downloadDefaultImage() {
+        ImageData dbImg = imageRepository.findByName("default-pic.png");
         byte[] imageData = ImageUtils.decompressImage(dbImg.getPictureData());
         return imageData;
     }

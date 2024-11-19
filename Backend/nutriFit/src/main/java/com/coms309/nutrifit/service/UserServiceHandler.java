@@ -23,18 +23,24 @@ import java.util.List;
 @Service
 public class UserServiceHandler extends ServiceHandler {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserSettingsRepository userSettingsRepository;
 
-    @Autowired
-    private FriendRepository friendRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private ObjectMapper mapper;
+    private final UserSettingsRepository userSettingsRepository;
 
 
+    private final  FriendRepository friendRepository;
+
+
+    private final  ObjectMapper mapper;
+
+    @Autowired
+    public UserServiceHandler(UserRepository userRepository, UserSettingsRepository userSettingsRepository, FriendRepository friendRepository, ObjectMapper mapper) {
+        this.userRepository = userRepository;
+        this.userSettingsRepository = userSettingsRepository;
+        this.friendRepository = friendRepository;
+        this.mapper = mapper;
+    }
 
 
     /**
@@ -45,9 +51,9 @@ public class UserServiceHandler extends ServiceHandler {
      */
 //CREATE
     //Creates a user with a default settings entity
-    public String createUser(User user) {
+    public User createUser(User user) {
         if (user == null || userRepository.existsUserByIdOrEmailOrUsername(user.getId(), user.getEmail(), user.getUsername())) {
-            return failure;
+            return null;
         }
         user.setLastLogin(LocalDateTime.now());
         UserSettings settings = new UserSettings();
@@ -59,13 +65,8 @@ public class UserServiceHandler extends ServiceHandler {
         profile.setUser(user);
 
         //user.setProfile(new Profile());
-        userRepository.saveAndFlush(user);
-        //userSettingsRepository.saveAndFlush(settings);
-        if (userRepository.existsByUsername(user.getUsername())) {
-            return success;
-        }
+        return userRepository.saveAndFlush(user);
 
-        return failure;
     }
 
     /**
@@ -243,6 +244,7 @@ public class UserServiceHandler extends ServiceHandler {
         }
         List<UserDto> userDtoList = new ArrayList<>();
         for(User u : friends){
+            if(u.getId() != userId){}
             userDtoList.add(mapper.convertValue(u, UserDto.class));
 
         }
@@ -272,14 +274,9 @@ public class UserServiceHandler extends ServiceHandler {
 
     }
 
-    public String removeFriend(String userId, String friendId) {
-        User user = userRepository.findByUsername(userId);
+    public String removeFriend(User user, User friend) {
 
-//        for(Friend friend : user.getFriends()){
-//            if(friend.getSecondUser().getUsername().equals(friendId)){}
-//        }
-//
-        User friend = userRepository.findByUsername(friendId);
+
 
         Friend friendship = friendRepository.findFriendshipBetween(user.getId(), friend.getId());
 

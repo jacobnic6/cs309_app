@@ -1,6 +1,10 @@
 package com.coms309.nutrifit.service;
 
 import com.coms309.nutrifit.entity.*;
+import com.coms309.nutrifit.entity.fitness.Workout;
+import com.coms309.nutrifit.entity.fitness.WorkoutDto;
+import com.coms309.nutrifit.entity.fitness.WorkoutSet;
+import com.coms309.nutrifit.entity.fitness.WorkoutSetDto;
 import com.coms309.nutrifit.repo.ProfileRepository;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.repo.WorkoutRepository;
@@ -49,7 +53,7 @@ public class WorkoutServiceHandler {
     }
     User user = userRepository.findByUsername(username);
     Profile profile = profileRepository.findByUser(user);
-    if(workoutRepository.existsByProfileAndDateTracked(profile, date)){
+    if(workoutRepository.existsByProfile_NameAndDateTracked(username, date)){
         return workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
     }
 
@@ -57,7 +61,7 @@ public class WorkoutServiceHandler {
 
     profile.addWorkout(workout);
 
-
+    workout.updateTotalWeight();
 
 
 
@@ -136,56 +140,36 @@ public class WorkoutServiceHandler {
 
     }
 
-    public Workout addSet(LocalDate date, String username, WorkoutDto set) throws Exception {
+    public Workout addSet(LocalDate date, String username, WorkoutSetDto set) throws Exception {
         Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
         Workout workout;
       if(workoutRepository.existsByProfileAndDateTracked(profile, date)){
           workout = workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
       }else{
-          workout = objectMapper.convertValue(set, Workout.class);
-          profile.addWorkout(workout);
+          throw new EntityNotFoundException("No workout exists for user "
+                  + username + " on date " + date.toString() + " yet");
 
       }
-//     for ()
-//
-//        Workout w =  objectMapper.convertValue(set, Workout.class);
-//
-//      workout.setDateTracked(date);
-//      workout.
-//        // Fetch user by username
-//        User user = userRepository.findByUsername(username);
-//        if(!userRepository.existsByUsername(username)){
-//            return null;
-//        }
-//
-//        // Fetch profile by user
-//        Profile profile = profileRepository.findByUser(user);
-//        if (profile == null) {
-//            throw new EntityNotFoundException("Profile not found for user");
-//        }
-//        if(!profile.getWorkouts().isEmpty()){
-//
-//        }
-//
-//        // Fetch or create new Workout
-//        Workout workout = workoutRepository
-//                .findByProfile_User_UsernameAndDateTracked(username, date)
-//                .orElseGet(() -> {
-//                    Workout newWorkout = new Workout(profile);
-//                    if (set != null) {
-//                        set.setWorkout(newWorkout);
-//                    }
-//                    profile.addWorkout(newWorkout);
-//                    workoutRepository.save(newWorkout);
-//                    return newWorkout;
-//                });
-//
-//        // Add set and update weights if `set` is not null
-//        if (set != null) {
-//            set.setWorkout(workout);
-//            workout.addActivity(set);
-//            workout.updateTotalWeight();
-//        }
+
+       if(workout.getActivities().size() > 0){
+            for(WorkoutSet ws : workout.getActivities()){
+                if(ws.getExerciseName().equalsIgnoreCase(set.getExerciseName())){
+                    ws.setSets(set.getSets());
+                    ws.setReps(set.getReps());
+                    ws.setWeight(set.getWeight());
+                    ws.setCategory(set.getCategory());
+                    workout.updateTotalWeight();
+                    return workoutRepository.saveAndFlush(workout);
+
+                }
+            }
+       }
+        WorkoutSet workoutSet = objectMapper.convertValue(set, WorkoutSet.class);
+
+        workoutSet.setWorkout(workout);
+        workout.addActivity(workoutSet);
+        workout.updateTotalWeight();
+
 
         return workoutRepository.save(workout);
 
@@ -202,14 +186,5 @@ public class WorkoutServiceHandler {
         return workoutRepository.findAll();
     }
 
-//    public Workout addSet(String username, WorkoutSet set) {
-//        User user = userRepository.findByUsername(username);
-//        if(user == null){
-//            return null;
-//        }
-//        Profile profile = profileRepository.findByUser(user);
-//        if(profile == null){
-//            profile = new Profile(user);
-//        }
-//    }
+
 }

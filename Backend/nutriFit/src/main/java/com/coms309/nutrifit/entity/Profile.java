@@ -1,16 +1,17 @@
 package com.coms309.nutrifit.entity;
 
-import com.coms309.nutrifit.util.UserMuscles;
+import com.coms309.nutrifit.entity.fitness.UserMuscleProgress;
+import com.coms309.nutrifit.entity.fitness.Workout;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ public class Profile {
     @Column(name = "user_id")
     private int id;
 
+    @NotNull
     @Column(name = "username")
     private String name;
 

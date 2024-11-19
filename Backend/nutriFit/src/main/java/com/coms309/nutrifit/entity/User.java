@@ -1,10 +1,11 @@
 package com.coms309.nutrifit.entity;
 
+import com.coms309.nutrifit.entity.fitness.UserWeight;
 import com.coms309.nutrifit.entity.nutrition.UserMeals;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,19 +49,24 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
 
+    @NotBlank
     @Column(nullable = false)
     private String firstName;
 
+    @NotBlank
     @Column(nullable = false)
     private String lastName;
 
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String email;
 
 
+    @NotBlank
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
+    @NotBlank
     @Column(nullable = false)
     private String password;
 
@@ -78,6 +83,7 @@ public class User {
     @JsonProperty("bodyweights")
     @OneToMany(cascade = CascadeType.ALL)
     @Column
+    @OrderBy("weightDate" + " ASC")
    private List<UserWeight> bodyWeights;
 
     public void addUserWeight(UserWeight userWeight)

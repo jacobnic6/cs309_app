@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.entity;
 
+import com.coms309.nutrifit.entity.fitness.Workout;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
