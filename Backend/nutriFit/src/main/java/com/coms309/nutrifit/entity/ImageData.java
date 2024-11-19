@@ -20,6 +20,7 @@ public class ImageData {
     private int id;
 
 
+
     @Lob
     @JsonIgnore
     private byte[] pictureData;

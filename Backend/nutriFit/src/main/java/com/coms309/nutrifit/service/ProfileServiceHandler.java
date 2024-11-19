@@ -18,20 +18,25 @@ import java.util.Map;
  */
 @Service
 public class ProfileServiceHandler {
-    @Autowired
-    private ProfileRepository profileRepository;
+
+    private final ProfileRepository profileRepository;
 
     /**
      * The User repository.
      */
-    @Autowired
-    UserRepository userRepository;
+
+    private final UserRepository userRepository;
     /**
      * The Image repository.
      */
-    @Autowired
-    ImageRepository imageRepository;
 
+    private final ImageRepository imageRepository;
+
+    public ProfileServiceHandler(ProfileRepository profileRepository, UserRepository userRepository, ImageRepository imageRepository) {
+        this.profileRepository = profileRepository;
+        this.userRepository = userRepository;
+        this.imageRepository = imageRepository;
+    }
 
 
     /**
@@ -69,8 +74,7 @@ public class ProfileServiceHandler {
      * @return the user profile
      */
     public Profile getUserProfile(String username) {
-        User user = userRepository.findByUsername(username);
-        Profile profile = profileRepository.findByUser(user);
+       Profile profile = profileRepository.findByName(username);
         if (profile != null && profile.getProfileImageData() != null) {
             ImageData imageData = profile.getProfileImageData();
             byte[] img = ImageUtils.decompressImage(imageData.getPictureData());
@@ -140,21 +144,5 @@ public class ProfileServiceHandler {
 
     }
 
-
-//        private Map<String, Integer> getMusclesMap(){
-//            List<Muscle> muscles = muscleRepository.findAll();
-//            Map<String, Integer> map = new HashMap<>();
-//            for (Muscle muscle : muscles){
-//                map.put(muscle.getName(), 0);
-//            }
-//            return map;
-//        }
-//        private Map<String, Integer> getMuscleGroupMap(){
-//            List<MuscleGroup> muscles = muscleGroupRepository.findAll();
-//            Map<String, Integer> map = new HashMap<>();
-//            for (MuscleGroup group: muscles){
-//                map.put(group.getGroupName(), 0);
-//            }
-//            return map;
-//        }
+    
 }

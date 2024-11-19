@@ -31,4 +31,6 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
     boolean existsByProfileAndDateTracked(Profile profile, LocalDate date);
 
     Workout findWorkoutByProfileAndDateTracked(Profile profile, LocalDate date);
+
+    boolean existsByProfile_NameAndDateTracked(String username, LocalDate date);
 }

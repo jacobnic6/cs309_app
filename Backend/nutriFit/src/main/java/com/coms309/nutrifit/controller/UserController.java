@@ -6,8 +6,7 @@ import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.service.ServiceHandler;
 import com.coms309.nutrifit.service.UserServiceHandler;
 import com.coms309.nutrifit.service.UserSettingsServiceHandler;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

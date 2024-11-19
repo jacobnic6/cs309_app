@@ -23,4 +23,5 @@ public interface ProfileRepository extends JpaRepository<Profile, Integer> {
 
     Optional<Profile> findByUser_Username(@NonNull String username);
 
+    Profile findByName(String username);
 }
