@@ -5,9 +5,6 @@ import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.service.ImageService;
 import com.coms309.nutrifit.service.ProfileServiceHandler;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,97 +15,107 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+/**
+ * The type Image controller.
+ */
 @RestController
 @Tag(name = "Image Management")
 @RequestMapping("/images")
 public class ImageController {
 
+	/**
+	 * The Image service.
+	 */
 
-    /**
-     * The Image service.
-     */
+	private final ProfileServiceHandler profileServiceHandler;
 
-    private final ProfileServiceHandler profileServiceHandler;
-    /**
-     * The Image service.
-     */
+	/**
+	 * The Image service.
+	 */
 
-    private final ImageService imageService;
+	private final ImageService imageService;
 
-    @Autowired
-    public ImageController(ProfileServiceHandler profileServiceHandler, ImageService imageService) {
-        this.profileServiceHandler = profileServiceHandler;
-        this.imageService = imageService;
-    }
+	/**
+	 * Instantiates a new Image controller.
+	 *
+	 * @param profileServiceHandler the profile service handler
+	 * @param imageService          the image service
+	 */
+	@Autowired
+	public ImageController(ProfileServiceHandler profileServiceHandler, ImageService imageService) {
+		this.profileServiceHandler = profileServiceHandler;
+		this.imageService = imageService;
+	}
 
+	/**
+	 * Upload picture response entity.
+	 *
+	 * @param file     the file
+	 * @param username the username
+	 *
+	 * @return the response entity
+	 *
+	 * @throws IOException the io exception
+	 */
+	@Operation(summary = "Upload an image to specific profile",
+			description = "Uploads an image to the specified user's profile.")
+	@PostMapping("/upload/{username}")
+	public ResponseEntity<?> uploadPicture(@RequestParam(value = "image") MultipartFile file, @PathVariable String username) throws IOException {
+		Profile profile = profileServiceHandler.getUserProfile(username);
+		if (profile == null)
+		{
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 
-    /**
-     * Upload picture response entity.
-     *
-     * @param file     the file
-     * @param username the username
-     * @return the response entity
-     * @throws IOException the io exception
-     */
-    @Operation(summary = "Upload an image to specific profile",
-            description = "Uploads an image to the specified user's profile.")
-    @PostMapping("/upload/{username}")
-    public ResponseEntity<?> uploadPicture( @RequestParam(value = "image" ) MultipartFile file, @PathVariable String username) throws IOException {
-        Profile profile = profileServiceHandler.getUserProfile(username);
-        if (profile == null) {
-          return   new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+		ImageData img = imageService.saveImage(file);
+		if (img.getPictureData() != null)
+		{
+			profileServiceHandler.assignImage(img, username);
+		}
 
+		return ResponseEntity.status(HttpStatus.OK).body(img);
+	}
 
-        ImageData img = imageService.saveImage(file);
-        if (img.getPictureData() != null) {
-            profileServiceHandler.assignImage(img, username);
-        }
-
-
-        return ResponseEntity.status(HttpStatus.OK).body(img);
-    }
-
-    /**
-     * Download picture response entity.
-     *
-     * @param fileName the file name
-     * @return the response entity
-     */
+	/**
+	 * Download picture response entity.
+	 *
+	 * @param fileName the file name
+	 *
+	 * @return the response entity
+	 */
 //Get a specific image
-    @Operation(summary = "Fetch image by filename.",
-            description = "Fetches picture by filename.")
-    @GetMapping("/file/{fileName}")
-    public ResponseEntity<?> downloadPicture(@PathVariable String fileName) {
-        byte[] imgData = imageService.downloadImage(fileName);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imgData);
+	@Operation(summary = "Fetch image by filename.",
+			description = "Fetches picture by filename.")
+	@GetMapping("/file/{fileName}")
+	public ResponseEntity<?> downloadPicture(@PathVariable String fileName) {
+		byte[] imgData = imageService.downloadImage(fileName);
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imgData);
 
+	}
 
-    }
+	/**
+	 * Get profile picture response entity.
+	 *
+	 * @param username the username
+	 *
+	 * @return the response entity
+	 */
+	@Operation(summary = "Fetch profile image.",
+			description = "Fetches profile picture for specified user. If no profile pic is set, returns a default picture")
+	@GetMapping("/pic/{username}")
+	public ResponseEntity<?> getProfilePicture(@PathVariable String username) {
 
-    /**
-     * Get profile picture response entity.
-     *
-     * @param username the username
-     * @return the response entity
-     */
-    @Operation(summary = "Fetch profile image.",
-            description = "Fetches profile picture for specified user. If no profile pic is set, returns a default picture")
-    @GetMapping("/pic/{username}")
-    public ResponseEntity<?> getProfilePicture(@PathVariable String username) {
+		Profile profile = profileServiceHandler.getUserProfile(username);
 
-        Profile profile = profileServiceHandler.getUserProfile(username);
+		if (profile.getProfileImageData() == null || profile.getProfileImageData().getName() == null)
+		{
+			byte[] imgData = imageService.downloadDefaultImage();
+			return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imgData);
+		} else
+		{
+			byte[] imgData = imageService.downloadImage(profile.getProfileImageData().getName());
+			return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imgData);
+		}
 
-        if(profile.getProfileImageData() == null || profile.getProfileImageData().getName() == null){
-            byte[] imgData = imageService.downloadDefaultImage();
-            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imgData);
-        }else{
-            byte[] imgData = imageService.downloadImage(profile.getProfileImageData().getName());
-            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imgData);
-        }
-
-
-
-
-    }
+	}
 }

@@ -27,68 +27,68 @@ import java.util.Map;
 @AllArgsConstructor
 public class User {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private Map<LocalDate, UserMeals> meals;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<UserMeals> meals = new ArrayList<>();
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private Map<LocalDate, UserMeals> meals;
+	@OneToMany(mappedBy = "firstUser", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private List<Friend> friends;
 
-    @OneToMany(mappedBy = "firstUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Friend> friends;
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	private UserSettings settings;
 
-    @OneToOne(cascade = CascadeType.ALL,  orphanRemoval = true)
-    private UserSettings settings;
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Profile profile;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Profile profile;
+	@NotBlank
+	@Column(nullable = false)
+	private String firstName;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String firstName;
+	@NotBlank
+	@Column(nullable = false)
+	private String lastName;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String lastName;
+	@NotBlank
+	@Column(nullable = false, unique = true)
+	private String email;
 
-    @NotBlank
-    @Column(nullable = false, unique = true)
-    private String email;
+	@NotBlank
+	@Column(name = "username", nullable = false, unique = true)
+	private String username;
 
+	@NotBlank
+	@Column(nullable = false)
+	private String password;
 
-    @NotBlank
-    @Column(name = "username", nullable = false, unique = true)
-    private String username;
+	@DateTimeFormat
+	private LocalDateTime lastLogin;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String password;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private List<ImageData> imageData;
 
-    @DateTimeFormat
-    private LocalDateTime lastLogin;
+	/**
+	 * The Body weights.
+	 */
+	@JsonProperty("bodyweights")
+	@OneToMany(cascade = CascadeType.ALL)
+	@Column
+	@OrderBy("weightDate" + " ASC")
+	private List<UserWeight> bodyWeights;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<ImageData> imageData;
-
-    /**
-     * The Body weights.
-     */
-    @JsonProperty("bodyweights")
-    @OneToMany(cascade = CascadeType.ALL)
-    @Column
-    @OrderBy("weightDate" + " ASC")
-   private List<UserWeight> bodyWeights;
-
-    public void addUserWeight(UserWeight userWeight)
-        {
-            bodyWeights.add(userWeight);
-        }
+	/**
+	 * Add user weight.
+	 *
+	 * @param userWeight the user weight
+	 */
+	public void addUserWeight(UserWeight userWeight)
+	{
+		bodyWeights.add(userWeight);
+	}
 
 }

@@ -14,28 +14,27 @@ import java.time.LocalDateTime;
 @Data
 public class Post {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
-    @ManyToOne
-    @MapsId
-    private User owner;
+	@ManyToOne
+	@MapsId
+	private User owner;
 
-    @DateTimeFormat
-    private LocalDateTime postDateTime;
+	@DateTimeFormat
+	private LocalDateTime postDateTime;
 
+	@Column(length = 500)
+	private String message;
 
-    @Column(length = 500)
-    private String message;
+	@OneToOne
+	@PrimaryKeyJoinColumn
+	@MapsId
+	private ImageData photo;
 
-    @OneToOne
-    @PrimaryKeyJoinColumn
-    @MapsId
-    private ImageData photo;
-
-    @OneToOne
-    @PrimaryKeyJoinColumn
-    @MapsId
-    private Workout workout;
+	@OneToOne
+	@PrimaryKeyJoinColumn
+	@MapsId
+	private Workout workout;
 }

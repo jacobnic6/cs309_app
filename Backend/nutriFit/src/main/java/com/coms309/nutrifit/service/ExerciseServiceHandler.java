@@ -23,68 +23,74 @@ import java.util.List;
 @Service
 public class ExerciseServiceHandler {
 
-    /**
-     * The Category repository.
-     */
-    @Autowired
-    CategoryRepository categoryRepository;
+	/**
+	 * The Category repository.
+	 */
+	@Autowired
+	CategoryRepository categoryRepository;
 
-    @Autowired
-    private ExerciseRepository exerciseRepository;
+	@Autowired
+	private ExerciseRepository exerciseRepository;
 
-    @Autowired
-    private EquipmentRepository equipmentRepository;
+	@Autowired
+	private EquipmentRepository equipmentRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private MuscleRepository muscleRepository;
+	@Autowired
+	private ObjectMapper objectMapper;
 
-    /**
-     * Import exercises.
-     *
-     * @param path the path
-     * @throws IOException the io exception
-     */
-    public void importExercises(String path) throws IOException {
-        File file = new File(path);
-        List<Exercise> exerciseList = objectMapper.readValue(file, List.class);
-        exerciseRepository.saveAll(exerciseList);
-    }
+	@Autowired
+	private MuscleRepository muscleRepository;
 
-    /**
-     * Add exercise.
-     *
-     * @param exercise the exercise
-     */
-    public void addExercise(Exercise exercise) {
-        if (exercise.getCategory() == null) {
-            exercise.setCategory(new Category("strength"));
-        }
-        String name = exercise.getCategory().getName();
-        Category repoC = categoryRepository.getByName(name);
-        exercise.setCategory(repoC);
+	/**
+	 * Import exercises.
+	 *
+	 * @param path the path
+	 *
+	 * @throws IOException the io exception
+	 */
+	public void importExercises(String path) throws IOException {
+		File file = new File(path);
+		List<Exercise> exerciseList = objectMapper.readValue(file, List.class);
+		exerciseRepository.saveAll(exerciseList);
+	}
 
-        List<Equipment> equipment = exercise.getEquipment();
-        List<Equipment> newEquipment = new ArrayList<>();
-        for (Equipment equip : equipment) {
-            Equipment e = equipmentRepository.getEquipmentByName(equip.getName());
-            newEquipment.add(e);
-        }
-        exercise.setEquipment(newEquipment);
+	/**
+	 * Add exercise.
+	 *
+	 * @param exercise the exercise
+	 */
+	public void addExercise(Exercise exercise) {
+		if (exercise.getCategory() == null)
+		{
+			exercise.setCategory(new Category("strength"));
+		}
+		String name = exercise.getCategory().getName();
+		Category repoC = categoryRepository.getByName(name);
+		exercise.setCategory(repoC);
 
-        List<Muscle> primary = exercise.getPrimaryMuscles();
-        List<Muscle> newPrim = new ArrayList<>();
-        for (Muscle muscle : primary) {
-            newPrim.add(muscleRepository.getByName(muscle.getName()));
-        }
-        exercise.setPrimaryMuscles(newPrim);
-        newPrim = new ArrayList<>();
-        List<Muscle> secondary = exercise.getSecondaryMuscles();
-        for (Muscle muscle : secondary) {
-            newPrim.add(muscleRepository.getByName(muscle.getName()));
-        }
-        exercise.setSecondaryMuscles(newPrim);
+		List<Equipment> equipment = exercise.getEquipment();
+		List<Equipment> newEquipment = new ArrayList<>();
+		for (Equipment equip : equipment)
+		{
+			Equipment e = equipmentRepository.getEquipmentByName(equip.getName());
+			newEquipment.add(e);
+		}
+		exercise.setEquipment(newEquipment);
 
-    }
+		List<Muscle> primary = exercise.getPrimaryMuscles();
+		List<Muscle> newPrim = new ArrayList<>();
+		for (Muscle muscle : primary)
+		{
+			newPrim.add(muscleRepository.getByName(muscle.getName()));
+		}
+		exercise.setPrimaryMuscles(newPrim);
+		newPrim = new ArrayList<>();
+		List<Muscle> secondary = exercise.getSecondaryMuscles();
+		for (Muscle muscle : secondary)
+		{
+			newPrim.add(muscleRepository.getByName(muscle.getName()));
+		}
+		exercise.setSecondaryMuscles(newPrim);
+
+	}
 }

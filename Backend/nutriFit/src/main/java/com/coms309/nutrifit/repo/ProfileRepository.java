@@ -13,15 +13,30 @@ import java.util.Optional;
  */
 @Repository
 public interface ProfileRepository extends JpaRepository<Profile, Integer> {
-    /**
-     * Find by user profile.
-     *
-     * @param user the user
-     * @return the profile
-     */
-    Profile findByUser(User user);
+	/**
+	 * Find by user profile.
+	 *
+	 * @param user the user
+	 *
+	 * @return the profile
+	 */
+	Profile findByUser(User user);
 
-    Optional<Profile> findByUser_Username(@NonNull String username);
+	/**
+	 * Find by user username optional.
+	 *
+	 * @param username the username
+	 *
+	 * @return the optional
+	 */
+	Optional<Profile> findByUser_Username(@NonNull String username);
 
-    Profile findByName(String username);
+	/**
+	 * Find by name profile.
+	 *
+	 * @param username the username
+	 *
+	 * @return the profile
+	 */
+	Profile findByName(String username);
 }

@@ -23,306 +23,353 @@ import java.util.List;
 @Service
 public class UserServiceHandler extends ServiceHandler {
 
+	private final UserRepository userRepository;
 
-    private final UserRepository userRepository;
+	private final UserSettingsRepository userSettingsRepository;
 
-    private final UserSettingsRepository userSettingsRepository;
+	private final FriendRepository friendRepository;
 
+	private final ObjectMapper mapper;
 
-    private final  FriendRepository friendRepository;
+	/**
+	 * Instantiates a new User service handler.
+	 *
+	 * @param userRepository         the user repository
+	 * @param userSettingsRepository the user settings repository
+	 * @param friendRepository       the friend repository
+	 * @param mapper                 the mapper
+	 */
+	@Autowired
+	public UserServiceHandler(UserRepository userRepository, UserSettingsRepository userSettingsRepository, FriendRepository friendRepository, ObjectMapper mapper) {
+		this.userRepository = userRepository;
+		this.userSettingsRepository = userSettingsRepository;
+		this.friendRepository = friendRepository;
+		this.mapper = mapper;
+	}
 
-
-    private final  ObjectMapper mapper;
-
-    @Autowired
-    public UserServiceHandler(UserRepository userRepository, UserSettingsRepository userSettingsRepository, FriendRepository friendRepository, ObjectMapper mapper) {
-        this.userRepository = userRepository;
-        this.userSettingsRepository = userSettingsRepository;
-        this.friendRepository = friendRepository;
-        this.mapper = mapper;
-    }
-
-
-    /**
-     * Create user string.
-     *
-     * @param user the user
-     * @return the string
-     */
+	/**
+	 * Create user string.
+	 *
+	 * @param user the user
+	 *
+	 * @return the string
+	 */
 //CREATE
-    //Creates a user with a default settings entity
-    public User createUser(User user) {
-        if (user == null || userRepository.existsUserByIdOrEmailOrUsername(user.getId(), user.getEmail(), user.getUsername())) {
-            return null;
-        }
-        user.setLastLogin(LocalDateTime.now());
-        UserSettings settings = new UserSettings();
+	//Creates a user with a default settings entity
+	public User createUser(User user) {
+		if (user == null || userRepository.existsUserByIdOrEmailOrUsername(user.getId(), user.getEmail(), user.getUsername()))
+		{
+			return null;
+		}
+		user.setLastLogin(LocalDateTime.now());
+		UserSettings settings = new UserSettings();
 
-        user.setSettings(settings);
+		user.setSettings(settings);
 
-        Profile profile = new Profile(user);
-        user.setProfile(profile);
-        profile.setUser(user);
+		Profile profile = new Profile(user);
+		user.setProfile(profile);
+		profile.setUser(user);
 
-        //user.setProfile(new Profile());
-        return userRepository.saveAndFlush(user);
+		//user.setProfile(new Profile());
+		return userRepository.saveAndFlush(user);
 
-    }
+	}
 
-    /**
-     * Gets user by id.
-     *
-     * @param id the id
-     * @return the user by id
-     */
+	/**
+	 * Gets user by id.
+	 *
+	 * @param id the id
+	 *
+	 * @return the user by id
+	 */
 //READ
-    public User getUserById(int id) {
-        if (!userRepository.existsById(id)) {
-            return null;
-        }
+	public User getUserById(int id) {
+		if (!userRepository.existsById(id))
+		{
+			return null;
+		}
 
-        return userRepository.findById(id);
+		return userRepository.findById(id);
 
-    }
+	}
 
-    /**
-     * Update user user.
-     *
-     * @param id   the id
-     * @param user the user
-     * @return the user
-     */
+	/**
+	 * Update user user.
+	 *
+	 * @param id   the id
+	 * @param user the user
+	 *
+	 * @return the user
+	 */
 //UPDATE
-    public User updateUser(int id, User user) {
-        User u = userRepository.findById(id);
-        if (u == null) {
-            return null;
-        }
-        if (userRepository.findById(id) == null) {
-            System.out.println();
-        }
-        userRepository.saveAndFlush(user);
-        return userRepository.findById(id);
-    }
+	public User updateUser(int id, User user) {
+		User u = userRepository.findById(id);
+		if (u == null)
+		{
+			return null;
+		}
+		if (userRepository.findById(id) == null)
+		{
+			System.out.println();
+		}
+		userRepository.saveAndFlush(user);
+		return userRepository.findById(id);
+	}
 
-    /**
-     * Delete user string.
-     *
-     * @param id the id
-     * @return the string
-     */
+	/**
+	 * Delete user string.
+	 *
+	 * @param id the id
+	 *
+	 * @return the string
+	 */
 //DELETE
-    public String deleteUser(int id) {
-        User user = userRepository.findById(id);
-        if (user == null) {
-            return "User " + id + " does not exist";
-        }
-        // Delete all friendships where this user is involved
-        List<Friend> friendsByFirst = friendRepository.findByFirstUser(user);
-        List<Friend> friendsBySecond = friendRepository.findBySecondUser(user);
+	public String deleteUser(int id) {
+		User user = userRepository.findById(id);
+		if (user == null)
+		{
+			return "User " + id + " does not exist";
+		}
+		// Delete all friendships where this user is involved
+		List<Friend> friendsByFirst = friendRepository.findByFirstUser(user);
+		List<Friend> friendsBySecond = friendRepository.findBySecondUser(user);
 
-        for (Friend friend : friendsByFirst) {
-            friendRepository.delete(friend);
-        }
-        for (Friend friend : friendsBySecond) {
-            friendRepository.delete(friend);
-        }
+		for (Friend friend : friendsByFirst)
+		{
+			friendRepository.delete(friend);
+		}
+		for (Friend friend : friendsBySecond)
+		{
+			friendRepository.delete(friend);
+		}
 
-        // Now it's safe to delete the user
-        userRepository.deleteById(id);
+		// Now it's safe to delete the user
+		userRepository.deleteById(id);
 
-        return "User " + id + " has been deleted";
-    }
+		return "User " + id + " has been deleted";
+	}
 
-    /**
-     * List all users list.
-     *
-     * @return the list
-     */
+	/**
+	 * List all users list.
+	 *
+	 * @return the list
+	 */
 //LIST
-    public List<User> listAllUsers() {
-        return userRepository.findAll();
-    }
+	public List<User> listAllUsers() {
+		return userRepository.findAll();
+	}
 
+	/**
+	 * Update user settings string.
+	 *
+	 * @param userId     the user id
+	 * @param settingsId the settings id
+	 * @param settings   the settings
+	 *
+	 * @return the string
+	 */
+	public String updateUserSettings(int userId, int settingsId, UserSettings settings) {
+		User u = userRepository.findById(userId);
+		UserSettings existingSettings = userSettingsRepository.findById(settingsId);
+		if (u == null || existingSettings == null)
+		{
+			return failure;
+		}
+		u.setSettings(settings);
 
-    /**
-     * Update user settings string.
-     *
-     * @param userId     the user id
-     * @param settingsId the settings id
-     * @param settings   the settings
-     * @return the string
-     */
-    public String updateUserSettings(int userId, int settingsId, UserSettings settings) {
-        User u = userRepository.findById(userId);
-        UserSettings existingSettings = userSettingsRepository.findById(settingsId);
-        if (u == null || existingSettings == null) {
-            return failure;
-        }
-        u.setSettings(settings);
+		userRepository.saveAndFlush(u);
 
-        userRepository.saveAndFlush(u);
+		return success;
 
+	}
 
-        return success;
+	/**
+	 * Gets by username.
+	 *
+	 * @param username the username
+	 *
+	 * @return the by username
+	 */
+	public User getByUsername(String username) {
+		return userRepository.findByUsername(username);
+	}
 
-    }
+	/**
+	 * Add friend string.
+	 *
+	 * @param userId    the user id
+	 * @param friendDto the friend dto
+	 *
+	 * @return the string
+	 */
+	public String addFriend(int userId, UserDto friendDto) {
+		User friendUser = userRepository.findByUsername(friendDto.getUsername());
+		if (friendRepository.findFriendshipBetween(userId, friendUser.getId()) != null)
+		{
+			return "Friendship already exists";
+		}
 
+		User user = userRepository.findById(userId);
+		if (user == null)
+		{
+			return failure;
+		}
 
-    /**
-     * Gets by username.
-     *
-     * @param username the username
-     * @return the by username
-     */
-    public User getByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
+		UserDto userDto = mapper.convertValue(user, UserDto.class);
+		Friend newFriend = new Friend();
 
+		User initiatingUser = user;
+		User receivingUser = friendUser;
+		if (user.getId() > friendUser.getId())
+		{
+			initiatingUser = friendUser;
+			receivingUser = user;
+		}
 
-    /**
-     * Add friend string.
-     *
-     * @param userId    the user id
-     * @param friendDto the friend dto
-     * @return the string
-     */
-    public String addFriend(int userId, UserDto friendDto) {
-        User friendUser = userRepository.findByUsername(friendDto.getUsername());
-        if (friendRepository.findFriendshipBetween(userId, friendUser.getId()) != null) {
-            return "Friendship already exists";
-        }
+		if (!friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser))
+		{
+			newFriend.setDateAdded(LocalDate.now());
+			newFriend.setFirstUser(initiatingUser);
+			newFriend.setSecondUser(receivingUser);
+			friendRepository.save(newFriend);
+		}
 
-        User user = userRepository.findById(userId);
-        if (user == null) {
-            return failure;
-        }
+		if (friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser))
+		{
+			return success;
+		}
 
-        UserDto userDto = mapper.convertValue(user, UserDto.class);
-        Friend newFriend = new Friend();
+		return failure;
+	}
 
-        User initiatingUser = user;
-        User receivingUser = friendUser;
-        if (user.getId() > friendUser.getId()) {
-            initiatingUser = friendUser;
-            receivingUser = user;
-        }
+	/**
+	 * Gets all friends.
+	 *
+	 * @return the all friends
+	 */
+	public List<Friend> getAllFriends() {
+		return friendRepository.findAll();
+	}
 
-        if (!friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser)) {
-            newFriend.setDateAdded(LocalDate.now());
-            newFriend.setFirstUser(initiatingUser);
-            newFriend.setSecondUser(receivingUser);
-            friendRepository.save(newFriend);
-        }
+	/**
+	 * Gets friends by username.
+	 *
+	 * @param username the username
+	 *
+	 * @return the friends by username
+	 */
+	public List<UserDto> getFriendsByUsername(String username) {
+		User user = userRepository.findByUsername(username);
+		return getFriendsById(user.getId());
 
-        if (friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser)) {
-            return success;
-        }
+	}
 
-        return failure;
-    }
+	/**
+	 * Gets friends by id.
+	 *
+	 * @param userId the user id
+	 *
+	 * @return the friends by id
+	 */
+	public List<UserDto> getFriendsById(int userId) {
 
-    /**
-     * Gets friends by id.
-     *
-     * @param userId the user id
-     * @return the friends by id
-     */
-    public List<UserDto> getFriendsById(int userId) {
+		User user = userRepository.findById(userId);
 
-        User user = userRepository.findById(userId);
+		List<Friend> friendsByFirst = friendRepository.findByFirstUser(user);
+		List<Friend> friendsBySecond = friendRepository.findBySecondUser(user);
+		List<User> friends = new ArrayList<>();
 
-        List<Friend> friendsByFirst = friendRepository.findByFirstUser(user);
-        List<Friend> friendsBySecond = friendRepository.findBySecondUser(user);
-        List<User> friends = new ArrayList<>();
+		for (Friend friend : friendsByFirst)
+		{
+			friends.add(userRepository.findById(friend.getSecondUser().getId()));
+		}
+		for (Friend friend : friendsBySecond)
+		{
+			friends.add(userRepository.findById(friend.getFirstUser().getId()));
+		}
+		List<UserDto> userDtoList = new ArrayList<>();
+		for (User u : friends)
+		{
+			if (u.getId() != userId) {}
+			userDtoList.add(mapper.convertValue(u, UserDto.class));
 
-        for (Friend friend : friendsByFirst) {
-            friends.add(userRepository.findById(friend.getSecondUser().getId()));
-        }
-        for (Friend friend : friendsBySecond) {
-            friends.add(userRepository.findById(friend.getFirstUser().getId()));
-        }
-        List<UserDto> userDtoList = new ArrayList<>();
-        for(User u : friends){
-            if(u.getId() != userId){}
-            userDtoList.add(mapper.convertValue(u, UserDto.class));
+		}
 
-        }
+		return userDtoList;
+	}
 
-        return userDtoList;
-    }
+	/**
+	 * Remove friend string.
+	 *
+	 * @param user   the user
+	 * @param friend the friend
+	 *
+	 * @return the string
+	 */
+	public String removeFriend(User user, User friend) {
 
-    /**
-     * Gets all friends.
-     *
-     * @return the all friends
-     */
-    public List<Friend> getAllFriends() {
-        return friendRepository.findAll();
-    }
+		Friend friendship = friendRepository.findFriendshipBetween(user.getId(), friend.getId());
 
-    /**
-     * Gets friends by username.
-     *
-     * @param username the username
-     * @return the friends by username
-     */
-    public List<UserDto> getFriendsByUsername(String username) {
-      User user = userRepository.findByUsername(username);
-    return getFriendsById(user.getId());
+		friendRepository.delete(friendship);
+		return "Friendship deleted";
+	}
 
+	/**
+	 * Add friends string.
+	 *
+	 * @param userId   the user id
+	 * @param friendId the friend id
+	 *
+	 * @return the string
+	 */
+	public String addFriends(String userId, String friendId) {
+		User user = userRepository.findByUsername(userId);
+		User friendUser = userRepository.findByUsername(friendId);
 
-    }
+		if (user == null || friendUser == null)
+		{
+			return "User does not exist";
+		}
 
-    public String removeFriend(User user, User friend) {
+		if (friendRepository.findFriendshipBetween(user.getId(), friendUser.getId()) != null)
+		{
+			return "Friendship already exists";
+		}
 
+		Friend newFriend = new Friend();
 
+		User initiatingUser = user;
+		User receivingUser = friendUser;
+		if (user.getId() > friendUser.getId())
+		{
+			initiatingUser = friendUser;
+			receivingUser = user;
+		}
 
-        Friend friendship = friendRepository.findFriendshipBetween(user.getId(), friend.getId());
+		if (!friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser))
+		{
+			newFriend.setDateAdded(LocalDate.now());
+			newFriend.setFirstUser(initiatingUser);
+			newFriend.setSecondUser(receivingUser);
+			friendRepository.save(newFriend);
+		}
 
-        friendRepository.delete(friendship);
-        return "Friendship deleted";
-    }
+		if (friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser))
+		{
+			return success;
+		}
+		return failure;
+	}
 
-    public String addFriends(String userId, String friendId) {
-        User user = userRepository.findByUsername(userId);
-        User friendUser = userRepository.findByUsername(friendId);
-
-        if(user == null || friendUser  == null){
-            return "User does not exist";
-        }
-
-        if (friendRepository.findFriendshipBetween(user.getId(), friendUser.getId()) != null) {
-            return "Friendship already exists";
-        }
-
-
-
-        Friend newFriend = new Friend();
-
-        User initiatingUser = user;
-        User receivingUser = friendUser;
-        if (user.getId() > friendUser.getId()) {
-            initiatingUser = friendUser;
-            receivingUser = user;
-        }
-
-        if (!friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser)) {
-            newFriend.setDateAdded(LocalDate.now());
-            newFriend.setFirstUser(initiatingUser);
-            newFriend.setSecondUser(receivingUser);
-            friendRepository.save(newFriend);
-        }
-
-        if (friendRepository.existsByFirstUserAndSecondUser(initiatingUser, receivingUser)) {
-            return success;
-        }
-        return failure;
-    }
-
-    public boolean existsByUsername(String username){
-        return userRepository.existsByUsername(username);
-    }
-
+	/**
+	 * Exists by username boolean.
+	 *
+	 * @param username the username
+	 *
+	 * @return the boolean
+	 */
+	public boolean existsByUsername(String username) {
+		return userRepository.existsByUsername(username);
+	}
 
 }

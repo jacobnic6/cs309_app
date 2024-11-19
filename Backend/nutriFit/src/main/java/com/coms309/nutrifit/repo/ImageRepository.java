@@ -12,16 +12,23 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ImageRepository extends JpaRepository<ImageData, Integer> {
 
-    /**
-     * Find by name image data.
-     *
-     * @param fileName the file name
-     * @return the image data
-     */
-    ImageData findByName(String fileName);
+	/**
+	 * Find by name image data.
+	 *
+	 * @param fileName the file name
+	 *
+	 * @return the image data
+	 */
+	ImageData findByName(String fileName);
 
-    @Query("select (count(i) > 0) from ImageData i where upper(i.name) = upper(?1) ")
-    boolean existsByNameAndTypeAllIgnoreCase(@NonNull String name);
-
+	/**
+	 * Exists by name and type all ignore case boolean.
+	 *
+	 * @param name the name
+	 *
+	 * @return the boolean
+	 */
+	@Query("select (count(i) > 0) from ImageData i where upper(i.name) = upper(?1) ")
+	boolean existsByNameAndTypeAllIgnoreCase(@NonNull String name);
 
 }

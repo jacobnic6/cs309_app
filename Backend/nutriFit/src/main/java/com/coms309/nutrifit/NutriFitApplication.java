@@ -11,30 +11,30 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class NutriFitApplication {
 
-    /**
-     * The entry point of application.
-     *
-     * @param args the input arguments
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(NutriFitApplication.class, args);
+	/**
+	 * The entry point of application.
+	 *
+	 * @param args the input arguments
+	 */
+	public static void main(String[] args) {
+		SpringApplication.run(NutriFitApplication.class, args);
 
-    }
+	}
 
+	/**
+	 * Run command line runner.
+	 *
+	 * @param dataLoader the data loader
+	 *
+	 * @return the command line runner
+	 */
+	@Bean
+	CommandLineRunner run(DataLoader dataLoader) {
+		return args -> {
+			dataLoader.loadData();
 
-    /**
-     * Run command line runner.
-     *
-     * @param dataLoader the data loader
-     * @return the command line runner
-     */
-    @Bean
-    CommandLineRunner run(DataLoader dataLoader) {
-        return args -> {
-            dataLoader.loadData();
-
-        };
-    }
+		};
+	}
 
 }
 

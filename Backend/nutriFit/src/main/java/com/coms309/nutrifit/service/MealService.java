@@ -9,16 +9,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class MealService {
 
-    private final MealRepository mealRepository;
+	private final MealRepository mealRepository;
 
-    /**
-     * Instantiates a new Meal service.
-     *
-     * @param mealRepository the meal repository
-     */
-    public MealService(MealRepository mealRepository) {
-        this.mealRepository = mealRepository;
-    }
-
+	/**
+	 * Instantiates a new Meal service.
+	 *
+	 * @param mealRepository the meal repository
+	 */
+	public MealService(MealRepository mealRepository) {
+		this.mealRepository = mealRepository;
+	}
 
 }

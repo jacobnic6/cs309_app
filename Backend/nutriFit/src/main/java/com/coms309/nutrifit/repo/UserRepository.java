@@ -10,51 +10,66 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+	/**
+	 * Find by id user.
+	 *
+	 * @param id the id
+	 *
+	 * @return the user
+	 */
+	User findById(int id);
 
-    /**
-     * Find by id user.
-     *
-     * @param id the id
-     * @return the user
-     */
-    User findById(int id);
+	/**
+	 * Delete by id.
+	 *
+	 * @param id the id
+	 */
+	void deleteById(int id);
 
+	/**
+	 * Gets id by username.
+	 *
+	 * @param username the username
+	 *
+	 * @return the id by username
+	 */
+	int getIdByUsername(String username);
 
-    /**
-     * Delete by id.
-     *
-     * @param id the id
-     */
-    void deleteById(int id);
+	/**
+	 * Find by username user.
+	 *
+	 * @param username the username
+	 *
+	 * @return the user
+	 */
+	User findByUsername(String username);
 
-    /**
-     * Gets id by username.
-     *
-     * @param username the username
-     * @return the id by username
-     */
-    int getIdByUsername(String username);
+	/**
+	 * Exists user by id or email or username boolean.
+	 *
+	 * @param id       the id
+	 * @param email    the email
+	 * @param username the username
+	 *
+	 * @return the boolean
+	 */
+	boolean existsUserByIdOrEmailOrUsername(int id, String email, String username);
 
+	/**
+	 * Exists by email boolean.
+	 *
+	 * @param email the email
+	 *
+	 * @return the boolean
+	 */
+	boolean existsByEmail(String email);
 
-    /**
-     * Find by username user.
-     *
-     * @param username the username
-     * @return the user
-     */
-    User findByUsername(String username);
-
-    /**
-     * Exists user by id or email or username boolean.
-     *
-     * @param id       the id
-     * @param email    the email
-     * @param username the username
-     * @return the boolean
-     */
-    boolean existsUserByIdOrEmailOrUsername(int id, String email, String username);
-
-    boolean existsByEmail(String email);
-
-    boolean existsByUsername(String username);
+	/**
+	 * Exists by username boolean.
+	 *
+	 * @param username the username
+	 *
+	 * @return the boolean
+	 */
+	boolean existsByUsername(String username);
 }

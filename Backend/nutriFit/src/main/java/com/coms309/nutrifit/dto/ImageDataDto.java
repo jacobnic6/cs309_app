@@ -9,7 +9,9 @@ import java.io.Serializable;
  */
 @Value
 public class ImageDataDto implements Serializable {
-    byte[] pictureData;
-    String name;
-    String type;
+	byte[] pictureData;
+
+	String name;
+
+	String type;
 }

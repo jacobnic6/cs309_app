@@ -16,39 +16,40 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 public class WeightDTO {
-    @JsonProperty("weight")
-    private double weight;
-    @JsonProperty("date")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate weightDate;
+	@JsonProperty("weight")
+	private double weight;
 
-    /**
-     * Instantiates a new Weight dto.
-     *
-     * @param weight the weight
-     */
-    public WeightDTO(double weight) {
-        this.weight = weight;
-        this.weightDate = LocalDate.now();
-    }
+	@JsonProperty("date")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private LocalDate weightDate;
 
-    /**
-     * Instantiates a new Weight dto.
-     *
-     * @param weight     the weight
-     * @param weightDate the weight date
-     */
-    public WeightDTO(double weight, LocalDate weightDate) {
-        this.weight = weight;
-        this.weightDate = weightDate;
-    }
+	/**
+	 * Instantiates a new Weight dto.
+	 *
+	 * @param weight the weight
+	 */
+	public WeightDTO(double weight) {
+		this.weight = weight;
+		this.weightDate = LocalDate.now();
+	}
 
-    /**
-     * Instantiates a new Weight dto.
-     *
-     * @param weightDate the weight date
-     */
-    public WeightDTO(LocalDate weightDate) {
-        this.weightDate = weightDate;
-    }
+	/**
+	 * Instantiates a new Weight dto.
+	 *
+	 * @param weight     the weight
+	 * @param weightDate the weight date
+	 */
+	public WeightDTO(double weight, LocalDate weightDate) {
+		this.weight = weight;
+		this.weightDate = weightDate;
+	}
+
+	/**
+	 * Instantiates a new Weight dto.
+	 *
+	 * @param weightDate the weight date
+	 */
+	public WeightDTO(LocalDate weightDate) {
+		this.weightDate = weightDate;
+	}
 }

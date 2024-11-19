@@ -7,19 +7,19 @@ import java.util.Map;
  */
 public interface Trackable {
 
-    /**
-     * Add nutrient.
-     *
-     * @param nutrient the nutrient
-     * @param amount   the amount
-     */
-    void addNutrient(String nutrient, int amount);
+	/**
+	 * Add nutrient.
+	 *
+	 * @param nutrient the nutrient
+	 * @param amount   the amount
+	 */
+	void addNutrient(String nutrient, int amount);
 
-    /**
-     * Combine nutrients.
-     *
-     * @param nutrients the nutrients
-     */
-    void combineNutrients(Map<String, Integer> nutrients);
+	/**
+	 * Combine nutrients.
+	 *
+	 * @param nutrients the nutrients
+	 */
+	void combineNutrients(Map<String, Integer> nutrients);
 
 }

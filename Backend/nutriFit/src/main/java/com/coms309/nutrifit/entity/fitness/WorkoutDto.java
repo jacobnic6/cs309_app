@@ -3,7 +3,10 @@ package com.coms309.nutrifit.entity.fitness;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Embedded;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,12 +20,13 @@ import java.util.List;
 @NoArgsConstructor
 public class WorkoutDto implements Serializable {
 
-        @Embedded
-        private  List<WorkoutSetDto> activities;
-        @JsonProperty("totalWeight")
-        private double totalWeight;
+	@Embedded
+	private List<WorkoutSetDto> activities;
 
-     @JsonProperty(value = "dateTracked")
-     @JsonFormat(pattern = "yyyy-MM-dd")
-    private String dateTracked;
+	@JsonProperty("totalWeight")
+	private double totalWeight;
+
+	@JsonProperty(value = "dateTracked")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private String dateTracked;
 }

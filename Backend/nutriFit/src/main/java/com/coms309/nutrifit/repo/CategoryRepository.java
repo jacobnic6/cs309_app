@@ -9,27 +9,30 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
-    /**
-     * Find by name category.
-     *
-     * @param category the category
-     * @return the category
-     */
-    Category findByName(String category);
+	/**
+	 * Find by name category.
+	 *
+	 * @param category the category
+	 *
+	 * @return the category
+	 */
+	Category findByName(String category);
 
-    /**
-     * Exists by name boolean.
-     *
-     * @param text the text
-     * @return the boolean
-     */
-    boolean existsByName(String text);
+	/**
+	 * Exists by name boolean.
+	 *
+	 * @param text the text
+	 *
+	 * @return the boolean
+	 */
+	boolean existsByName(String text);
 
-    /**
-     * Gets by name.
-     *
-     * @param name the name
-     * @return the by name
-     */
-    Category getByName(String name);
+	/**
+	 * Gets by name.
+	 *
+	 * @param name the name
+	 *
+	 * @return the by name
+	 */
+	Category getByName(String name);
 }

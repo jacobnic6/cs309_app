@@ -3,7 +3,10 @@ package com.coms309.nutrifit.entity.fitness;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Embeddable;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -17,22 +20,26 @@ import java.io.Serializable;
 @Embeddable
 public class WorkoutSetDto implements Serializable {
 
- @JsonIgnore
- @JsonProperty("id")
- private int id;
+	@JsonIgnore
+	@JsonProperty("id")
+	private int id;
 
-    @JsonProperty(value = "category", defaultValue = "strength")
-    private String category;
-    @JsonProperty(value = "exerciseName", required = true)
-    private  String exerciseName;
-    @JsonProperty(value = "weight", defaultValue = "0")
-    private int weight;
-    @JsonProperty(value ="reps", defaultValue = "0")
-    private  int reps;
-    @JsonProperty(value ="sets", defaultValue = "0")
-    private  int sets;
-    @JsonProperty(value ="setTotal", defaultValue = "0")
-    private int setTotal;
+	@JsonProperty(value = "category", defaultValue = "strength")
+	private String category;
 
+	@JsonProperty(value = "exerciseName", required = true)
+	private String exerciseName;
+
+	@JsonProperty(value = "weight", defaultValue = "0")
+	private int weight;
+
+	@JsonProperty(value = "reps", defaultValue = "0")
+	private int reps;
+
+	@JsonProperty(value = "sets", defaultValue = "0")
+	private int sets;
+
+	@JsonProperty(value = "setTotal", defaultValue = "0")
+	private int setTotal;
 
 }

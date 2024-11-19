@@ -15,19 +15,16 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ImageData {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
+	@Lob
+	@JsonIgnore
+	private byte[] pictureData;
 
+	private String name;
 
-    @Lob
-    @JsonIgnore
-    private byte[] pictureData;
-
-    private String name;
-
-    private String type;
-
+	private String type;
 
 }

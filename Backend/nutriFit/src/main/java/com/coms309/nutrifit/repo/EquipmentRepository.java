@@ -9,27 +9,30 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface EquipmentRepository extends JpaRepository<Equipment, Integer> {
-    /**
-     * Find by name equipment.
-     *
-     * @param name the name
-     * @return the equipment
-     */
-    Equipment findByName(String name);
+	/**
+	 * Find by name equipment.
+	 *
+	 * @param name the name
+	 *
+	 * @return the equipment
+	 */
+	Equipment findByName(String name);
 
-    /**
-     * Exists by name boolean.
-     *
-     * @param equip the equip
-     * @return the boolean
-     */
-    boolean existsByName(String equip);
+	/**
+	 * Exists by name boolean.
+	 *
+	 * @param equip the equip
+	 *
+	 * @return the boolean
+	 */
+	boolean existsByName(String equip);
 
-    /**
-     * Gets equipment by name.
-     *
-     * @param equip the equip
-     * @return the equipment by name
-     */
-    Equipment getEquipmentByName(String equip);
+	/**
+	 * Gets equipment by name.
+	 *
+	 * @param equip the equip
+	 *
+	 * @return the equipment by name
+	 */
+	Equipment getEquipmentByName(String equip);
 }

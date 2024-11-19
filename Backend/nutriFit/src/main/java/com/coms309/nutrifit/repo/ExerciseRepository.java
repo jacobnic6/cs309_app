@@ -9,11 +9,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
-    /**
-     * Exists by name boolean.
-     *
-     * @param name the name
-     * @return the boolean
-     */
-    boolean existsByName(String name);
+	/**
+	 * Exists by name boolean.
+	 *
+	 * @param name the name
+	 *
+	 * @return the boolean
+	 */
+	boolean existsByName(String name);
 }

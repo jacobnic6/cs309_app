@@ -15,14 +15,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ProfileDto implements Serializable {
 
+	private int id;
 
-    private int id;
-    private String name;
-    private double weight;
-    private int height;
+	private String name;
 
+	private double weight;
 
-    private byte[] image;
+	private int height;
 
+	private byte[] image;
 
 }

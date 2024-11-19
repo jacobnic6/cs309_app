@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 /**
  * The type Session tracker.
  */
@@ -16,18 +15,20 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SessionTracker {
 
-    private String username;
-    private String password;
-    private User currentUser;
+	private String username;
 
-    /**
-     * Instantiates a new Session tracker.
-     *
-     * @param username the username
-     * @param password the password
-     */
-    public SessionTracker(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+	private String password;
+
+	private User currentUser;
+
+	/**
+	 * Instantiates a new Session tracker.
+	 *
+	 * @param username the username
+	 * @param password the password
+	 */
+	public SessionTracker(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
 }

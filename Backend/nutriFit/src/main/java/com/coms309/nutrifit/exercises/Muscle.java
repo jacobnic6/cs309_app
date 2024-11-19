@@ -17,37 +17,36 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Muscle {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
-    @Column(unique = true)
-    private String name;
+	@Column(unique = true)
+	private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "muscle_group_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private MuscleGroup muscleGroup;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "muscle_group_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private MuscleGroup muscleGroup;
 
-    /**
-     * Instantiates a new Muscle.
-     *
-     * @param name the name
-     */
-    public Muscle(String name) {
-        this.name = name;
-    }
+	/**
+	 * Instantiates a new Muscle.
+	 *
+	 * @param name the name
+	 */
+	public Muscle(String name) {
+		this.name = name;
+	}
 
-    /**
-     * Instantiates a new Muscle.
-     *
-     * @param name        the name
-     * @param muscleGroup the muscle group
-     */
-    public Muscle(String name, MuscleGroup muscleGroup) {
-        this.name = name;
-        this.muscleGroup = muscleGroup;
-    }
-
+	/**
+	 * Instantiates a new Muscle.
+	 *
+	 * @param name        the name
+	 * @param muscleGroup the muscle group
+	 */
+	public Muscle(String name, MuscleGroup muscleGroup) {
+		this.name = name;
+		this.muscleGroup = muscleGroup;
+	}
 
 }

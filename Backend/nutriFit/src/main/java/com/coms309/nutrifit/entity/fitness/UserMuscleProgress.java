@@ -17,36 +17,35 @@ import lombok.*;
 @AllArgsConstructor
 public class UserMuscleProgress {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private int id;
 
+	@JsonProperty("muscle")
+	private String muscle;
 
-    @JsonProperty("muscle")
-    private String muscle;
+	@JsonProperty(value = "percentage")
+	@Column(columnDefinition = "integer default 0")
+	private int percentage;
 
-    @JsonProperty(value = "percentage")
-    @Column( columnDefinition = "integer default 0")
-    private int percentage;
+	@JsonProperty(value = "tier")
+	private int tier;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "profile_id", referencedColumnName = "user_id")
+	@JsonIgnore
+	private Profile profile;
 
-    @JsonProperty(value = "tier")
-    private int tier;
-
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id", referencedColumnName = "user_id")
-    @JsonIgnore
-    private Profile profile;
-
-public void updateProgress(int amount, int tier){
-    this.tier += ((amount + percentage) / 100) + tier;
-    percentage =((amount + percentage) % 100)  ;
-}
-
-
-
+	/**
+	 * Update progress.
+	 *
+	 * @param amount the amount
+	 * @param tier   the tier
+	 */
+	public void updateProgress(int amount, int tier) {
+		this.tier += ((amount + percentage) / 100) + tier;
+		percentage = ((amount + percentage) % 100);
+	}
 
 }

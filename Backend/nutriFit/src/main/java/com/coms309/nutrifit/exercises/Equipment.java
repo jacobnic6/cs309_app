@@ -18,33 +18,33 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Equipment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
-    @Column
-    private String name;
+	@Column
+	private String name;
 
-    @ManyToMany
-    private List<Exercise> exercises;
+	@ManyToMany
+	private List<Exercise> exercises;
 
-    /**
-     * Instantiates a new Equipment.
-     *
-     * @param name the name
-     */
-    public Equipment(String name) {
-        this.name = name;
-        exercises = new ArrayList<>();
-    }
+	/**
+	 * Instantiates a new Equipment.
+	 *
+	 * @param name the name
+	 */
+	public Equipment(String name) {
+		this.name = name;
+		exercises = new ArrayList<>();
+	}
 
-    /**
-     * Add exercise.
-     *
-     * @param exercise the exercise
-     */
-    public void addExercise(Exercise exercise) {
+	/**
+	 * Add exercise.
+	 *
+	 * @param exercise the exercise
+	 */
+	public void addExercise(Exercise exercise) {
 
-        this.exercises.add(exercise);
-    }
+		this.exercises.add(exercise);
+	}
 }

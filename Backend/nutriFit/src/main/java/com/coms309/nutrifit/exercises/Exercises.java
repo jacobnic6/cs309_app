@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * The type Exercises.
  */
@@ -18,43 +17,42 @@ import java.util.Map;
 @AllArgsConstructor
 public class Exercises {
 
-    private int id;
+	/**
+	 * The Categories.
+	 */
+	List<Category> categories;
 
+	/**
+	 * The Equipment.
+	 */
+	List<Equipment> equipment;
 
-    /**
-     * The Categories.
-     */
-    List<Category> categories;
+	/**
+	 * The Muscles.
+	 */
+	List<Muscle> muscles;
 
-    /**
-     * The Equipment.
-     */
-    List<Equipment> equipment;
+	/**
+	 * The Muscle groups.
+	 */
+	Map<String, List<Muscle>> muscleGroups;
 
-    /**
-     * The Muscles.
-     */
-    List<Muscle> muscles;
+	/**
+	 * The Exercises.
+	 */
+	List<Exercise> exercises;
 
-    /**
-     * The Muscle groups.
-     */
-    Map<String, List<Muscle>> muscleGroups;
+	private int id;
 
-    /**
-     * The Exercises.
-     */
-    List<Exercise> exercises;
-
-    /**
-     * Instantiates a new Exercises.
-     */
-    public Exercises() {
-        categories = new ArrayList<>();
-        equipment = new ArrayList<>();
-        muscles = new ArrayList<>();
-        muscleGroups = new HashMap<>();
-        exercises = new ArrayList<>();
-    }
+	/**
+	 * Instantiates a new Exercises.
+	 */
+	public Exercises() {
+		categories = new ArrayList<>();
+		equipment = new ArrayList<>();
+		muscles = new ArrayList<>();
+		muscleGroups = new HashMap<>();
+		exercises = new ArrayList<>();
+	}
 
 }

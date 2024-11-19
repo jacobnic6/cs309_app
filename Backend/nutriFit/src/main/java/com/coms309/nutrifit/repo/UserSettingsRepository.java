@@ -10,18 +10,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserSettingsRepository extends JpaRepository<UserSettings, Integer> {
 
-    /**
-     * Find by id user settings.
-     *
-     * @param id the id
-     * @return the user settings
-     */
-    UserSettings findById(int id);
+	/**
+	 * Find by id user settings.
+	 *
+	 * @param id the id
+	 *
+	 * @return the user settings
+	 */
+	UserSettings findById(int id);
 
-    /**
-     * Remove user settings by id.
-     *
-     * @param id the id
-     */
-    void removeUserSettingsById(int id);
+	/**
+	 * Remove user settings by id.
+	 *
+	 * @param id the id
+	 */
+	void removeUserSettingsById(int id);
 }

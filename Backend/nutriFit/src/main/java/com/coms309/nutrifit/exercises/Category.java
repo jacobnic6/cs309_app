@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 /**
  * The type Category.
  */
@@ -18,24 +17,21 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Category {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
+	@Column(unique = true)
+	@JsonProperty("category")
+	private String name;
 
-    @Column(unique = true)
-    @JsonProperty("category")
-    private String name;
-
-
-    /**
-     * Instantiates a new Category.
-     *
-     * @param name the name
-     */
-    public Category(String name) {
-        this.name = name;
-    }
-
+	/**
+	 * Instantiates a new Category.
+	 *
+	 * @param name the name
+	 */
+	public Category(String name) {
+		this.name = name;
+	}
 
 }

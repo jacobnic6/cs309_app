@@ -9,11 +9,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface MuscleGroupRepository extends JpaRepository<MuscleGroup, Integer> {
-    /**
-     * Exists by group name boolean.
-     *
-     * @param groupName the group name
-     * @return the boolean
-     */
-    boolean existsByGroupName(String groupName);
+	/**
+	 * Exists by group name boolean.
+	 *
+	 * @param groupName the group name
+	 *
+	 * @return the boolean
+	 */
+	boolean existsByGroupName(String groupName);
 }

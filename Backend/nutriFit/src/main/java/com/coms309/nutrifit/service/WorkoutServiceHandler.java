@@ -1,8 +1,8 @@
 package com.coms309.nutrifit.service;
 
-import com.coms309.nutrifit.entity.*;
+import com.coms309.nutrifit.entity.Profile;
+import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.entity.fitness.Workout;
-import com.coms309.nutrifit.entity.fitness.WorkoutDto;
 import com.coms309.nutrifit.entity.fitness.WorkoutSet;
 import com.coms309.nutrifit.entity.fitness.WorkoutSetDto;
 import com.coms309.nutrifit.repo.ProfileRepository;
@@ -21,170 +21,207 @@ import java.util.List;
  */
 @Service
 public class WorkoutServiceHandler {
-    /**
-     * The Workout repository.
-     */
-    @Autowired
-    WorkoutRepository workoutRepository;
-    /**
-     * The User repository.
-     */
-    @Autowired
-    UserRepository userRepository;
-    /**
-     * The Profile repository.
-     */
-    @Autowired
-    ProfileRepository profileRepository;
+	/**
+	 * The Workout repository.
+	 */
+	@Autowired
+	WorkoutRepository workoutRepository;
 
-    @Autowired
-    ObjectMapper objectMapper;
+	/**
+	 * The User repository.
+	 */
+	@Autowired
+	UserRepository userRepository;
 
-    /**
-     * Add workout by username workout.
-     *
-     * @param username the username
-     * @param date
-     * @return the workout
-     */
-    public Workout createWorkout(String username, LocalDate date) {
-    if(!userRepository.existsByUsername(username)){
-        throw new NullPointerException("User not found");
-    }
-    User user = userRepository.findByUsername(username);
-    Profile profile = profileRepository.findByUser(user);
-    if(workoutRepository.existsByProfile_NameAndDateTracked(username, date)){
-        return workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
-    }
+	/**
+	 * The Profile repository.
+	 */
+	@Autowired
+	ProfileRepository profileRepository;
 
-    Workout workout = new Workout(profile);
+	/**
+	 * The Object mapper.
+	 */
+	@Autowired
+	ObjectMapper objectMapper;
 
-    profile.addWorkout(workout);
+	/**
+	 * Add workout by username workout.
+	 *
+	 * @param username the username
+	 * @param date     the date
+	 *
+	 * @return the workout
+	 */
+	public Workout createWorkout(String username, LocalDate date) {
+		if (!userRepository.existsByUsername(username))
+		{
+			throw new NullPointerException("User not found");
+		}
+		User user = userRepository.findByUsername(username);
+		Profile profile = profileRepository.findByUser(user);
+		if (workoutRepository.existsByProfile_NameAndDateTracked(username, date))
+		{
+			return workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
+		}
 
-    workout.updateTotalWeight();
+		Workout workout = new Workout(profile);
 
+		profile.addWorkout(workout);
 
+		workout.updateTotalWeight();
 
-        return workoutRepository.save(workout);
+		return workoutRepository.save(workout);
 
+	}
 
-    }
+	/**
+	 * Gets workouts by user.
+	 *
+	 * @param username the username
+	 *
+	 * @return the workouts by user
+	 */
+	public List<Workout> getWorkoutsByUser(String username) {
 
-    /**
-     * Gets workouts by user.
-     *
-     * @param username the username
-     * @return the workouts by user
-     */
-    public List<Workout> getWorkoutsByUser(String username) {
+		Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
+		return workoutRepository.findWorkoutsByProfile(profile);
+	}
 
-        Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
-        return workoutRepository.findWorkoutsByProfile(profile);
-    }
+	/**
+	 * Gets workout by id.
+	 *
+	 * @param workoutId the workout id
+	 *
+	 * @return the workout by id
+	 */
+	public Workout getWorkoutById(int workoutId) {
 
-    /**
-     * Gets workout by id.
-     *
-     * @param workoutId the workout id
-     * @return the workout by id
-     */
-    public Workout getWorkoutById(int workoutId) {
+		if (workoutRepository.existsById(workoutId))
+		{
+			return workoutRepository.findById(workoutId).get();
+		}
+		return null;
+	}
 
-        if (workoutRepository.existsById(workoutId)) {
-            return workoutRepository.findById(workoutId).get();
-        }
-        return null;
-    }
+	/**
+	 * Update workout workout.
+	 *
+	 * @param workoutId the workout id
+	 * @param workout   the workout
+	 *
+	 * @return the workout
+	 */
+	public Workout updateWorkout(int workoutId, Workout workout) {
 
-    /**
-     * Update workout workout.
-     *
-     * @param workoutId the workout id
-     * @param workout   the workout
-     * @return the workout
-     */
-    public Workout updateWorkout(int workoutId, Workout workout) {
+		if (workout == null)
+		{
+			return null;
+		}
 
-        if (workout == null) {
-            return null;
-        }
+		if (workoutRepository.existsById(workoutId))
+		{
 
-        if (workoutRepository.existsById(workoutId)) {
+			Workout oldWorkout = workoutRepository.findById(workoutId).get();
+			oldWorkout.setActivities(workout.getActivities());
+			oldWorkout.setDateTracked(LocalDate.now());
+			oldWorkout.setActivities(workout.getActivities());
+			oldWorkout.updateTotalWeight();
+			workoutRepository.saveAndFlush(oldWorkout);
 
-            Workout oldWorkout = workoutRepository.findById(workoutId).get();
-            oldWorkout.setActivities(workout.getActivities());
-            oldWorkout.setDateTracked(LocalDate.now());
-            oldWorkout.setActivities(workout.getActivities());
-            oldWorkout.updateTotalWeight();
-            workoutRepository.saveAndFlush(oldWorkout);
+		}
+		return workoutRepository.findById(workoutId).get();
+	}
 
+	/**
+	 * Remove workout string.
+	 *
+	 * @param workoutId the workout id
+	 *
+	 * @return the string
+	 */
+	public String removeWorkout(int workoutId) {
+		if (!workoutRepository.existsById(workoutId))
+		{
+			return "Workout with id " + workoutId + " does not exist";
+		}
+		workoutRepository.deleteById(workoutId);
 
-        }
-        return workoutRepository.findById(workoutId).get();
-    }
+		return "Workout with id " + workoutId + " has been deleted";
 
-    /**
-     * Remove workout string.
-     *
-     * @param workoutId the workout id
-     * @return the string
-     */
-    public String removeWorkout(int workoutId) {
-        if (!workoutRepository.existsById(workoutId)) {
-            return "Workout with id " + workoutId + " does not exist";
-        }
-        workoutRepository.deleteById(workoutId);
+	}
 
-        return "Workout with id " + workoutId + " has been deleted";
+	/**
+	 * Add set workout.
+	 *
+	 * @param date     the date
+	 * @param username the username
+	 * @param set      the set
+	 *
+	 * @return the workout
+	 *
+	 * @throws Exception the exception
+	 */
+	public Workout addSet(LocalDate date, String username, WorkoutSetDto set) throws Exception {
+		Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
+		Workout workout;
+		if (workoutRepository.existsByProfileAndDateTracked(profile, date))
+		{
+			workout = workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
+		} else
+		{
+			throw new EntityNotFoundException("No workout exists for user "
+					                                  + username + " on date " + date.toString() + " yet");
 
+		}
 
-    }
+		if (workout.getActivities().size() > 0)
+		{
+			for (WorkoutSet ws : workout.getActivities())
+			{
+				if (ws.getExerciseName().equalsIgnoreCase(set.getExerciseName()))
+				{
+					ws.setSets(set.getSets());
+					ws.setReps(set.getReps());
+					ws.setWeight(set.getWeight());
+					ws.setCategory(set.getCategory());
+					workout.updateTotalWeight();
+					return workoutRepository.saveAndFlush(workout);
 
-    public Workout addSet(LocalDate date, String username, WorkoutSetDto set) throws Exception {
-        Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
-        Workout workout;
-      if(workoutRepository.existsByProfileAndDateTracked(profile, date)){
-          workout = workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
-      }else{
-          throw new EntityNotFoundException("No workout exists for user "
-                  + username + " on date " + date.toString() + " yet");
+				}
+			}
+		}
+		WorkoutSet workoutSet = objectMapper.convertValue(set, WorkoutSet.class);
 
-      }
+		workoutSet.setWorkout(workout);
+		workout.addActivity(workoutSet);
+		workout.updateTotalWeight();
 
-       if(workout.getActivities().size() > 0){
-            for(WorkoutSet ws : workout.getActivities()){
-                if(ws.getExerciseName().equalsIgnoreCase(set.getExerciseName())){
-                    ws.setSets(set.getSets());
-                    ws.setReps(set.getReps());
-                    ws.setWeight(set.getWeight());
-                    ws.setCategory(set.getCategory());
-                    workout.updateTotalWeight();
-                    return workoutRepository.saveAndFlush(workout);
+		return workoutRepository.save(workout);
 
-                }
-            }
-       }
-        WorkoutSet workoutSet = objectMapper.convertValue(set, WorkoutSet.class);
+	}
 
-        workoutSet.setWorkout(workout);
-        workout.addActivity(workoutSet);
-        workout.updateTotalWeight();
+	/**
+	 * Gets workouts by user and date.
+	 *
+	 * @param username the username
+	 * @param date     the date
+	 *
+	 * @return the workouts by user and date
+	 */
+	public Workout getWorkoutsByUserAndDate(String username, LocalDate date) {
 
+		return workoutRepository.findByProfile_User_UsernameAndDateTracked(username, date).get();
 
-        return workoutRepository.save(workout);
+	}
 
-    }
-
-    public Workout getWorkoutsByUserAndDate(String username, LocalDate date) {
-
-
-        return workoutRepository.findByProfile_User_UsernameAndDateTracked(username, date).get();
-
-    }
-
-    public List<Workout> getAllWorkouts() {
-        return workoutRepository.findAll();
-    }
-
+	/**
+	 * Gets all workouts.
+	 *
+	 * @return the all workouts
+	 */
+	public List<Workout> getAllWorkouts() {
+		return workoutRepository.findAll();
+	}
 
 }
