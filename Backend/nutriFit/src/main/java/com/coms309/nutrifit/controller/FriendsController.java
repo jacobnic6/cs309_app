@@ -20,8 +20,13 @@ import java.util.List;
 @RequestMapping("/friends")
 public class FriendsController {
 
+
+    private final UserServiceHandler userServiceHandler;
+
     @Autowired
-    private UserServiceHandler userServiceHandler;
+    public FriendsController(UserServiceHandler userServiceHandler) {
+        this.userServiceHandler = userServiceHandler;
+    }
 
 
     /**
@@ -31,7 +36,7 @@ public class FriendsController {
      * @param friendDto the friend dto
      * @return the string
      */
-    @Operation(summary = "Add a friend to a user")
+    @Operation(summary = "Add a friend to a user", description = "Finds user by Id and adds the friend in the request body.")
     @PostMapping(path = "/{userId}/add")
     public String addFriend(@PathVariable int userId, @RequestBody UserDto friendDto) {
         return userServiceHandler.addFriend(userId, friendDto);
@@ -45,6 +50,7 @@ public class FriendsController {
      * @param friendDto the friend dto
      * @return the string
      */
+    @Operation(summary = "Add a friend to a user", description = "Finds user by Id or username and adds the friend in the request body.")
     @PostMapping(path = "/add")
     public String addFriendBody(@RequestParam String userId, @RequestBody UserDto friendDto) {
         if(userId.isEmpty()  ){
@@ -64,6 +70,7 @@ public class FriendsController {
     }
 
 //newest
+@Operation(summary = "Add a friend to a user", description = "Finds user by Id or username and adds the friend by id or username.")
     @PostMapping("/addFriend/{userId}/{friendId}")
     public String addFriendByUsernameOrId(@PathVariable String userId,
                                    @PathVariable String friendId) {
@@ -91,6 +98,7 @@ public class FriendsController {
      * @param userId the user id
      * @return the friends by id
      */
+    @Operation(summary = "Get all friends of specific user", description = "Finds user by Id and returns a list of their friends.")
     @GetMapping(path = "/{userId}")
     public List<UserDto> getFriendsById(@PathVariable int userId) {
         return userServiceHandler.getFriendsById(userId);
@@ -102,6 +110,7 @@ public class FriendsController {
      * @param userId the user id
      * @return the friends by id
      */
+    @Operation(summary = "Get all friends of specific user", description = "Finds user by Id or username and returns a list of their friends.")
     @GetMapping(path = "/get")
     public List<UserDto> getUserFriends(@RequestParam String userId) {
         if(userId.isEmpty()  ){
@@ -116,26 +125,7 @@ public class FriendsController {
 
     }
 
-//
-//    /**
-//     * Gets list of friends. Path looks like /friends/get?id=bob123
-//     *
-//     * @param id the id
-//     * @return the friends
-//     */
-//    @GetMapping(path = "/get")
-//    public List<UserDto> getFriends(@RequestParam String id) {
-//        if(id.isEmpty()  ){
-//
-//        }
-//
-//        if (ServiceHandler.isNumeric(id)) {
-//            int userId = Integer.parseInt(id);
-//
-//            return userServiceHandler.getFriendsById(userId);
-//        }
-//        return userServiceHandler.getFriendsByUsername(id);
-//    }
+
 
     /**
      * Gets friends by username.
@@ -143,6 +133,7 @@ public class FriendsController {
      * @param username the username
      * @return the friends by username
      */
+    @Operation(summary = "Get all friends of specific user", description = "Finds user by Id or username and returns a list of their friends.")
     @GetMapping(path = "/list/{username}")
     public List<UserDto> getFriendsByUsername(@PathVariable String username) {
         if(ServiceHandler.isNumeric(username)){
@@ -156,11 +147,13 @@ public class FriendsController {
      *
      * @return the all friendships
      */
+    @Operation(summary = "Get all friendships", description = "Returns a list of all friendships.")
     @GetMapping
     public List<Friend> getAllFriendships() {
         return userServiceHandler.getAllFriends();
     }
 
+    @Operation(summary = "Remove friend", description = "Removes friend from friends list")
     @DeleteMapping("/{userId}/{friendId}")
     public String removeFriendship(@PathVariable String userId,
                                    @PathVariable String friendId) {
@@ -168,18 +161,27 @@ public class FriendsController {
             return "Incorrect path. User and friend cannot be empty";
 
         }
+        User user;
+        User friend;
         if(ServiceHandler.isNumeric(userId) ){
             int userIdInt = Integer.parseInt(userId);
-            userId = userServiceHandler.getUserById(userIdInt).getUsername();
+            //userId = userServiceHandler.getUserById(userIdInt).getUsername();
+            user = userServiceHandler.getUserById(userIdInt);
+        }else{
+            user = userServiceHandler.getByUsername(userId);
         }
         if(ServiceHandler.isNumeric(friendId)){
             int friendIdInt = Integer.parseInt(friendId);
-            friendId = userServiceHandler.getUserById(friendIdInt).getUsername();
+            //friendId = userServiceHandler.getUserById(friendIdInt).getUsername();
+            friend = userServiceHandler.getUserById(friendIdInt);
+        }else{
+            friend = userServiceHandler.getByUsername(friendId);
         }
-        return userServiceHandler.removeFriend(userId, friendId);
+        return userServiceHandler.removeFriend(user, friend);
 
 
     }
+
 
 
 }

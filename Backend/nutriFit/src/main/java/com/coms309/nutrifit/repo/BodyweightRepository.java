@@ -2,9 +2,11 @@ package com.coms309.nutrifit.repo;
 
 import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.entity.fitness.UserWeight;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.web.SortDefault;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,14 @@ import java.util.List;
  */
 @Repository
 public interface BodyweightRepository extends JpaRepository<UserWeight, Integer> {
+    @Query("select u from UserWeight u where u.weightDate = ?1 and u.user.username = ?2")
+    UserWeight findByWeightDateAndUser_Username(@NonNull LocalDate weightDate, @NonNull String username);
+
+    @Query("select (count(u) > 0) from UserWeight u where u.weightDate = ?1 and u.user.username = ?2")
+    boolean existsByWeightDateAndUser_Username(@NonNull LocalDate weightDate, @NonNull String username);
+
+    List<UserWeight> findByUser_UsernameOrderByWeightDateAsc(@NonNull String username);
+
 
     /**
      * Exists by weight date and user id boolean.

@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.SortNatural;
+import org.springframework.data.web.SortDefault;
 
 import java.time.LocalDate;
 
@@ -31,6 +33,7 @@ public class UserWeight {
     private int id;
 
     private double weight;
+
 
     @Column(unique = true)
     @JsonFormat(pattern = "yyyy-MM-dd")

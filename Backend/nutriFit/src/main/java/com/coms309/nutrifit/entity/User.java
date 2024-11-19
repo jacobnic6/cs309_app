@@ -83,6 +83,7 @@ public class User {
     @JsonProperty("bodyweights")
     @OneToMany(cascade = CascadeType.ALL)
     @Column
+    @OrderBy("weightDate" + " ASC")
    private List<UserWeight> bodyWeights;
 
     public void addUserWeight(UserWeight userWeight)
