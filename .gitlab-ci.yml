@@ -26,7 +26,7 @@ maven-test:
   tags:
      - springboot_tag   # change to your runner's tag
   script:
-     - cd Backend       # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
+     - cd Backend/nutriFit       # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
      - mvn test         # maven test
   only:
     refs:
