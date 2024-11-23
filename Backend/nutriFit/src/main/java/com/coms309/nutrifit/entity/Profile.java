@@ -64,7 +64,6 @@ public class Profile {
 	public Profile(User user) {
 		if (user != null)
 		{
-
 		}
 		this.user = user;
 		this.name = user.getUsername();
