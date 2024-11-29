@@ -34,13 +34,15 @@ public class UserMeals {
 	private LocalDate date;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	@JoinColumn(name = "user_id")
 	@JsonIgnore
 	private User user;
 
+	@Builder.Default
 	@OneToMany(mappedBy = "userMeals", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Meal> mealList = new ArrayList<>();
 
+	@Builder.Default
 	@ElementCollection
 	private Map<String, Integer> nutrientTotals = new HashMap<>();
 
