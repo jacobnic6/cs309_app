@@ -19,7 +19,7 @@ maven-build:
     refs:
       - main            # only to trigger the pipeline when changes are pushed to 'main'
     changes:
-      - Backend/**/*      # more specifically - only when changes are made inside the 'Backend' folder
+      - Backend/*    # more specifically - only when changes are made inside the 'Backend' folder
 
 maven-test:             
   stage: maventest     # one of the stages listed above
@@ -32,7 +32,7 @@ maven-test:
     refs:
       - main            # only to trigger the pipeline when changes are pushed to 'main'
     changes:
-      - Backend/**/*       # more specifically - only when changes are made inside the 'Backend' folder
+      - Backend/*       # more specifically - only when changes are made inside the 'Backend' folder
 
 auto-deploy:
   stage: mavendeploy    # one of the stages listed above
@@ -47,7 +47,7 @@ auto-deploy:
     refs:
       - main            # only to trigger the pipeline when changes are pushed to 'main'
     changes:
-      - Backend/**/*      # more specifically - only when changes are made inside the 'Backend' folder
+      - Backend/*      # more specifically - only when changes are made inside the 'Backend' folder
 
 android-build:
   image: afirefly/android-ci:java17 # Docker image that has Android environments installed     gjandres/android-ci:latest
