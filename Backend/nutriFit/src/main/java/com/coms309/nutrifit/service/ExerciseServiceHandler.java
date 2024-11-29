@@ -12,8 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,19 +42,6 @@ public class ExerciseServiceHandler {
 		this.equipmentRepository = equipmentRepository;
 		this.objectMapper = objectMapper;
 		this.muscleRepository = muscleRepository;
-	}
-
-	/**
-	 * Import exercises.
-	 *
-	 * @param path the path
-	 *
-	 * @throws IOException the io exception
-	 */
-	public void importExercises(String path) throws IOException {
-		File file = new File(path);
-		List<Exercise> exerciseList = objectMapper.readValue(file, List.class);
-		exerciseRepository.saveAll(exerciseList);
 	}
 
 	/**

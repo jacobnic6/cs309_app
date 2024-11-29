@@ -14,6 +14,7 @@ class NutriFitApplicationTests {
 	 */
 	@Test
 	void contextLoads() {
+		
 	}
 
 }
