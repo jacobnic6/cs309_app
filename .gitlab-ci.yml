@@ -28,6 +28,8 @@ maven-test:
   stage: maventest     # one of the stages listed above
   tags:
      - springboot_tag   # change to your runner's tag
+  before_script:
+     - export JAVA_HOME="/"
   script:
      - cd Backend/nutriFit       # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
      - mvn test         # maven test
@@ -41,6 +43,8 @@ auto-deploy:
   stage: mavendeploy    # one of the stages listed above
   tags:
   - springboot_tag      # change to your runner's tag
+  before_script:
+     - export JAVA_HOME="/"
   script:               # script to run the deployment service you created
     - cd Backend/nutriFit        # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
     - sudo mv target/*.jar /target/web-demo.jar 
