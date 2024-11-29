@@ -45,7 +45,7 @@ public class MuscleGroup {
 	 */
 	public MuscleGroup(String groupName) {
 		this.groupName = groupName;
-		muscle = new ArrayList<Muscle>();
+		muscle = new ArrayList<>();
 	}
 
 	/**

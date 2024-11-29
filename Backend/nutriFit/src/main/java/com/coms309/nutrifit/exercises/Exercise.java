@@ -1,11 +1,9 @@
 package com.coms309.nutrifit.exercises;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +16,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Exercise {
 	/**
 	 * The License.
@@ -25,8 +24,9 @@ public class Exercise {
 	@Column
 	@ElementCollection
 	@JsonProperty("license")
-	Map<String, String> license;
+	private Map<String, String> license;
 
+	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -40,7 +40,7 @@ public class Exercise {
 	private String description;
 
 	@ManyToOne
-	@JoinColumn(name = "category_name")
+	@JoinColumn(name = "category_name", referencedColumnName = "name")
 	@JsonProperty("category")
 	private Category category;
 

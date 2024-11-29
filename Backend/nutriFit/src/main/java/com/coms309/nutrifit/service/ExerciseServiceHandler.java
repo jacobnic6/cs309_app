@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The type Exercise service handler.
@@ -26,20 +26,25 @@ public class ExerciseServiceHandler {
 	/**
 	 * The Category repository.
 	 */
-	@Autowired
-	CategoryRepository categoryRepository;
+
+	private final CategoryRepository categoryRepository;
+
+	private final ExerciseRepository exerciseRepository;
+
+	private final EquipmentRepository equipmentRepository;
+
+	private final ObjectMapper objectMapper;
+
+	private final MuscleRepository muscleRepository;
 
 	@Autowired
-	private ExerciseRepository exerciseRepository;
-
-	@Autowired
-	private EquipmentRepository equipmentRepository;
-
-	@Autowired
-	private ObjectMapper objectMapper;
-
-	@Autowired
-	private MuscleRepository muscleRepository;
+	public ExerciseServiceHandler(CategoryRepository categoryRepository, ExerciseRepository exerciseRepository, EquipmentRepository equipmentRepository, ObjectMapper objectMapper, MuscleRepository muscleRepository) {
+		this.categoryRepository = categoryRepository;
+		this.exerciseRepository = exerciseRepository;
+		this.equipmentRepository = equipmentRepository;
+		this.objectMapper = objectMapper;
+		this.muscleRepository = muscleRepository;
+	}
 
 	/**
 	 * Import exercises.
@@ -60,37 +65,33 @@ public class ExerciseServiceHandler {
 	 * @param exercise the exercise
 	 */
 	public void addExercise(Exercise exercise) {
+		ensureCategoryIsSet(exercise);
+		exercise.setEquipment(getEquipmentFromRepository(exercise.getEquipment()));
+		exercise.setPrimaryMuscles(getMusclesFromRepository(exercise.getPrimaryMuscles()));
+		exercise.setSecondaryMuscles(getMusclesFromRepository(exercise.getSecondaryMuscles()));
+	}
+
+	private void ensureCategoryIsSet(Exercise exercise) {
 		if (exercise.getCategory() == null)
 		{
 			exercise.setCategory(new Category("strength"));
 		}
-		String name = exercise.getCategory().getName();
-		Category repoC = categoryRepository.getByName(name);
-		exercise.setCategory(repoC);
+		exercise.setCategory(getCategoryFromRepository(exercise.getCategory().getName()));
+	}
 
-		List<Equipment> equipment = exercise.getEquipment();
-		List<Equipment> newEquipment = new ArrayList<>();
-		for (Equipment equip : equipment)
-		{
-			Equipment e = equipmentRepository.getEquipmentByName(equip.getName());
-			newEquipment.add(e);
-		}
-		exercise.setEquipment(newEquipment);
+	private List<Equipment> getEquipmentFromRepository(List<Equipment> equipment) {
+		return equipment.stream()
+				       .map(equip -> equipmentRepository.getEquipmentByName(equip.getName()))
+				       .collect(Collectors.toList());
+	}
 
-		List<Muscle> primary = exercise.getPrimaryMuscles();
-		List<Muscle> newPrim = new ArrayList<>();
-		for (Muscle muscle : primary)
-		{
-			newPrim.add(muscleRepository.getByName(muscle.getName()));
-		}
-		exercise.setPrimaryMuscles(newPrim);
-		newPrim = new ArrayList<>();
-		List<Muscle> secondary = exercise.getSecondaryMuscles();
-		for (Muscle muscle : secondary)
-		{
-			newPrim.add(muscleRepository.getByName(muscle.getName()));
-		}
-		exercise.setSecondaryMuscles(newPrim);
+	private List<Muscle> getMusclesFromRepository(List<Muscle> muscles) {
+		return muscles.stream()
+				       .map(muscle -> muscleRepository.getByName(muscle.getName()))
+				       .collect(Collectors.toList());
+	}
 
+	private Category getCategoryFromRepository(String categoryName) {
+		return categoryRepository.getByName(categoryName);
 	}
 }

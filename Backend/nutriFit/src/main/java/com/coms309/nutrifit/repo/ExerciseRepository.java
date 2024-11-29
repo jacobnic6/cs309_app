@@ -17,4 +17,5 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
 	 * @return the boolean
 	 */
 	boolean existsByName(String name);
+	
 }

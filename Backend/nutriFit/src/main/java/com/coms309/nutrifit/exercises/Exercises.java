@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The type Exercises.
@@ -20,27 +18,27 @@ public class Exercises {
 	/**
 	 * The Categories.
 	 */
-	List<Category> categories;
+	private List<Category> categories;
 
 	/**
 	 * The Equipment.
 	 */
-	List<Equipment> equipment;
+	private List<Equipment> equipment;
 
 	/**
 	 * The Muscles.
 	 */
-	List<Muscle> muscles;
+	private List<Muscle> muscles;
 
 	/**
 	 * The Muscle groups.
 	 */
-	Map<String, List<Muscle>> muscleGroups;
+	private List<MuscleGroup> muscleGroups;
 
 	/**
 	 * The Exercises.
 	 */
-	List<Exercise> exercises;
+	private List<Exercise> exercises;
 
 	private int id;
 
@@ -51,8 +49,42 @@ public class Exercises {
 		categories = new ArrayList<>();
 		equipment = new ArrayList<>();
 		muscles = new ArrayList<>();
-		muscleGroups = new HashMap<>();
+		muscleGroups = new ArrayList<>();
 		exercises = new ArrayList<>();
+	}
+
+	public void addCategory(Category category) {
+		categories.add(category);
+	}
+
+	public void addEquipment(Equipment equipment) {
+		this.equipment.add(equipment);
+	}
+
+	public void addMuscle(Muscle muscle) {
+		muscles.add(muscle);
+	}
+
+	public void addMuscleGroup(MuscleGroup muscleGroup) {
+		muscleGroups.add(muscleGroup);
+	}
+
+	public void addMuscleToExistingGroup(String groupName, Muscle muscle) {
+		for (MuscleGroup group : muscleGroups)
+		{
+			if (group.getGroupName().equals(groupName))
+			{
+				muscle.setMuscleGroup(group);
+				group.addMuscle(muscle);
+				return;
+			}
+		}
+
+	}
+
+	public void addExercise(Exercise exercise) {
+
+		exercises.add(exercise);
 	}
 
 }

@@ -21,7 +21,7 @@ public class Category {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(unique = true)
+	@Column(unique = true, name = "name")
 	@JsonProperty("category")
 	private String name;
 
