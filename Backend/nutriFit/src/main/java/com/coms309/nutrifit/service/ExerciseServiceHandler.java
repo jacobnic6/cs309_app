@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,5 +79,24 @@ public class ExerciseServiceHandler {
 
 	private Category getCategoryFromRepository(String categoryName) {
 		return categoryRepository.getByName(categoryName);
+	}
+
+	//	public List<Exercise> findExercisesByName(String exerciseName) {
+//		return exerciseRepository.findByNameContainsIgnoreCase(exerciseName);
+//	}
+	public List<String> findExercisesByName(String exerciseName) {
+		List<String> exerciseNameList = new ArrayList<>();
+		exerciseRepository.findByNameContainsIgnoreCase(exerciseName).forEach(exercise -> exerciseNameList.add(exercise.getName()));
+		return exerciseNameList;
+	}
+
+//	public List<Exercise> findExercisesByMuscleName(String muscleName) {
+//		return exerciseRepository.findByPrimaryMuscles_NameIgnoreCase(muscleName);
+//	}
+
+	public List<String> findExercisesByMuscleName(String muscleName) {
+		List<String> exerciseNameList = new ArrayList<>();
+		exerciseRepository.findByPrimaryMuscles_NameIgnoreCase(muscleName).forEach(exercise -> exerciseNameList.add(exercise.getName()));
+		return exerciseNameList;
 	}
 }

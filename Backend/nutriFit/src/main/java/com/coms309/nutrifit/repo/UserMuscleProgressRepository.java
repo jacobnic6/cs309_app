@@ -4,6 +4,10 @@ import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.entity.fitness.UserMuscleProgress;
 import com.coms309.nutrifit.util.UserMuscles;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,4 +43,10 @@ public interface UserMuscleProgressRepository extends JpaRepository<UserMusclePr
 	 * @return the user muscle progress
 	 */
 	UserMuscleProgress findUserMuscleProgressByProfile_NameAndAndMuscle(String username, String musclename);
+
+	@Transactional @Modifying @Query("""
+			update UserMuscleProgress u set u.percentage = ?1, u.tier = ?2, u.totalProgress = ?3
+			where u.profile = ?4 and upper(u.muscle) = upper(?5)""")
+	int updatePercentageAndTierAndTotalProgressByProfileAndMuscleIgnoreCase(double percentage, int tier, double totalProgress, @NonNull Profile profile, @NonNull String muscle);
+
 }

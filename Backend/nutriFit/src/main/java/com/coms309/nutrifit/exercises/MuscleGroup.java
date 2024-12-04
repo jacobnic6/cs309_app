@@ -1,5 +1,7 @@
 package com.coms309.nutrifit.exercises;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,12 +20,15 @@ import java.util.List;
 @Entity
 @JsonTypeName("muscle_groups")
 public class MuscleGroup {
+
+	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private String groupName;
 
+	@JsonIgnoreProperties({"muscleGroup"})
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "muscleGroup", cascade = CascadeType.ALL)
 	private List<Muscle> muscle;
 

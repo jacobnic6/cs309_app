@@ -29,7 +29,7 @@ public class Profile {
 	private int id;
 
 	@NotNull
-	@Column(name = "username")
+	@Column(name = "username", unique = true)
 	private String name;
 
 	//    @OneToMany(mappedBy = "profile")

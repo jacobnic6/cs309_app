@@ -20,8 +20,24 @@ public class UserMuscleProgressDto implements Serializable {
 	private String muscle;
 
 	@JsonProperty(value = "percentage", defaultValue = "0")
-	private int percentage;
+	private double percentage;
 
 	@JsonProperty(value = "tier", defaultValue = "0")
 	private int tier;
+
+	@JsonProperty(value = "total_progress")
+	private double totalProgress;
+
+	@JsonProperty(value = "amount_to_next_tier", defaultValue = "100")
+	private double amountToNextTier;
+
+	public void setPercentage(double percentage) {
+		if (tier == 0)
+		{
+			this.totalProgress = percentage;
+			this.amountToNextTier = 100 - percentage;
+		}
+		this.percentage = percentage;
+	}
+
 }

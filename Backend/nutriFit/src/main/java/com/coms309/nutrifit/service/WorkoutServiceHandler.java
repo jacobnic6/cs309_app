@@ -5,9 +5,8 @@ import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.entity.fitness.Workout;
 import com.coms309.nutrifit.entity.fitness.WorkoutSet;
 import com.coms309.nutrifit.entity.fitness.WorkoutSetDto;
-import com.coms309.nutrifit.repo.ProfileRepository;
-import com.coms309.nutrifit.repo.UserRepository;
-import com.coms309.nutrifit.repo.WorkoutRepository;
+import com.coms309.nutrifit.exercises.Exercise;
+import com.coms309.nutrifit.repo.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,26 +23,40 @@ public class WorkoutServiceHandler {
 	/**
 	 * The Workout repository.
 	 */
-	@Autowired
-	WorkoutRepository workoutRepository;
+
+	private final WorkoutRepository workoutRepository;
+
+	private final WorkoutSetRepository workoutSetRepository;
 
 	/**
 	 * The User repository.
 	 */
-	@Autowired
-	UserRepository userRepository;
+
+	private final UserRepository userRepository;
 
 	/**
 	 * The Profile repository.
 	 */
-	@Autowired
-	ProfileRepository profileRepository;
+
+	private final ProfileRepository profileRepository;
 
 	/**
 	 * The Object mapper.
 	 */
+
+	private final ObjectMapper objectMapper;
+
+	private final ExerciseRepository exerciseRepository;
+
 	@Autowired
-	ObjectMapper objectMapper;
+	public WorkoutServiceHandler(WorkoutRepository workoutRepository, WorkoutSetRepository workoutSetRepository, UserRepository userRepository, ProfileRepository profileRepository, ObjectMapper objectMapper, ExerciseRepository exerciseRepository) {
+		this.workoutRepository = workoutRepository;
+		this.workoutSetRepository = workoutSetRepository;
+		this.userRepository = userRepository;
+		this.profileRepository = profileRepository;
+		this.objectMapper = objectMapper;
+		this.exerciseRepository = exerciseRepository;
+	}
 
 	/**
 	 * Add workout by username workout.
@@ -69,7 +82,7 @@ public class WorkoutServiceHandler {
 
 		profile.addWorkout(workout);
 
-		workout.updateTotalWeight();
+		//workout.updateTotalWeight();
 
 		return workoutRepository.save(workout);
 
@@ -126,7 +139,7 @@ public class WorkoutServiceHandler {
 			oldWorkout.setActivities(workout.getActivities());
 			oldWorkout.setDateTracked(LocalDate.now());
 			oldWorkout.setActivities(workout.getActivities());
-			oldWorkout.updateTotalWeight();
+			//oldWorkout.updateTotalWeight();
 			workoutRepository.saveAndFlush(oldWorkout);
 
 		}
@@ -163,41 +176,45 @@ public class WorkoutServiceHandler {
 	 * @throws Exception the exception
 	 */
 	public Workout addSet(LocalDate date, String username, WorkoutSetDto set) throws Exception {
-		Profile profile = profileRepository.findByUser(userRepository.findByUsername(username));
-		Workout workout;
-		if (workoutRepository.existsByProfileAndDateTracked(profile, date))
+		if (set == null || set.getExerciseName().isEmpty())
 		{
-			workout = workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
+			throw new IllegalArgumentException("Exercise name cannot be null");
+		}
+
+		Workout workout;
+		if (workoutRepository.existsByProfile_NameAndDateTracked(username, date))
+		{
+			workout = workoutRepository.findByProfile_NameAndDateTracked(username, date);
 		} else
 		{
-			throw new EntityNotFoundException("No workout exists for user "
-					                                  + username + " on date " + date.toString() + " yet");
-
+			throw new EntityNotFoundException("No workout exists for user " + username + " on date " + date.toString() + " yet");
 		}
 
-		if (workout.getActivities().size() > 0)
+		workoutSetRepository.save(convertSet(workout, set));
+
+		return workoutRepository.saveAndFlush(workout);
+
+	}
+
+	private WorkoutSet convertSet(Workout workout, WorkoutSetDto set) {
+		WorkoutSet workoutSet = workoutSetRepository.findByWorkoutAndExerciseName(workout, set.getExerciseName());
+		if (workoutSet == null)
 		{
-			for (WorkoutSet ws : workout.getActivities())
-			{
-				if (ws.getExerciseName().equalsIgnoreCase(set.getExerciseName()))
-				{
-					ws.setSets(set.getSets());
-					ws.setReps(set.getReps());
-					ws.setWeight(set.getWeight());
-					ws.setCategory(set.getCategory());
-					workout.updateTotalWeight();
-					return workoutRepository.saveAndFlush(workout);
-
-				}
-			}
+			workoutSet = new WorkoutSet();
+			workoutSet.setWorkout(workout);
 		}
-		WorkoutSet workoutSet = objectMapper.convertValue(set, WorkoutSet.class);
 
-		workoutSet.setWorkout(workout);
-		workout.addActivity(workoutSet);
-		workout.updateTotalWeight();
+		workoutSet.setSets(set.getSets());
+		workoutSet.setReps(set.getReps());
+		workoutSet.setWeight(set.getWeight());
 
-		return workoutRepository.save(workout);
+		Exercise exercise = exerciseRepository.findByNameIgnoreCase(set.getExerciseName());
+
+		workoutSet.setExercise(exercise);
+		return workoutSet;
+	}
+
+	private void calculateProgress(Workout workout) {
 
 	}
 

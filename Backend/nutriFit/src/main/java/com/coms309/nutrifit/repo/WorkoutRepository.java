@@ -3,6 +3,7 @@ package com.coms309.nutrifit.repo;
 import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.entity.fitness.Workout;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
@@ -73,4 +74,8 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
 	 * @return the boolean
 	 */
 	boolean existsByProfile_NameAndDateTracked(String username, LocalDate date);
+
+	@Query("select w from Workout w where w.profile.name = ?1 and w.dateTracked = ?2")
+	Workout findByProfile_NameAndDateTracked(@NonNull String name, @NonNull LocalDate dateTracked);
+
 }

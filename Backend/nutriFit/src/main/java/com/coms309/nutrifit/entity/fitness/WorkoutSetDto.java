@@ -39,7 +39,4 @@ public class WorkoutSetDto implements Serializable {
 	@JsonProperty(value = "sets", defaultValue = "0")
 	private int sets;
 
-	@JsonProperty(value = "setTotal", defaultValue = "0")
-	private int setTotal;
-
 }

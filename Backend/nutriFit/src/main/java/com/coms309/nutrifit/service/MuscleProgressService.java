@@ -3,6 +3,9 @@ package com.coms309.nutrifit.service;
 import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.entity.fitness.UserMuscleProgress;
 import com.coms309.nutrifit.entity.fitness.UserMuscleProgressDto;
+import com.coms309.nutrifit.exercises.Muscle;
+import com.coms309.nutrifit.repo.MuscleGroupRepository;
+import com.coms309.nutrifit.repo.MuscleRepository;
 import com.coms309.nutrifit.repo.ProfileRepository;
 import com.coms309.nutrifit.repo.UserMuscleProgressRepository;
 import com.coms309.nutrifit.util.UserMuscles;
@@ -23,9 +26,13 @@ public class MuscleProgressService {
 
 	private final UserMuscleProgressRepository userMuscleProgressRepository;
 
+	private final MuscleGroupRepository muscleGroupRepository;
+
 	private final ObjectMapper objectMapper;
 
 	private final ProfileRepository profileRepository;
+
+	private final MuscleRepository muscleRepository;
 
 	/**
 	 * Instantiates a new Muscle progress service.
@@ -36,12 +43,14 @@ public class MuscleProgressService {
 	 * @param profileRepository            the profile repository
 	 */
 	@Autowired
-	public MuscleProgressService(ProfileServiceHandler profileServiceHandler, UserMuscleProgressRepository userMuscleProgressRepository, ObjectMapper objectMapper, ProfileRepository profileRepository) {
+	public MuscleProgressService(ProfileServiceHandler profileServiceHandler, UserMuscleProgressRepository userMuscleProgressRepository, MuscleGroupRepository muscleGroupRepository, ObjectMapper objectMapper, ProfileRepository profileRepository, MuscleRepository muscleRepository) {
 		this.profileServiceHandler = profileServiceHandler;
 		this.userMuscleProgressRepository = userMuscleProgressRepository;
+		this.muscleGroupRepository = muscleGroupRepository;
 
 		this.objectMapper = objectMapper;
 		this.profileRepository = profileRepository;
+		this.muscleRepository = muscleRepository;
 	}
 
 	/**
@@ -66,17 +75,20 @@ public class MuscleProgressService {
 
 			UserMuscleProgress progress = new UserMuscleProgress();
 			String muscleName = progressDto.getMuscle().toUpperCase();
-			UserMuscles muscle = UserMuscles.valueOf(muscleName);
+			Muscle muscle = muscleRepository.findByName(muscleName);
+//			UserMuscles muscle = UserMuscles.valueOf(muscleName);
 			if (muscle != null)
 			{
 				progress = objectMapper.convertValue(progressDto, UserMuscleProgress.class);
-				progress.setMuscle(progressDto.getMuscle().toUpperCase());
+				progress.setMuscle(muscle.getName());
 				progress.setProfile(profile);
 				Map<String, UserMuscleProgress> progressMap = profile.getMuscleProgress();
-				if (progressMap.containsKey(progress.getMuscle().toUpperCase()))
+				if (progressMap.containsKey(muscle.getName()))
 				{
 					UserMuscleProgress existingProgress = progressMap.get(progress.getMuscle());
-					existingProgress.updateProgress(progress.getPercentage(), progress.getTier());
+
+					updateProgress(progress.getPercentage(), existingProgress);
+					// existingProgress.updateProgress(progress.getPercentage());
 					progress = existingProgress;
 					profile.setMuscleProgress(progressMap);
 
@@ -103,6 +115,79 @@ public class MuscleProgressService {
 			}
 			return msg;
 		}
+
+	}
+
+	private void updateProgress(double progressAmount, UserMuscleProgress muscleProgress) {
+		int currentTier = muscleProgress.getTier();
+		double currentTotal = muscleProgress.getTotalProgress();
+
+		double nextTierAt = calcNextTierAmount(currentTier);
+//		double prevTierAt = calcPrevTierAmount(currentTier);
+
+		currentTotal += progressAmount;
+		muscleProgress.setTotalProgress(currentTotal);
+
+		if (currentTotal >= nextTierAt)
+		{
+			currentTier += 1;
+//			prevTierAt = nextTierAt;
+//			nextTierAt = calcNextTierAmount(currentTier);
+
+			muscleProgress.setTier(currentTier);
+
+		}
+		muscleProgress.setAmountToNextTier(calcNextTierAmount(currentTier) - currentTotal);
+		muscleProgress.setPercentage(calcTierPercentage(currentTotal, currentTier));
+
+		//tier = tier * 1.2 * 100
+
+	}
+
+	private double calcNextTierAmount(int tier) {
+		if (tier == 0)
+		{
+			return 100;
+		}
+		return (tier * 1.2 * 100) + 100;
+	}
+
+//	public UserMuscleProgress updateProgress(String muscleName, String username) {
+//
+//	}
+
+//	private void updateProgress(double percentage, int tier, UserMuscleProgress muscleProgress) {
+//		int currentTier = muscleProgress.getTier();
+//		double currentPercentage = muscleProgress.getPercentage();
+//		if(currentTier)
+//
+//	}
+
+	private double calcTierPercentage(double currentTotal, int currentTier) {
+		if (currentTier == 0)
+		{
+			return currentTotal;
+		}
+		double tierProgress = currentTotal - calcPrevTierAmount(currentTier);
+		double tierDifference = findTierAmountDifference(currentTier);
+		return (tierProgress / tierDifference) * 100;
+	}
+
+	private double calcPrevTierAmount(int tier) {
+
+		if (tier == 0)
+		{
+			return 0;
+		}
+		return ((tier - 1) * 1.2 * 100) + 100;
+	}
+
+	private double findTierAmountDifference(int tier) {
+		if (tier == 0)
+		{
+			return 100;
+		}
+		return calcNextTierAmount(tier) - calcPrevTierAmount(tier);
 
 	}
 

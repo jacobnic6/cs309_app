@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.exercises;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +18,8 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Muscle {
+
+	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -24,7 +27,8 @@ public class Muscle {
 	@Column(unique = true)
 	private String name;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne()
+	//@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "muscle_group_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private MuscleGroup muscleGroup;

@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ import java.util.List;
 /**
  * The type Workout.
  */
-@Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -30,14 +30,14 @@ public class Workout {
 	private int id;
 
 	@JsonProperty("activities")
-	@OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<WorkoutSet> activities;
 
 	@JsonProperty("totalWeight")
 	private double totalWeight;
 
-	@ManyToOne
-	@JoinColumn(name = "profile_id")
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "profile_id", nullable = false, updatable = false)
 	@JsonIgnore
 	private Profile profile;
 
@@ -61,38 +61,18 @@ public class Workout {
 	 * Instantiates a new Workout.
 	 */
 
-	/**
-	 * Add activity.
-	 *
-	 * @param set the set
-	 */
-	public void addActivity(WorkoutSet set) {
-		if (activities == null)
-		{
-			activities = new ArrayList<>();
-		}
-		if (!activities.contains(set))
-		{
-			activities.add(set);
-		}
-
-	}
-
-	/**
-	 * Update total weight.
-	 */
-	public void updateTotalWeight() {
+	public double getTotalWeight() {
+		double tempTotal = 0;
 		if (activities != null)
 		{
-			double tempTotal = 0;
+
 			for (WorkoutSet set : activities)
 			{
 				double weight = set.getWeight() * set.getReps() * set.getSets();
 				tempTotal += weight;
 			}
-			totalWeight = tempTotal;
+			//totalWeight = tempTotal;
 		}
-
+		return tempTotal;
 	}
-
 }
