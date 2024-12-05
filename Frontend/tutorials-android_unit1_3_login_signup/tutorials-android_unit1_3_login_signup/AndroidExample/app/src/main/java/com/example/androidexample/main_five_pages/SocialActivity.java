@@ -1,18 +1,12 @@
 package com.example.androidexample.main_five_pages;
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,253 +16,146 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.example.androidexample.R;
 import com.example.androidexample.VolleySingleton;
-import com.example.androidexample.main_five_pages.SettingsActivity;
+import com.example.androidexample.adapters.FriendAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.VolleyError;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+public class SocialActivity extends AppCompatActivity implements FriendAdapter.OnFriendClickListener {
 
-public class SocialActivity extends AppCompatActivity {
-
-    EditText searchBar;
-    TextView friendsListText;
-    Button searchButton;
+    private EditText searchBar;
+    private RecyclerView friendsRecyclerView;
+    private FriendAdapter friendAdapter;
     private String username;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social);
 
-        searchBar = findViewById(R.id.search_bar);
-        searchButton = findViewById(R.id.search_button);
-        friendsListText = findViewById(R.id.friendslist_text);
-
         username = getIntent().getStringExtra("Username");
-
-
-        Button chatButton = findViewById(R.id.chat_button);
-
+        initializeViews();
+        setupRecyclerView();
         getFriends(username);
-
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String searchQuery = searchBar.getText().toString();
-                if (!TextUtils.isEmpty(searchQuery)) {
-                    searchForFriends(searchQuery);
-                }
-            }
-        });
-
-        // The following is for switching to the other four "main pages of the app" - social, exercise, nutrition, and settings
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId = item.getItemId();
-
-                if (itemId == R.id.social) {
-                    startActivity(new Intent(SocialActivity.this, SocialActivity.class));
-                    return true;
-                } else if (itemId == R.id.workouts) {
-                    startActivity(new Intent(SocialActivity.this, WorkoutActivity.class));
-                    return true;
-                } else if (itemId == R.id.profile) {
-                    startActivity(new Intent(SocialActivity.this, UserProfileActivity.class));
-                    return true;
-                } else if (itemId == R.id.nutrition) {
-                    startActivity(new Intent(SocialActivity.this, NutritionActivity.class));
-                    return true;
-                } else if (itemId == R.id.settings) {
-                    startActivity(new Intent(SocialActivity.this, SettingsActivity.class));
-                    return true;
-                }
-                return false;
-            }
-        });
     }
 
-        private void searchForFriends (String searchQuery){
-            String url = "http://coms-3090-058.class.las.iastate.edu:8080/users/username/" + searchQuery;
-            JsonObjectRequest jsonObjReq = new JsonObjectRequest( Request.Method.GET, url, null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d("Volley Response", response.toString());
-                            Toast.makeText(SocialActivity.this, "User found", Toast.LENGTH_SHORT).show();
-                            // Handle the response here
-                            showAddFriendPopup();
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("Volley Error", error.toString());
-                            Toast.makeText(SocialActivity.this, "User not found", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-            ) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                    return headers;
-                }
+    private void initializeViews() {
+        searchBar = findViewById(R.id.search_bar);
+        Button searchButton = findViewById(R.id.search_button);
+        Button chatButton = findViewById(R.id.chat_button);
+        friendsRecyclerView = findViewById(R.id.friends_recycler_view);
 
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                    return params;
-                }
-            };
-
-            // Adding request to request queue
-            VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
-        }
-
-    // pop up for each muscle group
-    private void showAddFriendPopup() {
-        // Create and show progress popup dialog
-        Dialog dialog = new Dialog(SocialActivity.this);
-        dialog.setContentView(R.layout.addfriend_popup); // Create a layout for the popup
-
-        // Get references to views in the popup (e.g., TextView, ProgressBar)
-        TextView addFriendText = dialog.findViewById(R.id.Add_friend_text);
-        Button yesButton = dialog.findViewById(R.id.add_friend_yes_button);
-        Button noButton = dialog.findViewById(R.id.add_friend_no_button);
-
-        dialog.show();
-
-        // Set click listeners for buttons
-        yesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle the "Yes" button click
-                // add the user to a list of friends
-                postRequest(searchBar);
-
-                dialog.dismiss();
-            }
-
-        }); noButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle the "No" button click
-                Toast.makeText(SocialActivity.this, "User not added as a friend", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
+        searchButton.setOnClickListener(v -> {
+            String searchQuery = searchBar.getText().toString();
+            if (!TextUtils.isEmpty(searchQuery)) {
+                searchForFriends(searchQuery);
             }
         });
+
+        setupBottomNavigation();
     }
 
-    private void postRequest(EditText searchBar) {
-        String searchQuery = searchBar.getText().toString();
-        String url = "http://coms-3090-058.class.las.iastate.edu:8080/friends/add?userId=" + searchQuery;
-        // Convert input to JSONObject
-        JSONObject postBody = new JSONObject();
-        try {
-            // etRequest should contain a JSON object string as your POST body
-            // similar to what you would have in POSTMAN-body field
-            // and the fields should match with the object structure of @RequestBody on sb
-            postBody.put("username", searchQuery);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void setupRecyclerView() {
+        friendAdapter = new FriendAdapter(this, this);
+        friendsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        friendsRecyclerView.setAdapter(friendAdapter);
+    }
 
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.POST, url, postBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Toast.makeText(SocialActivity.this, "User added as a friend", Toast.LENGTH_SHORT).show();
+    private void searchForFriends(String searchQuery) {
+        String url = "http://coms-3090-058.class.las.iastate.edu:8080/users/username/" + searchQuery;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    Log.d("Volley Response", response.toString());
+                    Toast.makeText(this, "User found", Toast.LENGTH_SHORT).show();
+                    showAddFriendDialog(searchQuery);
+                },
+                error -> {
+                    Log.e("Volley Error", error.toString());
+                    Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
+                });
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+    }
+
+    private void getFriends(String username) {
+        String url = "http://coms-3090-058.class.las.iastate.edu:8080/friends/get?userId=" + username;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        List<FriendAdapter.Friend> friendsList = new ArrayList<>();
+                        JSONArray friendsArray = response.getJSONArray("friends");
+                        for (int i = 0; i < friendsArray.length(); i++) {
+                            JSONObject friendObj = friendsArray.getJSONObject(i);
+                            String friendUsername = friendObj.getString("username");
+                            friendsList.add(new FriendAdapter.Friend(friendUsername));
+                        }
+                        friendAdapter.updateFriendsList(friendsList);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(SocialActivity.this, "Error posting request: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        )
-            {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                //                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-                //                headers.put("Content-Type", "application/json");
-                return headers;
-            }
+                error -> Toast.makeText(this, "Error fetching friends", Toast.LENGTH_SHORT).show());
 
-                @Override
-                protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                //                params.put("param1", "value1");
-                //                params.put("param2", "value2");
-                return params;
-            }
-            };
-
-            // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
-        }
+    }
 
-        private void getFriends(String username) {
+    private void showAddFriendDialog(String friendUsername) {
+        // Your existing showAddFriendPopup() implementation
+    }
 
-            String url = "http://coms-3090-058.class.las.iastate.edu:8080/friends/?userId=" + username;
-            JsonObjectRequest jsonObjReq = new JsonObjectRequest( Request.Method.GET, url, null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d("Volley Response", response.toString());
-                            Toast.makeText(SocialActivity.this, "Friends list found", Toast.LENGTH_SHORT).show();
-                            // Handle the response here
-                            friendsListText.setText(response.toString());
+    @Override
+    public void onFriendClick(FriendAdapter.Friend friend) {
+        // Handle friend click - maybe open a chat or profile
+        Toast.makeText(this, "Clicked on: " + friend.getUsername(), Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void onRemoveFriend(FriendAdapter.Friend friend) {
+        // Implement friend removal logic
+        String url = "http://coms-3090-058.class.las.iastate.edu:8080/friends/" + username + "/" + friend.getUsername();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.DELETE, url, null,
+                response -> {
+                    Toast.makeText(this, "Friend removed", Toast.LENGTH_SHORT).show();
+                    getFriends(username); // Refresh the list
+                },
+                error -> Toast.makeText(this, "Error removing friend", Toast.LENGTH_SHORT).show());
 
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("Volley Error", error.toString());
-                            Toast.makeText(SocialActivity.this, "Friends list not found", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-            ) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                    return headers;
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+    }
+
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent;
+                if (item.getItemId() == R.id.social) {
+                    return true;
+                } else if (item.getItemId() == R.id.workouts) {
+                    intent = new Intent(SocialActivity.this, WorkoutActivity.class);
+                } else if (item.getItemId() == R.id.profile) {
+                    intent = new Intent(SocialActivity.this, UserProfileActivity.class);
+                } else if (item.getItemId() == R.id.nutrition) {
+                    intent = new Intent(SocialActivity.this, NutritionActivity.class);
+                } else if (item.getItemId() == R.id.settings) {
+                    intent = new Intent(SocialActivity.this, SettingsActivity.class);
+                } else {
+                    return false;
                 }
-
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                    return params;
-                }
-            };
-
-            // Adding request to request queue
-            VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
-        }
+                intent.putExtra("Username", username);
+                startActivity(intent);
+                return true;
+            }
+        });
+    }
 }
