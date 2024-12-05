@@ -64,7 +64,7 @@ public class UserController {
 	@Operation(summary = "Get a specific user",
 			description = "Takes a username as input and returns the user if found.",
 			tags = {"User Management"})
-	@GetMapping(path = "/{username}")
+	@GetMapping(path = "username/{username}")
 	public User getUserByUsername(@PathVariable String username) {
 		return userServiceHandler.getByUsername(username);
 	}
@@ -80,10 +80,17 @@ public class UserController {
 	@Operation(summary = "Get a specific user",
 			description = "Takes a userId as input and returns the user if found.",
 			tags = {"User Management"})
-	@GetMapping(path = "/{id}")
-	public User getUser(@RequestParam int id) {
+	@GetMapping(path = "userId/{id}")
+	public User getUser(@PathVariable String id) {
+		if (ServiceHandler.isNumeric(id))
+		{
+			int userId = Integer.parseInt(id);
+			return userServiceHandler.getUserById(userId);
+		} else
+		{
+			return userServiceHandler.getByUsername(id);
+		}
 
-		return userServiceHandler.getUserById(id);
 	}
 
 	/**
@@ -98,7 +105,7 @@ public class UserController {
 	@Operation(summary = "Update a specific user",
 			description = "Takes a user id as input and updates that user with the new user info",
 			tags = {"User Management"})
-	@PutMapping(path = "/{id}")
+	@PutMapping(path = "userId/{id}")
 	public User updateUser(@PathVariable int id, @RequestBody User user) {
 
 		return userServiceHandler.updateUser(id, user);
