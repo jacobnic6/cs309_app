@@ -197,7 +197,7 @@ public class FoodSearchResponse {
         /**
          * Gets the quantity value of the nutrient present in the food item.
          *
-         * @return A double value representing the amount of the nutrient in the specified unit.
+         * @return A double value representing the amount of the nutrient in the.
          */
         public double getValue() {
             return value;
