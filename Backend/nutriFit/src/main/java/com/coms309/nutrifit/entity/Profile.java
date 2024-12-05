@@ -12,6 +12,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type Profile.
@@ -33,10 +34,8 @@ public class Profile {
 
 	//    @OneToMany(mappedBy = "profile")
 //    private List<UserMuscleProgress> muscleProgress;
-//	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
-//	private Map<String, UserMuscleProgress> muscleProgress;
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<UserMuscleProgress> muscleProgress;
+	private Map<String, UserMuscleProgress> muscleProgress;
 
 	@OneToOne(optional = false)
 	@MapsId
@@ -47,7 +46,7 @@ public class Profile {
 	@Column
 	private double weight;
 
-	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Workout> workouts;
 
 	@Column

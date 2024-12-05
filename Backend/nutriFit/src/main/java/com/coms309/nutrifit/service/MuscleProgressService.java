@@ -13,8 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type Muscle progress service.
@@ -82,30 +82,22 @@ public class MuscleProgressService {
 				progress = objectMapper.convertValue(progressDto, UserMuscleProgress.class);
 				progress.setMuscle(muscle.getName());
 				progress.setProfile(profile);
-				List<UserMuscleProgress> progressList = profile.getMuscleProgress();
-				if (progressList == null || progressList.isEmpty())
+				Map<String, UserMuscleProgress> progressMap = profile.getMuscleProgress();
+				if (progressMap.containsKey(muscle.getName()))
 				{
-					progressList = getProgressList(username);
+					UserMuscleProgress existingProgress = progressMap.get(progress.getMuscle());
+
+					updateProgress(progress.getPercentage(), existingProgress);
+					// existingProgress.updateProgress(progress.getPercentage());
+					progress = existingProgress;
+					profile.setMuscleProgress(progressMap);
+
+				} else
+				{
+					progressMap.put(progress.getMuscle(), progress);
+					profile.setMuscleProgress(progressMap);
+
 				}
-				UserMuscleProgress existingProgress = userMuscleProgressRepository
-						                                      .findByMuscleIgnoreCaseAndProfile_Name(progress.getMuscle(), username);
-
-				//UserMuscleProgress existingProgress = progressSet.get(progress.getMuscle());
-
-				updateProgress(progress.getPercentage(), existingProgress);
-
-				userMuscleProgressRepository.updatePercentageAndTierAndTotalProgressByProfileAndMuscleIgnoreCase(progress.getPercentage(),
-				                                                                                                 progress.getTier(),
-				                                                                                                 progress.getTotalProgress(),
-				                                                                                                 profileRepository.findByName(username),
-				                                                                                                 progress.getMuscle());
-
-				// existingProgress.updateProgress(progress.getPercentage());
-				//progress = existingProgress;
-				//profile.setMuscleProgress(progressSet);
-
-				//progressMap.put(progress.getMuscle(), progress);
-				//profile.setMuscleProgress(progressMap);
 
 				userMuscleProgressRepository.save(progress);
 
@@ -124,27 +116,6 @@ public class MuscleProgressService {
 			return msg;
 		}
 
-	}
-
-	private List<UserMuscleProgress> getProgressList(String username) {
-		Profile profile = profileServiceHandler.getUserProfile(username);
-		if (profile == null)
-		{
-			throw new IllegalArgumentException("Profile with username " + username + " not found");
-		}
-
-		List<UserMuscleProgress> progressList = new ArrayList<>();
-		List<Muscle> muscleList = muscleRepository.findAll();
-		for (Muscle muscle : muscleList)
-		{
-			UserMuscleProgress progress = new UserMuscleProgress(profile, muscle.getName());
-			progressList.add(progress);
-			userMuscleProgressRepository.save(progress);
-
-		}
-		profile.setMuscleProgress(progressList);
-		profileRepository.saveAndFlush(profile);
-		return profileRepository.findByName(username).getMuscleProgress();
 	}
 
 	private void updateProgress(double progressAmount, UserMuscleProgress muscleProgress) {
@@ -173,6 +144,14 @@ public class MuscleProgressService {
 
 	}
 
+	private double calcNextTierAmount(int tier) {
+		if (tier == 0)
+		{
+			return 100;
+		}
+		return (tier * 1.2 * 100) + 100;
+	}
+
 //	public UserMuscleProgress updateProgress(String muscleName, String username) {
 //
 //	}
@@ -183,14 +162,6 @@ public class MuscleProgressService {
 //		if(currentTier)
 //
 //	}
-
-	private double calcNextTierAmount(int tier) {
-		if (tier == 0)
-		{
-			return 100;
-		}
-		return (tier * 1.2 * 100) + 100;
-	}
 
 	private double calcTierPercentage(double currentTotal, int currentTier) {
 		if (currentTier == 0)

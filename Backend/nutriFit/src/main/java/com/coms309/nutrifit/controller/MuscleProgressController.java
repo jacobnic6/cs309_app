@@ -53,11 +53,11 @@ public class MuscleProgressController {
 	public String createMuscleProgress(@RequestBody UserMuscleProgressDto progressDto, @PathVariable String username) throws IllegalAccessException {
 		if (!userServiceHandler.existsByUsername(username))
 		{
-			return "User does not exist";
+			throw new EntityNotFoundException("User does not exist");
 		}
 		if (progressDto.getMuscle() == null)
 		{
-			return "Muscle is null";
+			throw new IllegalArgumentException("Muscle cannot be null");
 		}
 
 		return muscleProgressService.createProgress(progressDto, username);
