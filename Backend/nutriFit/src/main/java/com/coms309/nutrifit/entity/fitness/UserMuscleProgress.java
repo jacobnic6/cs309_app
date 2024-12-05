@@ -26,7 +26,7 @@ public class UserMuscleProgress {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@MapKey
+	@Column(name = "muscle", nullable = false)
 	@JsonProperty("muscle")
 	private String muscle;
 
@@ -45,5 +45,14 @@ public class UserMuscleProgress {
 	@JoinColumn(name = "profile_id", referencedColumnName = "user_id")
 	@JsonIgnore
 	private Profile profile;
+
+	public UserMuscleProgress(Profile profile, String muscle) {
+		this.profile = profile;
+		this.muscle = muscle;
+		this.percentage = 0;
+		this.tier = 0;
+		this.totalProgress = 0;
+		this.amountToNextTier = 100;
+	}
 
 }

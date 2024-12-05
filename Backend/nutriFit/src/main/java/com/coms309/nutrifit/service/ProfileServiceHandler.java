@@ -7,6 +7,7 @@ import com.coms309.nutrifit.repo.ImageRepository;
 import com.coms309.nutrifit.repo.ProfileRepository;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.util.ImageUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class ProfileServiceHandler {
 	 * @param userRepository    the user repository
 	 * @param imageRepository   the image repository
 	 */
+	@Autowired
 	public ProfileServiceHandler(ProfileRepository profileRepository, UserRepository userRepository, ImageRepository imageRepository) {
 		this.profileRepository = profileRepository;
 		this.userRepository = userRepository;

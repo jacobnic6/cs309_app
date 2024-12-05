@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserMuscleProgressDto implements Serializable {
-	@JsonProperty("muscle")
+	@JsonProperty(value = "muscle", required = true)
 	private String muscle;
 
 	@JsonProperty(value = "percentage", defaultValue = "0")
@@ -25,7 +25,7 @@ public class UserMuscleProgressDto implements Serializable {
 	@JsonProperty(value = "tier", defaultValue = "0")
 	private int tier;
 
-	@JsonProperty(value = "total_progress")
+	@JsonProperty(value = "total_progress", defaultValue = "0")
 	private double totalProgress;
 
 	@JsonProperty(value = "amount_to_next_tier", defaultValue = "100")

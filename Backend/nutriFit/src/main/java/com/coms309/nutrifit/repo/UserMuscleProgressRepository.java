@@ -34,6 +34,8 @@ public interface UserMuscleProgressRepository extends JpaRepository<UserMusclePr
 	 */
 	List<UserMuscleProgress> findAllByProfile_Name(String username);
 
+	UserMuscleProgress findByMuscleIgnoreCaseAndProfile_Name(@NonNull String muscle, @NonNull String name);
+
 	/**
 	 * Find user muscle progress by profile name and and muscle user muscle progress.
 	 *

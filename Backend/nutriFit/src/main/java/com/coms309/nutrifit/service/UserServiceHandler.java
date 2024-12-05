@@ -57,9 +57,13 @@ public class UserServiceHandler extends ServiceHandler {
 //CREATE
 	//Creates a user with a default settings entity
 	public User createUser(User user) {
-		if (user == null || userRepository.existsUserByIdOrEmailOrUsername(user.getId(), user.getEmail(), user.getUsername()))
+		if (user == null)
 		{
-			return null;
+			throw new IllegalArgumentException("User cannot be null.)");
+		}
+		if (userRepository.existsUserByIdOrEmailOrUsername(user.getId(), user.getEmail(), user.getUsername()))
+		{
+			throw new IllegalArgumentException("User already exists.");
 		}
 		user.setLastLogin(LocalDateTime.now());
 		UserSettings settings = new UserSettings();
@@ -68,7 +72,6 @@ public class UserServiceHandler extends ServiceHandler {
 
 		Profile profile = new Profile(user);
 		user.setProfile(profile);
-		profile.setUser(user);
 
 		//user.setProfile(new Profile());
 		return userRepository.saveAndFlush(user);
@@ -191,6 +194,7 @@ public class UserServiceHandler extends ServiceHandler {
 	 * @return the by username
 	 */
 	public User getByUsername(String username) {
+
 		return userRepository.findByUsername(username);
 	}
 

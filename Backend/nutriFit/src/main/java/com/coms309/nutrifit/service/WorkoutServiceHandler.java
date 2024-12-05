@@ -192,8 +192,9 @@ public class WorkoutServiceHandler {
 
 		workoutSetRepository.save(convertSet(workout, set));
 
-		return workoutRepository.saveAndFlush(workout);
+		Workout w = workoutRepository.saveAndFlush(workout);
 
+		return workoutRepository.findByProfile_NameAndDateTracked(username, date);
 	}
 
 	private WorkoutSet convertSet(Workout workout, WorkoutSetDto set) {
@@ -212,10 +213,6 @@ public class WorkoutServiceHandler {
 
 		workoutSet.setExercise(exercise);
 		return workoutSet;
-	}
-
-	private void calculateProgress(Workout workout) {
-
 	}
 
 	/**
@@ -239,6 +236,15 @@ public class WorkoutServiceHandler {
 	 */
 	public List<Workout> getAllWorkouts() {
 		return workoutRepository.findAll();
+	}
+
+	public void updateMuscleProgressFromWorkout(Workout workout) {
+		List<WorkoutSet> sets = workout.getActivities();
+		for (WorkoutSet set : sets)
+		{
+
+		}
+
 	}
 
 }
