@@ -7,7 +7,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONObject;
 
 /**
- * Service class for managing meal activity API operations with the nutrition feeding into the backend.
+ * Service class for managing meal-related API operations with the nutrition tracking backend.
  * This class provides methods for creating, retrieving, updating, and deleting meal information
  * through REST API endpoints. It uses the Volley library for making network requests and provides
  * automatic callbacks for handling API responses.
@@ -66,7 +66,7 @@ public class MealService {
     }
 
     /**
-     * Constructs a new MealService with the Volley request queue.
+     * Constructs a new MealService with the specified Volley request queue.
      *
      * @param requestQueue The Volley RequestQueue used for making API requests
      */
