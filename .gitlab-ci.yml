@@ -38,6 +38,7 @@ maven-test:
     changes:
       - Backend/*
 
+
 auto-deploy:
   stage: mavendeploy
   tags:
