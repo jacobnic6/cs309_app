@@ -35,7 +35,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private ImageView profileImage;
     private String username;
 
-    private String weightUrl = "http://coms-3090-058.class.las.iastate.edu:8080/bodyweights/username";
+    private String weightUrl = "http://coms-3090-058.class.las.iastate.edu:8080/bodyweights/msbecker";
     private String profileUrl = "http://coms-3090-058.class.las.iastate.edu:8080/profile/";
 
     @Override
@@ -46,7 +46,7 @@ public class UserProfileActivity extends AppCompatActivity {
         // Get username from intent or set default for direct launch
         username = getIntent().getStringExtra("Username");
         if (username == null) {
-            username = "default_username"; // Set your test username here
+            username = "msbecker"; // Set your test username here
         }
 
         initializeViews();
