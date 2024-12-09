@@ -1,7 +1,10 @@
 package com.coms309.nutrifit.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -10,8 +13,6 @@ import java.io.Serializable;
  */
 @Builder
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto implements Serializable {

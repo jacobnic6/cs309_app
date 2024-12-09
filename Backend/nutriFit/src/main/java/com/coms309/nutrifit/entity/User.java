@@ -68,10 +68,6 @@ public class User {
 	@DateTimeFormat
 	private LocalDateTime lastLogin;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonIgnore
-	private List<ImageData> imageData;
-
 	/**
 	 * The Body weights.
 	 */

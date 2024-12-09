@@ -34,6 +34,7 @@ public class Profile {
 
 	//    @OneToMany(mappedBy = "profile")
 //    private List<UserMuscleProgress> muscleProgress;
+
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Map<String, UserMuscleProgress> muscleProgress;
 
@@ -52,9 +53,9 @@ public class Profile {
 	@Column
 	private int height;
 
-	@OneToOne
-	@PrimaryKeyJoinColumn
-	private ImageData profileImageData;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "profile")
+	@JsonIgnore
+	private List<ImageData> imageData;
 
 	/**
 	 * Instantiates a new Profile.

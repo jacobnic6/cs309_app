@@ -27,4 +27,10 @@ public class ImageData {
 
 	private String type;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "profile_id")
+	private Profile profile;
+
+	private boolean isProfilePicture;
+
 }

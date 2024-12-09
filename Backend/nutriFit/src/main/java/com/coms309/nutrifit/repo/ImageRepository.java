@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ImageRepository extends JpaRepository<ImageData, Integer> {
+	ImageData findByProfile_NameAndIsProfilePictureTrue(@NonNull String name);
 
 	/**
 	 * Find by name image data.

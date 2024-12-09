@@ -2,6 +2,7 @@ package com.coms309.nutrifit.controller;
 
 import com.coms309.nutrifit.dto.UserDto;
 import com.coms309.nutrifit.entity.Friend;
+import com.coms309.nutrifit.entity.ProfileDto;
 import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.service.ServiceHandler;
 import com.coms309.nutrifit.service.UserServiceHandler;
@@ -109,18 +110,18 @@ public class FriendsController {
 
 	}
 
-	/**
-	 * Gets friends by id.
-	 *
-	 * @param userId the user id
-	 *
-	 * @return the friends by id
-	 */
-	@Operation(summary = "Get all friends of specific user", description = "Finds user by Id and returns a list of their friends.")
-	@GetMapping(path = "/{userId}")
-	public List<UserDto> getFriendsById(@PathVariable int userId) {
-		return userServiceHandler.getFriendsById(userId);
-	}
+//	/**
+//	 * Gets friends by id.
+//	 *
+//	 * @param userId the user id
+//	 *
+//	 * @return the friends by id
+//	 */
+//	@Operation(summary = "Get all friends of specific user", description = "Finds user by Id and returns a list of their friends.")
+//	@GetMapping(path = "get/{userId}")
+//	public List<ProfileDto> getFriendsById(@PathVariable int userId) {
+//		return userServiceHandler.getFriendsById(userId);
+//	}
 
 	/**
 	 * Gets friends by id.
@@ -131,7 +132,7 @@ public class FriendsController {
 	 */
 	@Operation(summary = "Get all friends of specific user", description = "Finds user by Id or username and returns a list of their friends.")
 	@GetMapping(path = "/get")
-	public List<UserDto> getUserFriends(@RequestParam String userId) {
+	public List<ProfileDto> getUserFriends(@RequestParam String userId) {
 		if (userId.isEmpty())
 		{
 			throw new IllegalArgumentException("UserId cannot be empty");
@@ -155,7 +156,7 @@ public class FriendsController {
 	 */
 	@Operation(summary = "Get all friends of specific user", description = "Finds user by Id or username and returns a list of their friends.")
 	@GetMapping(path = "/list/{username}")
-	public List<UserDto> getFriendsByUsername(@PathVariable String username) {
+	public List<ProfileDto> getFriendsByUsername(@PathVariable String username) {
 		if (ServiceHandler.isNumeric(username))
 		{
 			return userServiceHandler.getFriendsById(Integer.parseInt(username));

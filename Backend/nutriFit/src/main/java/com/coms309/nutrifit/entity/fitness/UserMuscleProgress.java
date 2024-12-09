@@ -26,7 +26,7 @@ public class UserMuscleProgress {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name = "muscle", nullable = false)
+	@Column(name = "muscle", nullable = false, unique = true)
 	@JsonProperty("muscle")
 	private String muscle;
 

@@ -45,7 +45,8 @@ public class ImageService {
 
 		ImageData imageData = imageRepository.save(ImageData.builder()
 				                                           .name(file.getOriginalFilename()).type(file.getContentType())
-				                                           .pictureData(ImageUtils.compressImage(file.getBytes())).build());
+				                                           .pictureData(ImageUtils.compressImage(file.getBytes()))
+				                                           .build());
 
 		return imageData;
 	}
@@ -83,5 +84,15 @@ public class ImageService {
 		ImageData dbImg = imageRepository.findByName("default-pic.png");
 		byte[] imageData = ImageUtils.decompressImage(dbImg.getPictureData());
 		return imageData;
+	}
+
+	public byte[] downloadImageByImgId(int picId) {
+		ImageData dbImg = imageRepository.findById(picId).get();
+		byte[] imageData = ImageUtils.decompressImage(dbImg.getPictureData());
+		return imageData;
+	}
+
+	public ImageData getProfilePicture(String username) {
+		return imageRepository.findByProfile_NameAndIsProfilePictureTrue(username);
 	}
 }

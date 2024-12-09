@@ -83,10 +83,18 @@ public class ProfileServiceHandler {
 	 */
 	public Profile getUserProfile(String username) {
 		Profile profile = profileRepository.findByName(username);
-		if (profile != null && profile.getProfileImageData() != null)
+		if (profile == null)
 		{
-			ImageData imageData = profile.getProfileImageData();
+			throw new NullPointerException("Profile not found");
+		}
+		ImageData imageData = imageRepository.findByProfile_NameAndIsProfilePictureTrue(username);
+		if (imageData != null)
+		{
+
 			byte[] img = ImageUtils.decompressImage(imageData.getPictureData());
+
+		} else
+		{
 
 		}
 		return profile;
@@ -144,12 +152,23 @@ public class ProfileServiceHandler {
 	 * @param username the username
 	 */
 	public void assignImage(ImageData upload, String username) {
-		User user = userRepository.findByUsername(username);
-		Profile profile = profileRepository.findByUser(user);
+		//User user = userRepository.findByUsername(username);
 
-		ImageData imageData = imageRepository.findByName(upload.getName());
+		Profile profile = profileRepository.findByName(username);
 
-		profile.setProfileImageData(imageData);
+		if (profile == null)
+		{
+			throw new NullPointerException("Profile not found");
+		}
+		ImageData data = imageRepository.findByProfile_NameAndIsProfilePictureTrue(username);
+		if (data != null)
+		{
+			data.setProfilePicture(false);
+			imageRepository.save(data);
+		}
+		upload.setProfilePicture(true);
+		upload.setProfile(profile);
+		profile.getImageData().add(upload);
 
 		profileRepository.save(profile);
 

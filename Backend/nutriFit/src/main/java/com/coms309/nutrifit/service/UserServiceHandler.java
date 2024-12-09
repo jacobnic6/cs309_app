@@ -1,10 +1,7 @@
 package com.coms309.nutrifit.service;
 
 import com.coms309.nutrifit.dto.UserDto;
-import com.coms309.nutrifit.entity.Friend;
-import com.coms309.nutrifit.entity.Profile;
-import com.coms309.nutrifit.entity.User;
-import com.coms309.nutrifit.entity.UserSettings;
+import com.coms309.nutrifit.entity.*;
 import com.coms309.nutrifit.repo.FriendRepository;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.repo.UserSettingsRepository;
@@ -187,18 +184,6 @@ public class UserServiceHandler extends ServiceHandler {
 	}
 
 	/**
-	 * Gets by username.
-	 *
-	 * @param username the username
-	 *
-	 * @return the by username
-	 */
-	public User getByUsername(String username) {
-
-		return userRepository.findByUsername(username);
-	}
-
-	/**
 	 * Add friend string.
 	 *
 	 * @param userId    the user id
@@ -262,7 +247,7 @@ public class UserServiceHandler extends ServiceHandler {
 	 *
 	 * @return the friends by username
 	 */
-	public List<UserDto> getFriendsByUsername(String username) {
+	public List<ProfileDto> getFriendsByUsername(String username) {
 		User user = userRepository.findByUsername(username);
 		return getFriendsById(user.getId());
 
@@ -275,7 +260,7 @@ public class UserServiceHandler extends ServiceHandler {
 	 *
 	 * @return the friends by id
 	 */
-	public List<UserDto> getFriendsById(int userId) {
+	public List<ProfileDto> getFriendsById(int userId) {
 
 		User user = userRepository.findById(userId);
 
@@ -291,11 +276,13 @@ public class UserServiceHandler extends ServiceHandler {
 		{
 			friends.add(userRepository.findById(friend.getFirstUser().getId()));
 		}
-		List<UserDto> userDtoList = new ArrayList<>();
+		List<ProfileDto> userDtoList = new ArrayList<>();
 		for (User u : friends)
 		{
-			if (u.getId() != userId) {}
-			userDtoList.add(mapper.convertValue(u, UserDto.class));
+			if (u.getId() != userId)
+			{
+				userDtoList.add(mapper.convertValue(u.getProfile(), ProfileDto.class));
+			}
 
 		}
 
@@ -374,6 +361,18 @@ public class UserServiceHandler extends ServiceHandler {
 	 */
 	public boolean existsByUsername(String username) {
 		return userRepository.existsByUsername(username);
+	}
+
+	/**
+	 * Gets by username.
+	 *
+	 * @param username the username
+	 *
+	 * @return the by username
+	 */
+	public User getByUsername(String username) {
+
+		return userRepository.findByUsername(username);
 	}
 
 }

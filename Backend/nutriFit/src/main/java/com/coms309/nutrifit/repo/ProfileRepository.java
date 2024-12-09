@@ -13,6 +13,7 @@ import java.util.Optional;
  */
 @Repository
 public interface ProfileRepository extends JpaRepository<Profile, Integer> {
+
 	/**
 	 * Find by user profile.
 	 *

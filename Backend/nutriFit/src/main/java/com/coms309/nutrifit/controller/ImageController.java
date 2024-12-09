@@ -1,9 +1,9 @@
 package com.coms309.nutrifit.controller;
 
 import com.coms309.nutrifit.entity.ImageData;
-import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.service.ImageService;
 import com.coms309.nutrifit.service.ProfileServiceHandler;
+import com.coms309.nutrifit.service.UserServiceHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +29,8 @@ public class ImageController {
 
 	private final ProfileServiceHandler profileServiceHandler;
 
+	private final UserServiceHandler userServiceHandler;
+
 	/**
 	 * The Image service.
 	 */
@@ -42,8 +44,9 @@ public class ImageController {
 	 * @param imageService          the image service
 	 */
 	@Autowired
-	public ImageController(ProfileServiceHandler profileServiceHandler, ImageService imageService) {
+	public ImageController(ProfileServiceHandler profileServiceHandler, UserServiceHandler userServiceHandler, ImageService imageService) {
 		this.profileServiceHandler = profileServiceHandler;
+		this.userServiceHandler = userServiceHandler;
 		this.imageService = imageService;
 	}
 
@@ -61,18 +64,32 @@ public class ImageController {
 			description = "Uploads an image to the specified user's profile.")
 	@PostMapping("/upload/{username}")
 	public ResponseEntity<?> uploadPicture(@RequestParam(value = "image") MultipartFile file, @PathVariable String username) throws IOException {
-		Profile profile = profileServiceHandler.getUserProfile(username);
-		if (profile == null)
+
+		if (!userServiceHandler.existsByUsername(username))
 		{
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			throw new NullPointerException("User does not exist");
 		}
 
 		ImageData img = imageService.saveImage(file);
-		if (img.getPictureData() != null)
+		if (img.getName() != null)
 		{
+
 			profileServiceHandler.assignImage(img, username);
+
+			//profileServiceHandler.assignImage(img, username);
 		}
 
+		return ResponseEntity.status(HttpStatus.OK).body(img);
+	}
+
+	@Operation(summary = "Upload an image to specific profile",
+			description = "Uploads an image to the specified user's profile.")
+	@PostMapping("/default")
+	public ResponseEntity<?> uploadDefaultPicture(@RequestParam(value = "image") MultipartFile file
+	) throws IOException
+	{
+
+		ImageData img = imageService.saveImage(file);
 		return ResponseEntity.status(HttpStatus.OK).body(img);
 	}
 
@@ -104,16 +121,19 @@ public class ImageController {
 			description = "Fetches profile picture for specified user. If no profile pic is set, returns a default picture")
 	@GetMapping("/pic/{username}")
 	public ResponseEntity<?> getProfilePicture(@PathVariable String username) {
-
-		Profile profile = profileServiceHandler.getUserProfile(username);
-
-		if (profile.getProfileImageData() == null || profile.getProfileImageData().getName() == null)
+		if (!userServiceHandler.existsByUsername(username))
 		{
-			byte[] imgData = imageService.downloadDefaultImage();
-			return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imgData);
+			throw new NullPointerException("User does not exist");
+		}
+
+		ImageData data = imageService.getProfilePicture(username);
+		if (data != null)
+		{
+			byte[] imgData = imageService.downloadImage(data.getName());
+			return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf(data.getType())).body(imgData);
 		} else
 		{
-			byte[] imgData = imageService.downloadImage(profile.getProfileImageData().getName());
+			byte[] imgData = imageService.downloadDefaultImage();
 			return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(imgData);
 		}
 
