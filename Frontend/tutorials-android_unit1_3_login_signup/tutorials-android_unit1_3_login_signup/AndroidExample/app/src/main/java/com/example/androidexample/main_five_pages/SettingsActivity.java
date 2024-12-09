@@ -42,7 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         username = getIntent().getStringExtra("Username");
         if (username == null || username.isEmpty()) {
-            username = SessionManager.getInstance().getUsername();
+            username = SessionManager.getInstance(this).getUsername();
         }
 
         settingsService = new SettingsService(Volley.newRequestQueue(this));

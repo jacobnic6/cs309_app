@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,283 +16,357 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Calories Remaining Section -->
-            <TextView
-                android:id="@+id/calories_remaining"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="2000 calories remaining"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <!-- Calories Progress Section -->
-            <TextView
-                android:id="@+id/calories_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Calories"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/calories_remaining" />
-
-            <ProgressBar
-                android:id="@+id/calories_progress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@id/calories_label"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/calories_label"
-                app:layout_constraintTop_toTopOf="@id/calories_label" />
-
-            <!-- Protein Progress Section -->
-            <TextView
-                android:id="@+id/protein_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Protein"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/calories_label" />
-
-            <ProgressBar
-                android:id="@+id/protein_progress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@id/protein_label"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/protein_label"
-                app:layout_constraintTop_toTopOf="@id/protein_label" />
-
-            <!-- Carbs Progress Section -->
-            <TextView
-                android:id="@+id/carbs_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Carbs"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/protein_label" />
-
-            <ProgressBar
-                android:id="@+id/carbs_progress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@id/carbs_label"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/carbs_label"
-                app:layout_constraintTop_toTopOf="@id/carbs_label" />
-
-            <!-- Fat Progress Section -->
-            <TextView
-                android:id="@+id/fat_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Fat"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/carbs_label" />
-
-            <ProgressBar
-                android:id="@+id/fat_progress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@id/fat_label"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/fat_label"
-                app:layout_constraintTop_toTopOf="@id/fat_label" />
-
-            <!-- Meals Section Header -->
-            <TextView
-                android:id="@+id/meals_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="Today's Meals"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fat_progress" />
-
-            <!-- Breakfast Section -->
+            <!-- Date Navigation -->
             <LinearLayout
-                android:id="@+id/breakfast_container"
+                android:id="@+id/date_navigation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/prev_date_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Previous day"
+                    android:src="@android:drawable/ic_media_previous"/>
+
+                <TextView
+                    android:id="@+id/date_display"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:text="Today"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+                <ImageButton
+                    android:id="@+id/next_date_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Next day"
+                    android:src="@android:drawable/ic_media_next"/>
+            </LinearLayout>
+
+            <!-- Calories Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/calories_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/meals_header">
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toBottomOf="@id/date_navigation">
 
-                <TextView
-                    android:id="@+id/breakfast_label"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Breakfast" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/breakfast_calories"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:text="0 cal" />
+                    <TextView
+                        android:id="@+id/calories_remaining"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2000 calories remaining"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
 
-                <ImageButton
-                    android:id="@+id/edit_breakfast_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Edit breakfast"
-                    android:src="@android:drawable/ic_menu_edit" />
+                    <!-- Progress Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/delete_breakfast_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Delete breakfast"
-                    android:src="@android:drawable/ic_menu_delete" />
-            </LinearLayout>
+                        <!-- Calories Progress -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-            <!-- Lunch Section -->
-            <LinearLayout
-                android:id="@+id/lunch_container"
+                            <TextView
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:text="Calories"
+                                android:textStyle="bold"/>
+
+                            <ProgressBar
+                                android:id="@+id/calories_progress"
+                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                android:layout_width="0dp"
+                                android:layout_height="12dp"
+                                android:layout_weight="1"
+                                android:progressTint="#FFD700"/>
+                        </LinearLayout>
+
+                        <!-- Protein Progress -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:text="Protein"
+                                android:textStyle="bold"/>
+
+                            <ProgressBar
+                                android:id="@+id/protein_progress"
+                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                android:layout_width="0dp"
+                                android:layout_height="12dp"
+                                android:layout_weight="1"
+                                android:progressTint="#FF4081"/>
+                        </LinearLayout>
+
+                        <!-- Carbs Progress -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:text="Carbs"
+                                android:textStyle="bold"/>
+
+                            <ProgressBar
+                                android:id="@+id/carbs_progress"
+                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                android:layout_width="0dp"
+                                android:layout_height="12dp"
+                                android:layout_weight="1"
+                                android:progressTint="#4CAF50"/>
+                        </LinearLayout>
+
+                        <!-- Fat Progress -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:text="Fat"
+                                android:textStyle="bold"/>
+
+                            <ProgressBar
+                                android:id="@+id/fat_progress"
+                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                android:layout_width="0dp"
+                                android:layout_height="12dp"
+                                android:layout_weight="1"
+                                android:progressTint="#2196F3"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Meals Section -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/meals_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/breakfast_container">
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toBottomOf="@id/calories_card">
 
-                <TextView
-                    android:id="@+id/lunch_label"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Lunch" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/lunch_calories"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:text="0 cal" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Today's Meals"
+                        android:textSize="20sp"
+                        android:textStyle="bold"/>
 
-                <ImageButton
-                    android:id="@+id/edit_lunch_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Edit lunch"
-                    android:src="@android:drawable/ic_menu_edit" />
+                    <!-- Meal sections -->
+                    <!-- Breakfast Section -->
+                    <LinearLayout
+                        android:id="@+id/breakfast_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/delete_lunch_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Delete lunch"
-                    android:src="@android:drawable/ic_menu_delete" />
-            </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Breakfast"
+                            android:textStyle="bold"/>
 
-            <!-- Dinner Section -->
-            <LinearLayout
-                android:id="@+id/dinner_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/lunch_container">
+                        <TextView
+                            android:id="@+id/breakfast_calories"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:text="0 cal"/>
 
-                <TextView
-                    android:id="@+id/dinner_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dinner" />
+                        <ImageButton
+                            android:id="@+id/edit_breakfast_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Edit breakfast"
+                            android:src="@android:drawable/ic_menu_edit"/>
 
-                <TextView
-                    android:id="@+id/dinner_calories"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:text="0 cal" />
+                        <ImageButton
+                            android:id="@+id/delete_breakfast_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Delete breakfast"
+                            android:src="@android:drawable/ic_menu_delete"/>
+                    </LinearLayout>
 
-                <ImageButton
-                    android:id="@+id/edit_dinner_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Edit dinner"
-                    android:src="@android:drawable/ic_menu_edit" />
+                    <!-- Lunch Section -->
+                    <LinearLayout
+                        android:id="@+id/lunch_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/delete_dinner_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Delete dinner"
-                    android:src="@android:drawable/ic_menu_delete" />
-            </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lunch"
+                            android:textStyle="bold"/>
 
-            <!-- Snacks Section -->
-            <LinearLayout
-                android:id="@+id/snacks_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/dinner_container">
+                        <TextView
+                            android:id="@+id/lunch_calories"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:text="0 cal"/>
 
-                <TextView
-                    android:id="@+id/snacks_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Snacks" />
+                        <ImageButton
+                            android:id="@+id/edit_lunch_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Edit lunch"
+                            android:src="@android:drawable/ic_menu_edit"/>
 
-                <TextView
-                    android:id="@+id/snacks_calories"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:text="0 cal" />
+                        <ImageButton
+                            android:id="@+id/delete_lunch_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Delete lunch"
+                            android:src="@android:drawable/ic_menu_delete"/>
+                    </LinearLayout>
 
-                <ImageButton
-                    android:id="@+id/edit_snacks_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Edit snacks"
-                    android:src="@android:drawable/ic_menu_edit" />
+                    <!-- Dinner Section -->
+                    <LinearLayout
+                        android:id="@+id/dinner_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/delete_snacks_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Delete snacks"
-                    android:src="@android:drawable/ic_menu_delete" />
-            </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Dinner"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/dinner_calories"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:text="0 cal"/>
+
+                        <ImageButton
+                            android:id="@+id/edit_dinner_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Edit dinner"
+                            android:src="@android:drawable/ic_menu_edit"/>
+
+                        <ImageButton
+                            android:id="@+id/delete_dinner_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Delete dinner"
+                            android:src="@android:drawable/ic_menu_delete"/>
+                    </LinearLayout>
+
+                    <!-- Snacks Section -->
+                    <LinearLayout
+                        android:id="@+id/snacks_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Snacks"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/snacks_calories"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:text="0 cal"/>
+
+                        <ImageButton
+                            android:id="@+id/edit_snacks_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Edit snacks"
+                            android:src="@android:drawable/ic_menu_edit"/>
+
+                        <ImageButton
+                            android:id="@+id/delete_snacks_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Delete snacks"
+                            android:src="@android:drawable/ic_menu_delete"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Action Buttons -->
             <LinearLayout
-                android:id="@+id/buttons_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:orientation="horizontal"
-                android:weightSum="3"
-                app:layout_constraintTop_toBottomOf="@id/snacks_container">
+                app:layout_constraintTop_toBottomOf="@id/meals_card">
 
                 <Button
                     android:id="@+id/add_meal_button"
@@ -299,14 +374,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="Add Meal" />
+                    android:text="Add Meal"
+                    style="@style/Widget.MaterialComponents.Button"/>
 
+                <Button
+                    android:id="@+id/view_history_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="View History"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
             </LinearLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -314,8 +396,6 @@
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

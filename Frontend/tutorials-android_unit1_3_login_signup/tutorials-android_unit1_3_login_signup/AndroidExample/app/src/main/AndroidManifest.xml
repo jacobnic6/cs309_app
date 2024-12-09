@@ -46,6 +46,9 @@
         <activity
             android:name=".main_five_pages.NutritionActivity"
             android:exported="false"/>
+        <activity
+            android:name=".nutrition.NutritionCalendarActivity"
+            android:exported="false" />
 
         <activity
             android:name=".main_five_pages.SocialActivity"

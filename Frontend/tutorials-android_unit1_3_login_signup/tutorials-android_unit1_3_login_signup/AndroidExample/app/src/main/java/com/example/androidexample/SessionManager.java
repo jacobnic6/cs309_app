@@ -1,38 +1,57 @@
 package com.example.androidexample;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 public class SessionManager {
-    private String username;
-    private int userId;
+    private static final String PREF_NAME = "FitnessAppSession";
+    private static final String KEY_USERNAME = "username";
+    private static final String KEY_USER_ID = "userId";
+    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
+
     private static SessionManager instance;
+    private final SharedPreferences prefs;
+    private final SharedPreferences.Editor editor;
 
-    private SessionManager() {}
+    private SessionManager(Context context) {
+        prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        editor = prefs.edit();
+    }
 
-    public static synchronized SessionManager getInstance() {
+    public static synchronized SessionManager getInstance(Context context) {
         if (instance == null) {
-            instance = new SessionManager();
+            instance = new SessionManager(context.getApplicationContext());
         }
         return instance;
     }
 
-    public void saveUserSession(String username, int userId) {
-        this.username = username;
-        this.userId = userId;
+    public void createLoginSession(String username, String userId) {
+        editor.putString(KEY_USERNAME, username);
+        editor.putString(KEY_USER_ID, userId);
+        editor.putBoolean(KEY_IS_LOGGED_IN, true);
+        editor.apply();
     }
 
     public String getUsername() {
-        return username;
+        return prefs.getString(KEY_USERNAME, null);
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void clearSession() {
-        username = null;
-        userId = -1;
+    public String getUserId() {
+        return prefs.getString(KEY_USER_ID, null);
     }
 
     public boolean isLoggedIn() {
-        return username != null;
+        return prefs.getBoolean(KEY_IS_LOGGED_IN, false);
+    }
+
+    public void logout() {
+        editor.clear();
+        editor.apply();
+    }
+
+    public void updateUserDetails(String username, String userId) {
+        editor.putString(KEY_USERNAME, username);
+        editor.putString(KEY_USER_ID, userId);
+        editor.apply();
     }
 }
