@@ -15,6 +15,7 @@ import java.util.List;
  * The interface User muscle progress repository.
  */
 public interface UserMuscleProgressRepository extends JpaRepository<UserMuscleProgress, Integer> {
+
 	/**
 	 * Find by muscle and profile boolean.
 	 *

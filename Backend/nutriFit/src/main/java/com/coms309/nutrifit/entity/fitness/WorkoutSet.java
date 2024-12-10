@@ -1,6 +1,7 @@
 package com.coms309.nutrifit.entity.fitness;
 
 import com.coms309.nutrifit.exercises.Exercise;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -39,6 +40,7 @@ public class WorkoutSet {
 	@JsonProperty("category")
 	private String category;
 
+	@JsonAlias({"exerciseName"})
 	@JsonProperty(value = "name", required = true)
 	private String exerciseName;
 
@@ -57,24 +59,26 @@ public class WorkoutSet {
 	@JsonProperty(value = "secondaryProgress", defaultValue = "0")
 	private int secondaryProgress;
 
-	public int getPrimaryProgress() {
-		int primaryDiv = 100;
-
-		return (weight * reps * sets) / primaryDiv;
-
-	}
-
-	public int getSecondaryProgress() {
-		int secondaryDiv = 200;
-
-		return (weight * reps * sets) / secondaryDiv;
-
+	public WorkoutSet(Workout workout, Exercise exercise, String category, String name, int weight, int sets, int reps) {
+		this.workout = workout;
+		this.exercise = exercise;
+		this.category = category;
+		this.exerciseName = name;
+		this.weight = weight;
+		this.sets = sets;
+		this.reps = reps;
+		this.primaryProgress = 0;
+		this.secondaryProgress = 0;
 	}
 
 	public void setExercise(Exercise exercise) {
 		this.category = exercise.getCategory().getName();
 		this.exerciseName = exercise.getName();
 		this.exercise = exercise;
+
+	}
+
+	public void calculateProgress() {
 
 	}
 

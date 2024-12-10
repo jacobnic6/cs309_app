@@ -31,13 +31,28 @@ public class UserMuscleProgressDto implements Serializable {
 	@JsonProperty(value = "amount_to_next_tier", defaultValue = "100")
 	private double amountToNextTier;
 
-	public void setPercentage(double percentage) {
+	public UserMuscleProgressDto(String muscle) {
+		this.muscle = muscle;
+
+	}
+
+	public UserMuscleProgressDto(String muscleName, double primaryProgress) {
+		this.muscle = muscleName;
+		this.percentage = primaryProgress;
+		this.tier = 0;
+		this.totalProgress = primaryProgress;
+		this.amountToNextTier = 100;
+	}
+
+	public double getAmountToNextTier() {
 		if (tier == 0)
 		{
-			this.totalProgress = percentage;
-			this.amountToNextTier = 100 - percentage;
+			amountToNextTier = 100;
+		} else
+		{
+			amountToNextTier = ((tier * 1.2 * 100) + 100);
 		}
-		this.percentage = percentage;
+		return amountToNextTier;
 	}
 
 }

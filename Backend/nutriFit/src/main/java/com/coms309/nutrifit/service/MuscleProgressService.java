@@ -73,10 +73,10 @@ public class MuscleProgressService {
 		try
 		{
 
-			UserMuscleProgress progress = new UserMuscleProgress();
+			UserMuscleProgress progress = null;
 			String muscleName = progressDto.getMuscle().toUpperCase();
 			Muscle muscle = muscleRepository.findByName(muscleName);
-//			UserMuscles muscle = UserMuscles.valueOf(muscleName);
+
 			if (muscle != null)
 			{
 				progress = objectMapper.convertValue(progressDto, UserMuscleProgress.class);
@@ -87,19 +87,20 @@ public class MuscleProgressService {
 				{
 					UserMuscleProgress existingProgress = progressMap.get(progress.getMuscle());
 
-					updateProgress(progress.getPercentage(), existingProgress);
+					updateProgress(progress.getTotalProgress(), existingProgress);
 					// existingProgress.updateProgress(progress.getPercentage());
 					progress = existingProgress;
 					profile.setMuscleProgress(progressMap);
 
 				} else
 				{
-					progressMap.put(progress.getMuscle(), progress);
+					UserMuscleProgress newProgress = checkValues(progress);
+					progressMap.put(newProgress.getMuscle(), newProgress);
 					profile.setMuscleProgress(progressMap);
 
 				}
 
-				userMuscleProgressRepository.save(progress);
+				profileRepository.saveAndFlush(profile);
 
 				return "Muscle " + progress.getMuscle() + " progress created";
 			}
@@ -118,11 +119,12 @@ public class MuscleProgressService {
 
 	}
 
-	private void updateProgress(double progressAmount, UserMuscleProgress muscleProgress) {
+	public UserMuscleProgress updateProgress(double progressAmount, UserMuscleProgress muscleProgress) {
+		//muscleProgress = checkValues(muscleProgress);
 		int currentTier = muscleProgress.getTier();
 		double currentTotal = muscleProgress.getTotalProgress();
 
-		double nextTierAt = calcNextTierAmount(currentTier);
+		double nextTierAt = muscleProgress.getAmountToNextTier();
 //		double prevTierAt = calcPrevTierAmount(currentTier);
 
 		currentTotal += progressAmount;
@@ -141,10 +143,21 @@ public class MuscleProgressService {
 		muscleProgress.setPercentage(calcTierPercentage(currentTotal, currentTier));
 
 		//tier = tier * 1.2 * 100
+		return muscleProgress;
+	}
 
+	public UserMuscleProgress checkValues(UserMuscleProgress muscleProgress) {
+		if (muscleProgress.getTotalProgress() >= muscleProgress.getAmountToNextTier())
+		{
+			muscleProgress.setTier(muscleProgress.getTier() + 1);
+			muscleProgress.setAmountToNextTier(calcNextTierAmount(muscleProgress.getTier()) - muscleProgress.getTotalProgress());
+			muscleProgress.setPercentage(calcTierPercentage(muscleProgress.getTotalProgress(), muscleProgress.getTier()));
+		}
+		return muscleProgress;
 	}
 
 	private double calcNextTierAmount(int tier) {
+
 		if (tier == 0)
 		{
 			return 100;
@@ -164,13 +177,16 @@ public class MuscleProgressService {
 //	}
 
 	private double calcTierPercentage(double currentTotal, int currentTier) {
+
 		if (currentTier == 0)
 		{
 			return currentTotal;
 		}
 		double tierProgress = currentTotal - calcPrevTierAmount(currentTier);
 		double tierDifference = findTierAmountDifference(currentTier);
-		return (tierProgress / tierDifference) * 100;
+		double tierPercentage = (tierProgress / tierDifference) * 100;
+
+		return tierPercentage;
 	}
 
 	private double calcPrevTierAmount(int tier) {
@@ -179,7 +195,7 @@ public class MuscleProgressService {
 		{
 			return 0;
 		}
-		return ((tier - 1) * 1.2 * 100) + 100;
+		return ((double) (tier - 1) * 1.2 * 100) + 100;
 	}
 
 	private double findTierAmountDifference(int tier) {

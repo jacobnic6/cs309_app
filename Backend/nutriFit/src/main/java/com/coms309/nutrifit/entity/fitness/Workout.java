@@ -53,7 +53,6 @@ public class Workout {
 
 		this.profile = profile;
 		activities = new ArrayList<>();
-		this.dateTracked = LocalDate.now();
 
 	}
 

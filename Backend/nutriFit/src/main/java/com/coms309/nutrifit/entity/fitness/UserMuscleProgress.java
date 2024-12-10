@@ -35,10 +35,10 @@ public class UserMuscleProgress {
 	private double percentage;
 
 	//lvl
-	@JsonProperty(value = "tier")
+	@JsonProperty(value = "tier", defaultValue = "0")
 	private int tier;
 
-	@JsonProperty(value = "total_progress")
+	@JsonProperty(value = "total_progress", defaultValue = "0")
 	private double totalProgress;
 
 	@ManyToOne
@@ -53,6 +53,17 @@ public class UserMuscleProgress {
 		this.tier = 0;
 		this.totalProgress = 0;
 		this.amountToNextTier = 100;
+	}
+
+	public double getAmountToNextTier() {
+		if (tier == 0)
+		{
+			amountToNextTier = 100;
+		} else
+		{
+			amountToNextTier = ((tier * 1.2 * 100) + 100);
+		}
+		return amountToNextTier;
 	}
 
 }

@@ -1,11 +1,9 @@
 package com.coms309.nutrifit.service;
 
 import com.coms309.nutrifit.entity.Profile;
-import com.coms309.nutrifit.entity.User;
-import com.coms309.nutrifit.entity.fitness.Workout;
-import com.coms309.nutrifit.entity.fitness.WorkoutSet;
-import com.coms309.nutrifit.entity.fitness.WorkoutSetDto;
+import com.coms309.nutrifit.entity.fitness.*;
 import com.coms309.nutrifit.exercises.Exercise;
+import com.coms309.nutrifit.exercises.Muscle;
 import com.coms309.nutrifit.repo.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type Workout service handler.
@@ -27,6 +26,10 @@ public class WorkoutServiceHandler {
 	private final WorkoutRepository workoutRepository;
 
 	private final WorkoutSetRepository workoutSetRepository;
+
+	private final MuscleProgressService muscleProgressService;
+
+	private final UserMuscleProgressRepository userMuscleProgressRepository;
 
 	/**
 	 * The User repository.
@@ -49,9 +52,11 @@ public class WorkoutServiceHandler {
 	private final ExerciseRepository exerciseRepository;
 
 	@Autowired
-	public WorkoutServiceHandler(WorkoutRepository workoutRepository, WorkoutSetRepository workoutSetRepository, UserRepository userRepository, ProfileRepository profileRepository, ObjectMapper objectMapper, ExerciseRepository exerciseRepository) {
+	public WorkoutServiceHandler(WorkoutRepository workoutRepository, WorkoutSetRepository workoutSetRepository, MuscleProgressService muscleProgressService, UserMuscleProgressRepository userMuscleProgressRepository, UserRepository userRepository, ProfileRepository profileRepository, ObjectMapper objectMapper, ExerciseRepository exerciseRepository) {
 		this.workoutRepository = workoutRepository;
 		this.workoutSetRepository = workoutSetRepository;
+		this.muscleProgressService = muscleProgressService;
+		this.userMuscleProgressRepository = userMuscleProgressRepository;
 		this.userRepository = userRepository;
 		this.profileRepository = profileRepository;
 		this.objectMapper = objectMapper;
@@ -71,20 +76,22 @@ public class WorkoutServiceHandler {
 		{
 			throw new NullPointerException("User not found");
 		}
-		User user = userRepository.findByUsername(username);
-		Profile profile = profileRepository.findByUser(user);
-		if (workoutRepository.existsByProfile_NameAndDateTracked(username, date))
+
+		Profile profile = profileRepository.findByName(username);
+		if (workoutRepository.existsByProfileAndDateTracked(profile, date))
 		{
 			return workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
+		} else
+		{
+			Workout workout = new Workout(profile);
+			workout.setDateTracked(date);
+
+			profile.addWorkout(workout);
+
+			//workout.updateTotalWeight();
+
+			return workoutRepository.save(workout);
 		}
-
-		Workout workout = new Workout(profile);
-
-		profile.addWorkout(workout);
-
-		//workout.updateTotalWeight();
-
-		return workoutRepository.save(workout);
 
 	}
 
@@ -189,8 +196,10 @@ public class WorkoutServiceHandler {
 		{
 			throw new EntityNotFoundException("No workout exists for user " + username + " on date " + date.toString() + " yet");
 		}
+		WorkoutSet workoutSet = convertSet(workout, set);
 
-		workoutSetRepository.save(convertSet(workout, set));
+		Map<String, UserMuscleProgress> newProgressMap = updateMuscleProgressFromSet(workoutSet, username);
+		workoutSetRepository.save(workoutSet);
 
 		Workout w = workoutRepository.saveAndFlush(workout);
 
@@ -208,11 +217,71 @@ public class WorkoutServiceHandler {
 		workoutSet.setSets(set.getSets());
 		workoutSet.setReps(set.getReps());
 		workoutSet.setWeight(set.getWeight());
+		getPrimaryProgress(workoutSet);
+		getSecondaryProgress(workoutSet);
 
 		Exercise exercise = exerciseRepository.findByNameIgnoreCase(set.getExerciseName());
 
 		workoutSet.setExercise(exercise);
 		return workoutSet;
+	}
+
+	private Map<String, UserMuscleProgress> updateMuscleProgressFromSet(WorkoutSet workoutSet, String username) {
+		double primaryProgress = getPrimaryProgress(workoutSet);
+		double secondaryProgress = getSecondaryProgress(workoutSet);
+
+		List<Muscle> secondaryMuscles = workoutSet.getExercise().getSecondaryMuscles();
+		List<Muscle> primaryMuscles = workoutSet.getExercise().getPrimaryMuscles();
+
+		updateList(primaryMuscles, username, primaryProgress);
+		updateList(secondaryMuscles, username, secondaryProgress);
+//		Profile profile = profileRepository.findByName(username);
+//		Map<String, UserMuscleProgress> muscleProgress = profile.getMuscleProgress();
+
+		return profileRepository.findByName(username).getMuscleProgress();
+	}
+
+	private int getPrimaryProgress(WorkoutSet workoutSet) {
+		int primaryDiv = 100;
+		int primaryProgress = (workoutSet.getWeight() * workoutSet.getSets() * workoutSet.getReps()) / primaryDiv;
+		workoutSet.setPrimaryProgress(primaryProgress);
+		return primaryProgress;
+
+	}
+
+	private int getSecondaryProgress(WorkoutSet workoutSet) {
+		int secondaryDiv = 200;
+		int secondaryProgress = (workoutSet.getWeight() * workoutSet.getSets() * workoutSet.getReps()) / secondaryDiv;
+		workoutSet.setSecondaryProgress(secondaryProgress);
+		return secondaryProgress;
+
+	}
+
+	private void updateList(List<Muscle> musclesList, String username, double progressAmount) {
+		Profile profile = profileRepository.findByName(username);
+		Map<String, UserMuscleProgress> muscleProgress = profile.getMuscleProgress();
+		for (Muscle muscle : musclesList)
+		{
+
+			String muscleName = muscle.getName();
+			UserMuscleProgressDto dto = new UserMuscleProgressDto(muscleName, progressAmount);
+			if (muscleProgress.containsKey(muscleName))
+			{
+				UserMuscleProgress oldProgress = muscleProgress.get(muscleName);
+				oldProgress.setTotalProgress(oldProgress.getTotalProgress() + progressAmount);
+				muscleProgressService.checkValues(oldProgress);
+
+			} else
+			{
+				UserMuscleProgress progress = objectMapper.convertValue(dto, UserMuscleProgress.class);
+				muscleProgressService.checkValues(progress);
+				progress.setProfile(profile);
+				muscleProgress.put(muscleName, progress);
+				userMuscleProgressRepository.saveAndFlush(progress);
+			}
+			profileRepository.saveAndFlush(profile);
+
+		}
 	}
 
 	/**
@@ -236,15 +305,6 @@ public class WorkoutServiceHandler {
 	 */
 	public List<Workout> getAllWorkouts() {
 		return workoutRepository.findAll();
-	}
-
-	public void updateMuscleProgressFromWorkout(Workout workout) {
-		List<WorkoutSet> sets = workout.getActivities();
-		for (WorkoutSet set : sets)
-		{
-
-		}
-
 	}
 
 }

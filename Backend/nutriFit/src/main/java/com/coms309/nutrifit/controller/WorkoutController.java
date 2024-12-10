@@ -65,7 +65,7 @@ public class WorkoutController {
 					              " If a workout doesn't exist for that user on the date specified, EntityNotFoundException is thrown. If " +
 					              "an activity with the same name already exists, that activity's values are updated to match the activity provided.")
 	@PostMapping("/add/{date}/{username}")
-	public Workout addActivity(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+	public Workout addActivity(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
 	                           @PathVariable String username, @RequestBody WorkoutSetDto set) throws Exception
 	{
 
