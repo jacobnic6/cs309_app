@@ -126,47 +126,133 @@ public class NutritionService {
 		{
 			throw new RuntimeException("User with username " + username + " does not exist");
 		}
+		if (mealDto == null)
+		{
+			throw new IllegalArgumentException("Meal cannot be null");
+		}
 
-		UserMeals meals = getUserMealList(username, date);
-
+		Map<String, Integer> nutrients = mealDto.getNutrients();
 		Meal meal = objectMapper.convertValue(mealDto, Meal.class);
-		List<Meal> mealList = meals.getMealList();
+
+		UserMeals userMeals = getUserMealList(username, date);
+		List<Meal> mealList = userMeals.getMealList();
 		if (mealList == null)
 		{
 			mealList = new ArrayList<>();
-
 		}
 		mealList.add(meal);
-		meals.setMealList(mealList);
-		meal.setUserMeals(meals);
+		userMeals.setMealList(mealList);
+		meal.setUserMeals(userMeals);
+		Map<String, Integer> totals = userMeals.getNutrientTotals();
 
-		Map<String, Integer> nutrients = mealDto.getNutrients();
-		Map<String, Integer> totals = meals.getNutrientTotals();
-		if (totals == null || totals.isEmpty())
-		{
-			meals.setNutrientTotals(nutrients);
-		} else
-		{
-			for (String key : nutrients.keySet())
-			{
-				if (totals.containsKey(key))
-				{
-					totals.put(key, totals.get(key) + nutrients.get(key));
-				} else
-				{
-					totals.put(key, nutrients.get(key));
-				}
-			}
-		}
-		meals.setNutrientTotals(totals);
-
-		return userMealsRepository.save(meals);
+		userMeals.setNutrientTotals(totals);
+		userMealsRepository.saveAndFlush(userMeals);
+		getDailyTotals(date, username);
+		return userMealsRepository.findByUserAndDate(userRepository.findByUsername(username), date);
 	}
 
 	private UserMeals getUserMealList(String username, LocalDate date) {
 		return userMealsRepository
 				       .findUserMealsByUser_UsernameAndDate(username, date)
 				       .orElse(new UserMeals());
+	}
+
+	/**
+	 * Gets daily totals.
+	 *
+	 * @param date     the date
+	 * @param username the username
+	 *
+	 * @return the daily totals
+	 */
+	public NutrientTotalsDto getDailyTotals(LocalDate date, String username) {
+		if (!userRepository.existsByUsername(username))
+		{
+			throw new RuntimeException("User with username " + username + " does not exist");
+		}
+		User user = userRepository.findByUsername(username);
+
+		UserMeals meals = userMealsRepository.findByUserAndDate(user, date);
+		if (meals == null)
+		{
+			throw new RuntimeException("User with username " + username + " does not exist");
+		}
+		Map<String, Integer> nTotals = new HashMap<>();
+
+		nTotals.put("totalCalories", 0);
+		nTotals.put("totalCarbs", 0);
+		nTotals.put("totalProtein", 0);
+		nTotals.put("totalFat", 0);
+		nTotals.put("breakfastCalories", 0);
+		nTotals.put("lunchCalories", 0);
+		nTotals.put("dinnerCalories", 0);
+		nTotals.put("snackCalories", 0);
+		NutrientTotalsDto totals = new NutrientTotalsDto();
+		totals.setDate(date);
+		for (Meal meal : meals.getMealList())
+		{
+
+			String mealType = meal.getMealType().toLowerCase() + "Calories";
+			nTotals.put("totalCalories", meal.getCalories() + nTotals.get("totalCalories"));
+			totals.addCalories(meal.getCalories());
+			nTotals.put("totalCarbs", meal.getCarbs() + nTotals.get("totalCarbs"));
+			totals.addCarbs(meal.getCarbs());
+			nTotals.put("totalProtein", meal.getProtein() + nTotals.get("totalProtein"));
+			totals.addProtein(meal.getProtein());
+			nTotals.put("totalFat", meal.getProtein() + nTotals.get("totalFat"));
+			totals.addFats(meal.getFat());
+			nTotals.put(mealType, meal.getCalories() + nTotals.get(mealType));
+			if (mealType.equals("breakfastCalories"))
+			{
+				totals.addBreakfastCalories(meal.getCalories());
+			} else if (mealType.equals("lunchCalories"))
+			{
+				totals.addLunchCalories(meal.getCalories());
+			} else if (mealType.equals("dinnerCalories"))
+			{
+				totals.addDinnerCalories(meal.getCalories());
+			} else
+			{
+				totals.addSnackCalories(meal.getCalories());
+			}
+		}
+		meals.setNutrientTotals(nTotals);
+		userMealsRepository.save(meals);
+		return totals;
+
+//
+//        NutrientTotalsDto totals = new NutrientTotalsDto();
+//        totals.setDate(date);
+//
+//        mealRepository.findByUserMeals(meals).stream().forEach(meal -> {
+//
+//            totals.addCalories(meal.getCalories());
+//            totals.addCarbs(meal.getCarbs());
+//            totals.addProtein(meal.getProtein());
+//            totals.addFats(meal.getFat());
+//            String mealType = meal.getMealType().toLowerCase();
+//            switch (mealType) {
+//                case "breakfast":
+//                    totals.addBreakfastCalories(meal.getCalories());
+//
+//                    break;
+//                case "lunch":
+//                    totals.addLunchCalories(meal.getCalories());
+//                    break;
+//                case "dinner":
+//                    totals.addDinnerCalories(meal.getCalories());
+//                    break;
+//                default:
+//                    totals.addSnackCalories(meal.getCalories());
+//                    break;
+//            }
+//
+//        });
+//
+////        meals.setNutrientTotals(objectMapper.convertValue(totals, HashMap.class));
+////        userMealsRepository.save(meals);
+//        return totals;
+
 	}
 
 	/**
@@ -260,103 +346,6 @@ public class NutritionService {
 		return mealRepository
 				       .findFirstByUserMeals_User_UsernameAndUserMeals_DateAndMealTypeAllIgnoreCaseOrderByUserMeals_User_UsernameAscUserMeals_DateAscUserMeals_MealList_MealTypeAsc(
 						       username, date, mealType).orElse(new Meal());
-	}
-
-	/**
-	 * Gets daily totals.
-	 *
-	 * @param date     the date
-	 * @param username the username
-	 *
-	 * @return the daily totals
-	 */
-	public NutrientTotalsDto getDailyTotals(LocalDate date, String username) {
-		if (!userRepository.existsByUsername(username))
-		{
-			throw new RuntimeException("User with username " + username + " does not exist");
-		}
-		User user = userRepository.findByUsername(username);
-
-		UserMeals meals = userMealsRepository.findByUserAndDate(user, date);
-		if (meals == null)
-		{
-			throw new RuntimeException("User with username " + username + " does not exist");
-		}
-		Map<String, Integer> nTotals = new HashMap<>();
-
-		nTotals.put("totalCalories", 0);
-		nTotals.put("totalCarbs", 0);
-		nTotals.put("totalProtein", 0);
-		nTotals.put("totalFat", 0);
-		nTotals.put("breakfastCalories", 0);
-		nTotals.put("lunchCalories", 0);
-		nTotals.put("dinnerCalories", 0);
-		NutrientTotalsDto totals = new NutrientTotalsDto();
-		totals.setDate(date);
-		for (Meal meal : meals.getMealList())
-		{
-
-			String mealType = meal.getMealType().toLowerCase() + "Calories";
-			nTotals.put("totalCalories", meal.getCalories() + nTotals.get("totalCalories"));
-			totals.addCalories(meal.getCalories());
-			nTotals.put("totalCarbs", meal.getCarbs() + nTotals.get("totalCarbs"));
-			totals.addCarbs(meal.getCarbs());
-			nTotals.put("totalProtein", meal.getProtein() + nTotals.get("totalProtein"));
-			totals.addProtein(meal.getProtein());
-			nTotals.put("totalFat", meal.getProtein() + nTotals.get("totalFat"));
-			totals.addFats(meal.getFat());
-			nTotals.put(mealType, meal.getCalories() + nTotals.get(mealType));
-			if (mealType.equals("breakfastCalories"))
-			{
-				totals.addBreakfastCalories(meal.getCalories());
-			} else if (mealType.equals("lunchCalories"))
-			{
-				totals.addLunchCalories(meal.getCalories());
-			} else if (mealType.equals("dinnerCalories"))
-			{
-				totals.addDinnerCalories(meal.getCalories());
-			} else
-			{
-				totals.addSnackCalories(meal.getCalories());
-			}
-		}
-		meals.setNutrientTotals(nTotals);
-		userMealsRepository.save(meals);
-		return totals;
-
-//
-//        NutrientTotalsDto totals = new NutrientTotalsDto();
-//        totals.setDate(date);
-//
-//        mealRepository.findByUserMeals(meals).stream().forEach(meal -> {
-//
-//            totals.addCalories(meal.getCalories());
-//            totals.addCarbs(meal.getCarbs());
-//            totals.addProtein(meal.getProtein());
-//            totals.addFats(meal.getFat());
-//            String mealType = meal.getMealType().toLowerCase();
-//            switch (mealType) {
-//                case "breakfast":
-//                    totals.addBreakfastCalories(meal.getCalories());
-//
-//                    break;
-//                case "lunch":
-//                    totals.addLunchCalories(meal.getCalories());
-//                    break;
-//                case "dinner":
-//                    totals.addDinnerCalories(meal.getCalories());
-//                    break;
-//                default:
-//                    totals.addSnackCalories(meal.getCalories());
-//                    break;
-//            }
-//
-//        });
-//
-////        meals.setNutrientTotals(objectMapper.convertValue(totals, HashMap.class));
-////        userMealsRepository.save(meals);
-//        return totals;
-
 	}
 
 }

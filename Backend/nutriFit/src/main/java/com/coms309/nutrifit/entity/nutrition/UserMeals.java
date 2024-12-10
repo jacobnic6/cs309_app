@@ -42,7 +42,6 @@ public class UserMeals {
 	@OneToMany(mappedBy = "userMeals", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Meal> mealList = new ArrayList<>();
 
-	@Builder.Default
 	@ElementCollection
 	private Map<String, Integer> nutrientTotals = new HashMap<>();
 
