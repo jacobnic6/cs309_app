@@ -5,34 +5,34 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Workout {
+public class MuscleProgress {
     private int id;
-    private String name;
+    private String muscleName;
+    private double measurement;
     private String date;
-    private int exerciseCount;
-    private boolean isSynced;
+    private String notes;
 
-    public Workout(int id, String name, String date, int exerciseCount) {
+    public MuscleProgress(int id, String muscleName, double measurement, String date, String notes) {
         this.id = id;
-        this.name = name;
+        this.muscleName = muscleName;
+        this.measurement = measurement;
         this.date = date;
-        this.exerciseCount = exerciseCount;
-        this.isSynced = false;
+        this.notes = notes;
     }
 
     // Getters
     public int getId() { return id; }
-    public String getName() { return name; }
+    public String getMuscleName() { return muscleName; }
+    public double getMeasurement() { return measurement; }
     public String getDate() { return date; }
-    public int getExerciseCount() { return exerciseCount; }
-    public boolean isSynced() { return isSynced; }
+    public String getNotes() { return notes; }
 
     // Setters
     public void setId(int id) { this.id = id; }
-    public void setName(String name) { this.name = name; }
+    public void setMuscleName(String muscleName) { this.muscleName = muscleName; }
+    public void setMeasurement(double measurement) { this.measurement = measurement; }
     public void setDate(String date) { this.date = date; }
-    public void setExerciseCount(int exerciseCount) { this.exerciseCount = exerciseCount; }
-    public void setSynced(boolean synced) { isSynced = synced; }
+    public void setNotes(String notes) { this.notes = notes; }
 
     // Utility methods
     public Date getDateObject() {
@@ -50,16 +50,8 @@ public class Workout {
         return today.equals(date);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Workout workout = (Workout) o;
-        return id == workout.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return id;
+    public double calculateProgress(MuscleProgress previous) {
+        if (previous == null) return 0;
+        return ((measurement - previous.measurement) / previous.measurement) * 100;
     }
 }

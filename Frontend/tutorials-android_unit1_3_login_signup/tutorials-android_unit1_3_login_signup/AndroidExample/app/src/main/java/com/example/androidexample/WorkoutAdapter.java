@@ -11,14 +11,14 @@ import java.util.List;
 
 public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder> {
     private List<Workout> workouts;
-    private OnWorkoutClickListener listener;
+    private final WorkoutClickListener listener;
 
-    public interface OnWorkoutClickListener {
-        void onWorkoutClick(int workoutId);
-        void onDeleteWorkout(int workoutId);
+    public interface WorkoutClickListener {
+        void onWorkoutClick(Workout workout);
+        void onDeleteClick(Workout workout);
     }
 
-    public WorkoutAdapter(List<Workout> workouts, OnWorkoutClickListener listener) {
+    public WorkoutAdapter(List<Workout> workouts, WorkoutClickListener listener) {
         this.workouts = workouts;
         this.listener = listener;
     }
@@ -42,27 +42,38 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
         return workouts.size();
     }
 
+    public void updateWorkouts(List<Workout> newWorkouts) {
+        this.workouts = newWorkouts;
+        notifyDataSetChanged();
+    }
+
     static class WorkoutViewHolder extends RecyclerView.ViewHolder {
-        private TextView nameText;
-        private TextView dateText;
-        private TextView exerciseCountText;
-        private ImageButton deleteButton;
+        private final TextView workoutNameText;
+        private final TextView dateText;
+        private final TextView exerciseCountText;
+        private final ImageButton deleteButton;
+        private final View cardView;
 
         public WorkoutViewHolder(@NonNull View itemView) {
             super(itemView);
-            nameText = itemView.findViewById(R.id.workout_name_text);
+            workoutNameText = itemView.findViewById(R.id.workout_name_text);
             dateText = itemView.findViewById(R.id.workout_date_text);
             exerciseCountText = itemView.findViewById(R.id.exercise_count_text);
             deleteButton = itemView.findViewById(R.id.delete_button);
+            cardView = itemView.findViewById(R.id.card_view);
         }
 
-        public void bind(final Workout workout, final OnWorkoutClickListener listener) {
-            nameText.setText(workout.getName());
+        public void bind(final Workout workout, final WorkoutClickListener listener) {
+            workoutNameText.setText(workout.getName());
             dateText.setText(workout.getDate());
-            exerciseCountText.setText(String.format("%d exercises", workout.getExerciseCount()));
 
-            itemView.setOnClickListener(v -> listener.onWorkoutClick(workout.getId()));
-            deleteButton.setOnClickListener(v -> listener.onDeleteWorkout(workout.getId()));
+            String exerciseText = workout.getExerciseCount() == 1
+                    ? "1 exercise"
+                    : workout.getExerciseCount() + " exercises";
+            exerciseCountText.setText(exerciseText);
+
+            cardView.setOnClickListener(v -> listener.onWorkoutClick(workout));
+            deleteButton.setOnClickListener(v -> listener.onDeleteClick(workout));
         }
     }
 }

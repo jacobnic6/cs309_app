@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
@@ -31,9 +33,9 @@
         <activity
             android:name=".EditWorkoutActivity"
             android:exported="false"/>
-        <activity
-            android:name=".main_five_pages.WorkoutActivity"
-            android:exported="false"/>
+<!--        <activity-->
+<!--            android:name=".main_five_pages.WorkoutActivity"-->
+<!--            android:exported="false"/>-->
         <activity
             android:name=".WorkoutListActivity"
             android:exported="false"/>
@@ -56,9 +58,19 @@
         <activity
             android:name=".main_five_pages.UserProfileActivity"
             android:exported="false"/>
-
+        <activity android:name=".Workout"
+            android:exported="false"/>
+        <activity android:name=".MuscleProgressActivity"
+            android:exported="false"/>
+        <activity android:name=".MuscleProgress"
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
+            android:exported="false"/>
+
+
+        <activity
+            android:name=".main_five_pages.WorkoutActivity"
             android:exported="true">
 
 

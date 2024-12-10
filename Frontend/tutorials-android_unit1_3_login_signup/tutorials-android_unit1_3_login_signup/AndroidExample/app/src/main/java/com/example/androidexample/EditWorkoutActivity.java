@@ -51,7 +51,17 @@ public class EditWorkoutActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        adapter = new ExerciseAdapter(exercisesList);
+        ExerciseAdapter.ExerciseClickListener listener = new ExerciseAdapter.ExerciseClickListener() {
+            @Override
+            public void onExerciseRemoved(Exercise exercise) {
+                // Remove the exercise from the list
+                exercisesList.remove(exercise);
+                adapter.notifyDataSetChanged();
+                Toast.makeText(EditWorkoutActivity.this, "Exercise removed: " + exercise.getName(), Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        adapter = new ExerciseAdapter(exercisesList, listener);
         exerciseListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         exerciseListRecyclerView.setAdapter(adapter);
     }
@@ -121,8 +131,9 @@ public class EditWorkoutActivity extends AppCompatActivity {
 
     private void saveWorkoutToLocalDatabase(int workoutId, String workoutName) {
         Workout workout = new Workout(workoutId, workoutName, "", exercisesList.size());
-        workoutDatabase.saveWorkout(workout);
+        workoutDatabase.saveWorkout(workout, false); // Pass 'false' if it's not synced yet
     }
+
 
     private void saveExercisesToLocalDatabase(int workoutId, List<Exercise> exercises) {
         workoutDatabase.saveExercises(workoutId, exercises);
