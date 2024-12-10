@@ -88,8 +88,6 @@ public class WorkoutServiceHandler {
 
 			profile.addWorkout(workout);
 
-			//workout.updateTotalWeight();
-
 			return workoutRepository.save(workout);
 		}
 
