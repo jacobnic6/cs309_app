@@ -132,7 +132,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutAdapter
     }
 
     private void startNewWorkout() {
-        String userId = "billy123"; // Should come from SharedPreferences
+        String userId = "msbecker"; // Should come from SharedPreferences
         String currentDate = getCurrentDate();
 
         JsonObjectRequest request = new JsonObjectRequest(

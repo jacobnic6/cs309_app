@@ -236,12 +236,10 @@ public class LogWorkoutActivity extends AppCompatActivity {
 
         try {
             JSONObject workoutData = createWorkoutJson(workoutName);
-            String url = isEditMode ?
-                    BASE_URL + "/workout/" + workoutId :
-                    BASE_URL + "/workout/add/" + getCurrentDate() + "/billy123";
+            String url = BASE_URL + "/workout/add/" + getCurrentDate() + "/msbecker";
 
             JsonObjectRequest request = new JsonObjectRequest(
-                    isEditMode ? Request.Method.PUT : Request.Method.POST,
+                    Request.Method.POST,
                     url,
                     workoutData,
                     response -> handleWorkoutSaveSuccess(response, workoutName),

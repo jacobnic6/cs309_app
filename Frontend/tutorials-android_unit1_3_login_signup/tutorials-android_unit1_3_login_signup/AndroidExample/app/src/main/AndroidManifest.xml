@@ -33,9 +33,9 @@
         <activity
             android:name=".EditWorkoutActivity"
             android:exported="false"/>
-<!--        <activity-->
-<!--            android:name=".main_five_pages.WorkoutActivity"-->
-<!--            android:exported="false"/>-->
+        <activity
+            android:name=".main_five_pages.WorkoutActivity"
+            android:exported="false"/>
         <activity
             android:name=".WorkoutListActivity"
             android:exported="false"/>
@@ -64,13 +64,10 @@
             android:exported="false"/>
         <activity android:name=".MuscleProgress"
             android:exported="false"/>
+
+
         <activity
             android:name=".MainActivity"
-            android:exported="false"/>
-
-
-        <activity
-            android:name=".main_five_pages.WorkoutActivity"
             android:exported="true">
 
 
