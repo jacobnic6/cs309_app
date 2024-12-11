@@ -161,4 +161,13 @@ public class UserSettingsServiceHandler {
 		return userSettingsRepository.saveAndFlush(existingSettings);
 
 	}
+
+	public UserSettings getSettingsByUsername(String username) {
+		User user = userRepository.findByUsername(username);
+		if (user == null)
+		{
+			throw new EntityNotFoundException("No user with : " + username + " exists");
+		}
+		return user.getSettings();
+	}
 }
