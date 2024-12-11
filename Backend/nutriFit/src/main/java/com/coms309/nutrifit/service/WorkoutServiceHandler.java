@@ -30,6 +30,8 @@ public class WorkoutServiceHandler {
 
 	private final UserMuscleProgressRepository userMuscleProgressRepository;
 
+	private final SocialService socialService;
+
 	/**
 	 * The User repository.
 	 */
@@ -51,11 +53,12 @@ public class WorkoutServiceHandler {
 	private final ExerciseRepository exerciseRepository;
 
 	@Autowired
-	public WorkoutServiceHandler(WorkoutRepository workoutRepository, WorkoutSetRepository workoutSetRepository, MuscleProgressService muscleProgressService, UserMuscleProgressRepository userMuscleProgressRepository, UserRepository userRepository, ProfileRepository profileRepository, ObjectMapper objectMapper, ExerciseRepository exerciseRepository) {
+	public WorkoutServiceHandler(WorkoutRepository workoutRepository, WorkoutSetRepository workoutSetRepository, MuscleProgressService muscleProgressService, UserMuscleProgressRepository userMuscleProgressRepository, SocialService socialService, UserRepository userRepository, ProfileRepository profileRepository, ObjectMapper objectMapper, ExerciseRepository exerciseRepository) {
 		this.workoutRepository = workoutRepository;
 		this.workoutSetRepository = workoutSetRepository;
 		this.muscleProgressService = muscleProgressService;
 		this.userMuscleProgressRepository = userMuscleProgressRepository;
+		this.socialService = socialService;
 		this.userRepository = userRepository;
 		this.profileRepository = profileRepository;
 		this.objectMapper = objectMapper;
@@ -159,11 +162,11 @@ public class WorkoutServiceHandler {
 		WorkoutSet workoutSet = convertSet(workout, set);
 		workout.getActivities().add(workoutSet);
 
-		Map<String, UserMuscleProgress> newProgressMap = updateMuscleProgressFromSet(workoutSet, username);
+		updateMuscleProgressFromSet(workoutSet, username);
 		workoutSetRepository.saveAndFlush(workoutSet);
 
-		workoutRepository.saveAndFlush(workout);
 		Profile profile = profileRepository.findByName(username);
+		socialService.postWorkout(workoutRepository.saveAndFlush(workout), username);
 		return workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
 	}
 

@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,7 @@ public class Friend {
 	/**
 	 * The First user.
 	 */
+	@JsonBackReference
 	@NotBlank
 	@ManyToOne
 	@JoinColumn(referencedColumnName = "id")

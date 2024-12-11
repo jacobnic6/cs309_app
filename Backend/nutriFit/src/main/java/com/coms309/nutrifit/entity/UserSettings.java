@@ -56,8 +56,8 @@ public class UserSettings {
 	 * Instantiates a new User settings.
 	 */
 	public UserSettings() {
-		profileVisibility = Visibility.PRIVATE;
-		biometricVisibility = Visibility.PRIVATE;
+		profileVisibility = Visibility.FRIENDS;
+		biometricVisibility = Visibility.FRIENDS;
 		measurementUnits = MeasurementUnits.IMPERIAL;
 		messageNotifications = true;
 		friendRequestNotifications = true;

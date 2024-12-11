@@ -2,7 +2,7 @@ package com.coms309.nutrifit.entity;
 
 import com.coms309.nutrifit.entity.fitness.UserWeight;
 import com.coms309.nutrifit.entity.nutrition.UserMeals;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -33,12 +33,15 @@ public class User {
 	private int id;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonIgnore
+	@JsonManagedReference
 	private Map<LocalDate, UserMeals> meals;
 
+	@JsonManagedReference
 	@OneToMany(mappedBy = "firstUser", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonIgnore
 	private List<Friend> friends;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Post> posts;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private UserSettings settings;

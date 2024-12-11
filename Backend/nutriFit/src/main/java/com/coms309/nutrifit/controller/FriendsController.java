@@ -2,9 +2,11 @@ package com.coms309.nutrifit.controller;
 
 import com.coms309.nutrifit.dto.UserDto;
 import com.coms309.nutrifit.entity.Friend;
+import com.coms309.nutrifit.entity.Post;
 import com.coms309.nutrifit.entity.ProfileDto;
 import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.service.ServiceHandler;
+import com.coms309.nutrifit.service.SocialService;
 import com.coms309.nutrifit.service.UserServiceHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,14 +25,17 @@ public class FriendsController {
 
 	private final UserServiceHandler userServiceHandler;
 
+	private final SocialService socialService;
+
 	/**
 	 * Instantiates a new Friends controller.
 	 *
 	 * @param userServiceHandler the user service handler
 	 */
 	@Autowired
-	public FriendsController(UserServiceHandler userServiceHandler) {
+	public FriendsController(UserServiceHandler userServiceHandler, SocialService socialService) {
 		this.userServiceHandler = userServiceHandler;
+		this.socialService = socialService;
 	}
 
 	/**
@@ -215,6 +220,15 @@ public class FriendsController {
 		}
 		return userServiceHandler.removeFriend(user, friend);
 
+	}
+
+	@GetMapping("/posts/{username}")
+	public List<Post> getFriendPosts(@PathVariable String username) {
+		if (username == null)
+		{
+			throw new IllegalArgumentException("username cannot be empty");
+		}
+		return socialService.getFriendPosts(username);
 	}
 
 }

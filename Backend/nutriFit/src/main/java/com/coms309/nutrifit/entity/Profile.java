@@ -3,6 +3,7 @@ package com.coms309.nutrifit.entity;
 import com.coms309.nutrifit.entity.fitness.UserMuscleProgress;
 import com.coms309.nutrifit.entity.fitness.Workout;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -60,7 +61,7 @@ public class Profile {
 	private int height;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "profile")
-	@JsonIgnore
+	@JsonManagedReference
 	private List<ImageData> imageData;
 
 	/**

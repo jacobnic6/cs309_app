@@ -1,8 +1,8 @@
 package com.coms309.nutrifit.entity.nutrition;
 
 import com.coms309.nutrifit.entity.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +35,7 @@ public class UserMeals {
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	@JsonIgnore
+	@JsonBackReference
 	private User user;
 
 	@Builder.Default
