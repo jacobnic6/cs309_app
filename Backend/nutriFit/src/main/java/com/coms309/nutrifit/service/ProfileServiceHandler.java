@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.service;
 
+import com.coms309.nutrifit.dto.ProfileUpdateDto;
 import com.coms309.nutrifit.entity.ImageData;
 import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.entity.User;
@@ -129,21 +130,25 @@ public class ProfileServiceHandler {
 	/**
 	 * Update profile string.
 	 *
-	 * @param username the username
-	 * @param profile  the profile
+	 * @param username         the username
+	 * @param profileUpdateDto the profile
 	 *
 	 * @return the string
 	 */
-	public Profile updateProfile(String username, Profile profile) {
-		User user = userRepository.findByUsername(username);
-		if (user == null)
+	public Profile updateProfile(String username, ProfileUpdateDto profileUpdateDto) {
+		Profile p = profileRepository.findByName(username);
+		if (p == null)
 		{
-			throw new NullPointerException("User not found");
+			throw new NullPointerException("Profile for user: " + username + " not found");
 		}
-		user.setProfile(profile);
-		userRepository.saveAndFlush(user);
 
-		return profileRepository.findByName(username);
+		p.setBio(profileUpdateDto.getBio());
+		p.setAge(profileUpdateDto.getAge());
+		p.setHeight(profileUpdateDto.getHeight());
+		p.setFitnessGoal(profileUpdateDto.getFitnessGoal());
+
+		return profileRepository.saveAndFlush(p);
+
 	}
 
 	/**

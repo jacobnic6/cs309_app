@@ -56,6 +56,7 @@ public class UserMuscleProgress {
 	}
 
 	public double getAmountToNextTier() {
+
 		if (tier == 0)
 		{
 			amountToNextTier = 100;

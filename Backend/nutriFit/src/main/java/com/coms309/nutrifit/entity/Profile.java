@@ -33,6 +33,7 @@ public class Profile {
 	@Column(name = "username", unique = true)
 	private String name;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Map<String, UserMuscleProgress> muscleProgress;
 
@@ -51,6 +52,7 @@ public class Profile {
 	@Column
 	private double weight;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Workout> workouts;
 

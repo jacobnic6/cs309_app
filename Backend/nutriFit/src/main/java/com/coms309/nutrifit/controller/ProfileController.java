@@ -1,5 +1,6 @@
 package com.coms309.nutrifit.controller;
 
+import com.coms309.nutrifit.dto.ProfileUpdateDto;
 import com.coms309.nutrifit.entity.Profile;
 import com.coms309.nutrifit.service.ImageService;
 import com.coms309.nutrifit.service.ProfileServiceHandler;
@@ -103,18 +104,20 @@ public class ProfileController {
 	/**
 	 * Update profile string.
 	 *
-	 * @param username the username
-	 * @param profile  the profile
+	 * @param username         the username
+	 * @param profileUpdateDto the profile
 	 *
 	 * @return the string
 	 */
 	@Operation(summary = "Update a specific user profile",
 			description = "Finds and updates a specific profile by username")
 	@PutMapping("/{username}")
-	public Profile updateProfile(@PathVariable String username, @RequestBody Profile profile) {
+	public Profile updateProfile(@PathVariable String username, @RequestBody ProfileUpdateDto profileUpdateDto) {
 
-		return profileServiceHandler.updateProfile(username, profile);
+		return profileServiceHandler.updateProfile(username, profileUpdateDto);
 	}
+
+	// age, height, fitness goal, bio ,
 
 //	/**
 //	 * Update profile string.
