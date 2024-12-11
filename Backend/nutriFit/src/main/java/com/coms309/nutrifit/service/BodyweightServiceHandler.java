@@ -55,19 +55,7 @@ public class BodyweightServiceHandler extends ServiceHandler {
 			throw new NullPointerException("User with username: " + username + " not found.");
 		}
 		User u = userRepository.findByUsername(username);
-//		LocalDate date = bodyWeight.getWeightDate();
-//		if (date == null)
-//		{
-//			date = LocalDate.now();
-//			bodyWeight.setWeightDate(date);
-//		}
-//		if (bodyweightRepository.existsByWeightDateAndUser_Username(date, username))
-//		{
-//			bodyWeight = bodyweightRepository.findByWeightDateAndUser_Username(date, username);
-//			bodyWeight.setWeight(weight);
-//			return bodyweightRepository.saveAndFlush(bodyWeight);
-//
-//		}
+
 		bodyWeight = validateBodyWeight(bodyWeight, username);
 
 		bodyWeight.setUser(u);
