@@ -52,6 +52,11 @@ public class UserSettingsController {
 		return settingsServiceHandler.getSettingsById(id);
 	}
 
+	@GetMapping(path = "/settings/username/{username}")
+	public UserSettings getUserSettingsByUsername(@PathVariable String username) {
+		return settingsServiceHandler.getSettingsByUsername(username);
+	}
+
 	/**
 	 * Update user settings user settings.
 	 *
