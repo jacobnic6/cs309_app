@@ -3,6 +3,7 @@ package com.coms309.nutrifit.service;
 import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.entity.fitness.UserWeight;
 import com.coms309.nutrifit.repo.BodyweightRepository;
+import com.coms309.nutrifit.repo.ProfileRepository;
 import com.coms309.nutrifit.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,26 +16,24 @@ import java.util.List;
  */
 @Service
 public class BodyweightServiceHandler extends ServiceHandler {
-	@Autowired
-	private BodyweightRepository bodyweightRepository;
+
+	private final BodyweightRepository bodyweightRepository;
+
+	private final UserRepository userRepository;
+
+	private final ProfileRepository profileRepository;
+
+	private final UserServiceHandler userServiceHandler;
+
+	private final ProfileServiceHandler profileServiceHandler;
 
 	@Autowired
-	private UserRepository userRepository;
-
-	/**
-	 * Gets user weights.
-	 *
-	 * @param username the username
-	 *
-	 * @return the user weights
-	 */
-	public List<UserWeight> getUserWeights(String username) {
-		User u = userRepository.findByUsername(username);
-		if (u == null)
-		{
-			return null;
-		}
-		return bodyweightRepository.findByUser_UsernameOrderByWeightDateAsc(username);
+	public BodyweightServiceHandler(BodyweightRepository bodyweightRepository, UserRepository userRepository, ProfileRepository profileRepository, UserServiceHandler userServiceHandler, ProfileServiceHandler profileServiceHandler) {
+		this.bodyweightRepository = bodyweightRepository;
+		this.userRepository = userRepository;
+		this.profileRepository = profileRepository;
+		this.userServiceHandler = userServiceHandler;
+		this.profileServiceHandler = profileServiceHandler;
 	}
 
 	/**
@@ -56,6 +55,33 @@ public class BodyweightServiceHandler extends ServiceHandler {
 			throw new NullPointerException("User with username: " + username + " not found.");
 		}
 		User u = userRepository.findByUsername(username);
+//		LocalDate date = bodyWeight.getWeightDate();
+//		if (date == null)
+//		{
+//			date = LocalDate.now();
+//			bodyWeight.setWeightDate(date);
+//		}
+//		if (bodyweightRepository.existsByWeightDateAndUser_Username(date, username))
+//		{
+//			bodyWeight = bodyweightRepository.findByWeightDateAndUser_Username(date, username);
+//			bodyWeight.setWeight(weight);
+//			return bodyweightRepository.saveAndFlush(bodyWeight);
+//
+//		}
+		bodyWeight = validateBodyWeight(bodyWeight, username);
+
+		bodyWeight.setUser(u);
+		u.addUserWeight(bodyWeight);
+		//userServiceHandler.addWeight(username, bodyWeight);
+		bodyweightRepository.saveAndFlush(bodyWeight);
+		double recent = getMostRecentWeight(username).getWeight();
+		profileServiceHandler.updateWeight(username, recent);
+		return bodyweightRepository.findByWeightDateAndUser_Username(bodyWeight.getWeightDate(), username);
+
+	}
+
+	private UserWeight validateBodyWeight(UserWeight bodyWeight, String username) {
+		double weight = bodyWeight.getWeight();
 		LocalDate date = bodyWeight.getWeightDate();
 		if (date == null)
 		{
@@ -66,14 +92,34 @@ public class BodyweightServiceHandler extends ServiceHandler {
 		{
 			bodyWeight = bodyweightRepository.findByWeightDateAndUser_Username(date, username);
 			bodyWeight.setWeight(weight);
-			return bodyweightRepository.saveAndFlush(bodyWeight);
 
 		}
+		return bodyWeight;
+	}
 
-		bodyWeight.setUser(u);
-		u.addUserWeight(bodyWeight);
-		return bodyweightRepository.save(bodyWeight);
+	public UserWeight getMostRecentWeight(String username) {
+		List<UserWeight> weightList = getUserWeights(username);
+		if (weightList == null || weightList.isEmpty())
+		{
+			return null;
+		}
+		return weightList.get(weightList.size() - 1);
+	}
 
+	/**
+	 * Gets user weights.
+	 *
+	 * @param username the username
+	 *
+	 * @return the user weights
+	 */
+	public List<UserWeight> getUserWeights(String username) {
+		User u = userRepository.findByUsername(username);
+		if (u == null)
+		{
+			return null;
+		}
+		return bodyweightRepository.findByUser_UsernameOrderByWeightDateAsc(username);
 	}
 
 	/**
@@ -117,6 +163,7 @@ public class BodyweightServiceHandler extends ServiceHandler {
 		UserWeight weight = bodyweightRepository.getByWeightDateAndUserId(date, u.getId());
 		weight.setWeight(userWeight.getWeight());
 		bodyweightRepository.saveAndFlush(weight);
+
 		return bodyweightRepository.findByWeightDateAndUser_Username(date, username);
 	}
 

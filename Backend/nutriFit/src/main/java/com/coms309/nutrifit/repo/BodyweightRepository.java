@@ -97,4 +97,5 @@ public interface BodyweightRepository extends JpaRepository<UserWeight, Integer>
 	@Modifying
 	@Query("delete from UserWeight u where u.weightDate = ?1 and u.user = ?2")
 	int deleteByWeightDateAndUser(@NonNull LocalDate weightDate, @NonNull User user);
+
 }

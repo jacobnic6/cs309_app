@@ -174,4 +174,17 @@ public class ProfileServiceHandler {
 
 	}
 
+	public Profile updateWeight(String username, double weight) {
+		User u = userRepository.findByUsername(username);
+		Profile profile = u.getProfile();
+		if (profile == null)
+		{
+			throw new NullPointerException("Profile not found");
+		}
+
+		profile.setWeight(weight);
+		return profileRepository.saveAndFlush(profile);
+
+	}
+
 }

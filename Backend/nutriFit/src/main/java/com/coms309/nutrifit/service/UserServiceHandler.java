@@ -2,6 +2,7 @@ package com.coms309.nutrifit.service;
 
 import com.coms309.nutrifit.dto.UserDto;
 import com.coms309.nutrifit.entity.*;
+import com.coms309.nutrifit.entity.fitness.UserWeight;
 import com.coms309.nutrifit.repo.FriendRepository;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.repo.UserSettingsRepository;
@@ -375,4 +376,20 @@ public class UserServiceHandler extends ServiceHandler {
 		return userRepository.findByUsername(username);
 	}
 
+	public void addWeight(String username, UserWeight bodyWeight) {
+		if (!userRepository.existsByUsername(username))
+		{
+			throw new NullPointerException("User does not exist");
+		}
+		if (bodyWeight == null)
+		{
+			throw new NullPointerException("Weight is null");
+		}
+		User user = userRepository.findByUsername(username);
+		bodyWeight.setUser(user);
+		user.addUserWeight(bodyWeight);
+
+		userRepository.saveAndFlush(user);
+
+	}
 }

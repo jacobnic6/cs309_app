@@ -72,6 +72,7 @@ public class WorkoutSet {
 	}
 
 	public void setExercise(Exercise exercise) {
+
 		this.category = exercise.getCategory().getName();
 		this.exerciseName = exercise.getName();
 		this.exercise = exercise;

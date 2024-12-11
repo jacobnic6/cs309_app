@@ -6,7 +6,6 @@ import com.coms309.nutrifit.exercises.Exercise;
 import com.coms309.nutrifit.exercises.Muscle;
 import com.coms309.nutrifit.repo.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,36 +60,6 @@ public class WorkoutServiceHandler {
 		this.profileRepository = profileRepository;
 		this.objectMapper = objectMapper;
 		this.exerciseRepository = exerciseRepository;
-	}
-
-	/**
-	 * Add workout by username workout.
-	 *
-	 * @param username the username
-	 * @param date     the date
-	 *
-	 * @return the workout
-	 */
-	public Workout createWorkout(String username, LocalDate date) {
-		if (!userRepository.existsByUsername(username))
-		{
-			throw new NullPointerException("User not found");
-		}
-
-		Profile profile = profileRepository.findByName(username);
-		if (workoutRepository.existsByProfileAndDateTracked(profile, date))
-		{
-			return workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
-		} else
-		{
-			Workout workout = new Workout(profile);
-			workout.setDateTracked(date);
-
-			profile.addWorkout(workout);
-
-			return workoutRepository.save(workout);
-		}
-
 	}
 
 	/**
@@ -186,22 +155,46 @@ public class WorkoutServiceHandler {
 			throw new IllegalArgumentException("Exercise name cannot be null");
 		}
 
-		Workout workout;
-		if (workoutRepository.existsByProfile_NameAndDateTracked(username, date))
-		{
-			workout = workoutRepository.findByProfile_NameAndDateTracked(username, date);
-		} else
-		{
-			throw new EntityNotFoundException("No workout exists for user " + username + " on date " + date.toString() + " yet");
-		}
+		Workout workout = createWorkout(username, date);
 		WorkoutSet workoutSet = convertSet(workout, set);
+		workout.getActivities().add(workoutSet);
 
 		Map<String, UserMuscleProgress> newProgressMap = updateMuscleProgressFromSet(workoutSet, username);
-		workoutSetRepository.save(workoutSet);
+		workoutSetRepository.saveAndFlush(workoutSet);
 
-		Workout w = workoutRepository.saveAndFlush(workout);
+		workoutRepository.saveAndFlush(workout);
+		Profile profile = profileRepository.findByName(username);
+		return workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
+	}
 
-		return workoutRepository.findByProfile_NameAndDateTracked(username, date);
+	/**
+	 * Add workout by username workout.
+	 *
+	 * @param username the username
+	 * @param date     the date
+	 *
+	 * @return the workout
+	 */
+	public Workout createWorkout(String username, LocalDate date) {
+		if (!userRepository.existsByUsername(username))
+		{
+			throw new NullPointerException("User not found");
+		}
+
+		Profile profile = profileRepository.findByName(username);
+		if (workoutRepository.existsByProfileAndDateTracked(profile, date))
+		{
+			return workoutRepository.findWorkoutByProfileAndDateTracked(profile, date);
+		} else
+		{
+			Workout workout = new Workout(profile);
+			workout.setDateTracked(date);
+
+			profile.addWorkout(workout);
+
+			return workoutRepository.saveAndFlush(workout);
+		}
+
 	}
 
 	private WorkoutSet convertSet(Workout workout, WorkoutSetDto set) {

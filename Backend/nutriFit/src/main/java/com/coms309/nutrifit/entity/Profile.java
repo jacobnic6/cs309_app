@@ -44,6 +44,9 @@ public class Profile {
 	@JsonIgnore
 	private User user;
 
+	@Column(columnDefinition = "TEXT")
+	private String bio;
+
 	@Column
 	private double weight;
 
