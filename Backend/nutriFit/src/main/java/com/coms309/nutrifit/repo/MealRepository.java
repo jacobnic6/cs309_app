@@ -1,12 +1,10 @@
 package com.coms309.nutrifit.repo;
 
 import com.coms309.nutrifit.entity.nutrition.Meal;
-import com.coms309.nutrifit.entity.nutrition.UserMeals;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,12 +24,4 @@ public interface MealRepository extends JpaRepository<Meal, Integer> {
 	Optional<Meal> findFirstByUserMeals_User_UsernameAndUserMeals_DateAndMealTypeAllIgnoreCaseOrderByUserMeals_User_UsernameAscUserMeals_DateAscUserMeals_MealList_MealTypeAsc(
 			@NonNull String username, @NonNull LocalDate date, @NonNull String mealType);
 
-	/**
-	 * Find by user meals list.
-	 *
-	 * @param meals the meals
-	 *
-	 * @return the list
-	 */
-	List<Meal> findByUserMeals(UserMeals meals);
 }

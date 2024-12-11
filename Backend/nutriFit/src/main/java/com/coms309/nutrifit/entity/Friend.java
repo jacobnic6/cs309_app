@@ -13,7 +13,7 @@ import java.time.LocalDate;
 /**
  * The type Friend.
  */
-//not yet used
+
 @Entity
 @Getter
 @Setter

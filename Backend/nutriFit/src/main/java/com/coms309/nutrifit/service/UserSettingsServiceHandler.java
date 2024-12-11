@@ -4,7 +4,6 @@ import com.coms309.nutrifit.entity.User;
 import com.coms309.nutrifit.entity.UserSettings;
 import com.coms309.nutrifit.repo.UserRepository;
 import com.coms309.nutrifit.repo.UserSettingsRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,6 @@ public class UserSettingsServiceHandler {
 
 	private final UserRepository userRepository;
 
-	private final ObjectMapper mapper;
-
 	private final String success = "{\"message\":\"success\"}";
 
 	private final String failure = "{\"message\":\"failure\"}";
@@ -33,13 +30,12 @@ public class UserSettingsServiceHandler {
 	 *
 	 * @param userSettingsRepository the user settings repository
 	 * @param userRepository         the user repository
-	 * @param mapper                 the mapper
 	 */
 	@Autowired
-	public UserSettingsServiceHandler(UserSettingsRepository userSettingsRepository, UserRepository userRepository, ObjectMapper mapper) {
+	public UserSettingsServiceHandler(UserSettingsRepository userSettingsRepository, UserRepository userRepository) {
 		this.userSettingsRepository = userSettingsRepository;
 		this.userRepository = userRepository;
-		this.mapper = mapper;
+
 	}
 
 	/**

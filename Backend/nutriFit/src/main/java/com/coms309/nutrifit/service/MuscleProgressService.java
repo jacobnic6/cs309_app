@@ -26,8 +26,6 @@ public class MuscleProgressService {
 
 	private final UserMuscleProgressRepository userMuscleProgressRepository;
 
-	private final MuscleGroupRepository muscleGroupRepository;
-
 	private final ObjectMapper objectMapper;
 
 	private final ProfileRepository profileRepository;
@@ -46,7 +44,6 @@ public class MuscleProgressService {
 	public MuscleProgressService(ProfileServiceHandler profileServiceHandler, UserMuscleProgressRepository userMuscleProgressRepository, MuscleGroupRepository muscleGroupRepository, ObjectMapper objectMapper, ProfileRepository profileRepository, MuscleRepository muscleRepository) {
 		this.profileServiceHandler = profileServiceHandler;
 		this.userMuscleProgressRepository = userMuscleProgressRepository;
-		this.muscleGroupRepository = muscleGroupRepository;
 
 		this.objectMapper = objectMapper;
 		this.profileRepository = profileRepository;
@@ -164,17 +161,6 @@ public class MuscleProgressService {
 		}
 		return (tier * 1.2 * 100) + 100;
 	}
-
-//	public UserMuscleProgress updateProgress(String muscleName, String username) {
-//
-//	}
-
-//	private void updateProgress(double percentage, int tier, UserMuscleProgress muscleProgress) {
-//		int currentTier = muscleProgress.getTier();
-//		double currentPercentage = muscleProgress.getPercentage();
-//		if(currentTier)
-//
-//	}
 
 	private double calcTierPercentage(double currentTotal, int currentTier) {
 

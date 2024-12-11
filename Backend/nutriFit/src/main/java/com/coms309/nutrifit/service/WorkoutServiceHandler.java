@@ -279,20 +279,6 @@ public class WorkoutServiceHandler {
 	}
 
 	/**
-	 * Gets workouts by user and date.
-	 *
-	 * @param username the username
-	 * @param date     the date
-	 *
-	 * @return the workouts by user and date
-	 */
-	public Workout getWorkoutsByUserAndDate(String username, LocalDate date) {
-
-		return workoutRepository.findByProfile_User_UsernameAndDateTracked(username, date).get();
-
-	}
-
-	/**
 	 * Gets all workouts.
 	 *
 	 * @return the all workouts

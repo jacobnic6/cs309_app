@@ -220,39 +220,6 @@ public class NutritionService {
 		userMealsRepository.save(meals);
 		return totals;
 
-//
-//        NutrientTotalsDto totals = new NutrientTotalsDto();
-//        totals.setDate(date);
-//
-//        mealRepository.findByUserMeals(meals).stream().forEach(meal -> {
-//
-//            totals.addCalories(meal.getCalories());
-//            totals.addCarbs(meal.getCarbs());
-//            totals.addProtein(meal.getProtein());
-//            totals.addFats(meal.getFat());
-//            String mealType = meal.getMealType().toLowerCase();
-//            switch (mealType) {
-//                case "breakfast":
-//                    totals.addBreakfastCalories(meal.getCalories());
-//
-//                    break;
-//                case "lunch":
-//                    totals.addLunchCalories(meal.getCalories());
-//                    break;
-//                case "dinner":
-//                    totals.addDinnerCalories(meal.getCalories());
-//                    break;
-//                default:
-//                    totals.addSnackCalories(meal.getCalories());
-//                    break;
-//            }
-//
-//        });
-//
-////        meals.setNutrientTotals(objectMapper.convertValue(totals, HashMap.class));
-////        userMealsRepository.save(meals);
-//        return totals;
-
 	}
 
 	/**
@@ -340,12 +307,6 @@ public class NutritionService {
 		}
 		return null;
 
-	}
-
-	private Meal getMeal(LocalDate date, String username, String mealType) {
-		return mealRepository
-				       .findFirstByUserMeals_User_UsernameAndUserMeals_DateAndMealTypeAllIgnoreCaseOrderByUserMeals_User_UsernameAscUserMeals_DateAscUserMeals_MealList_MealTypeAsc(
-						       username, date, mealType).orElse(new Meal());
 	}
 
 }

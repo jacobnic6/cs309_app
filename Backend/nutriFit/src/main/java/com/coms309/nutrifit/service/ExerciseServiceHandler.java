@@ -81,18 +81,11 @@ public class ExerciseServiceHandler {
 		return categoryRepository.getByName(categoryName);
 	}
 
-	//	public List<Exercise> findExercisesByName(String exerciseName) {
-//		return exerciseRepository.findByNameContainsIgnoreCase(exerciseName);
-//	}
 	public List<String> findExercisesByName(String exerciseName) {
 		List<String> exerciseNameList = new ArrayList<>();
 		exerciseRepository.findByNameContainsIgnoreCase(exerciseName).forEach(exercise -> exerciseNameList.add(exercise.getName()));
 		return exerciseNameList;
 	}
-
-//	public List<Exercise> findExercisesByMuscleName(String muscleName) {
-//		return exerciseRepository.findByPrimaryMuscles_NameIgnoreCase(muscleName);
-//	}
 
 	public List<String> findExercisesByMuscleName(String muscleName) {
 		List<String> exerciseNameList = new ArrayList<>();
