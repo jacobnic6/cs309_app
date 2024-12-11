@@ -10,12 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -71,7 +67,6 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutAdapter
         setupRecyclerView();
         setupBottomNavigation();
         setupFab();
-
         refreshWorkouts();
     }
 
@@ -81,8 +76,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutAdapter
         requestQueue = Volley.newRequestQueue(this);
         sessionManager = SessionManager.getInstance(this);
         workoutsList = new ArrayList<>();
-        userId = sessionManager.getUserId();
 
+        userId = sessionManager.getUserId();
         if (userId == null) {
             userId = getIntent().getStringExtra("Username");
             if (userId == null) {
@@ -101,79 +96,65 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutAdapter
         trackProgressFab = findViewById(R.id.track_progress_fab);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        View addWorkoutButton = findViewById(R.id.add_workout_btn);
-        if (addWorkoutButton != null) {
-            addWorkoutButton.setOnClickListener(v -> createEmptyWorkout());
-        } else {
-            Log.e(TAG, "Add workout button not found in layout");
-        }
+        findViewById(R.id.add_workout_btn).setOnClickListener(v -> createEmptyWorkout());
     }
 
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
-            }
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
     }
 
     private void setupRecyclerView() {
-        if (workoutRecyclerView != null) {
-            workoutAdapter = new WorkoutAdapter(workoutsList, this);
-            workoutRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-            workoutRecyclerView.setAdapter(workoutAdapter);
-        } else {
-            Log.e(TAG, "RecyclerView not found in layout");
-        }
+        workoutAdapter = new WorkoutAdapter(workoutsList, this);
+        workoutRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        workoutRecyclerView.setAdapter(workoutAdapter);
     }
 
     private void setupBottomNavigation() {
-        if (bottomNavigationView != null) {
-            bottomNavigationView.setSelectedItemId(R.id.workouts);
-            bottomNavigationView.setOnItemSelectedListener(item -> {
-                Intent intent = null;
-                int itemId = item.getItemId();
+        bottomNavigationView.setSelectedItemId(R.id.workouts);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent intent = null;
+            int itemId = item.getItemId();
 
-                if (itemId == R.id.social) {
-                    intent = new Intent(this, SocialActivity.class);
-                } else if (itemId == R.id.workouts) {
-                    return true;
-                } else if (itemId == R.id.profile) {
-                    intent = new Intent(this, UserProfileActivity.class);
-                } else if (itemId == R.id.nutrition) {
-                    intent = new Intent(this, NutritionActivity.class);
-                } else if (itemId == R.id.settings) {
-                    intent = new Intent(this, SettingsActivity.class);
-                }
+            if (itemId == R.id.social) {
+                intent = new Intent(this, SocialActivity.class);
+            } else if (itemId == R.id.workouts) {
+                return true;
+            } else if (itemId == R.id.profile) {
+                intent = new Intent(this, UserProfileActivity.class);
+            } else if (itemId == R.id.nutrition) {
+                intent = new Intent(this, NutritionActivity.class);
+            } else if (itemId == R.id.settings) {
+                intent = new Intent(this, SettingsActivity.class);
+            }
 
-                if (intent != null) {
-                    intent.putExtra("Username", userId);
-                    startActivity(intent);
-                    return true;
-                }
-                return false;
-            });
-        }
+            if (intent != null) {
+                intent.putExtra("Username", userId);
+                startActivity(intent);
+                return true;
+            }
+            return false;
+        });
     }
 
     private void setupFab() {
-        if (trackProgressFab != null) {
-            trackProgressFab.setOnClickListener(v -> {
-                Intent intent = new Intent(this, MuscleProgressActivity.class);
-                startActivity(intent);
-            });
-        }
+        trackProgressFab.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MuscleProgressActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void createEmptyWorkout() {
         String url = String.format("%s/workout/%s/%s", BASE_URL, userId, getCurrentDate());
+        JSONObject emptyBody = new JSONObject();
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
                 url,
-                new JSONObject(),
+                emptyBody,
                 response -> {
                     try {
                         int workoutId = response.getInt("id");
@@ -204,28 +185,25 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutAdapter
                 response -> {
                     try {
                         workoutsList.clear();
-                        JSONArray workoutArray = response.getJSONArray("workouts");
+                        if (response.has("workouts")) {
+                            JSONArray workouts = response.getJSONArray("workouts");
+                            for (int i = 0; i < workouts.length(); i++) {
+                                JSONObject workoutJson = workouts.getJSONObject(i);
+                                JSONArray activities = workoutJson.optJSONArray("activities");
+                                int exerciseCount = activities != null ? activities.length() : 0;
 
-                        for (int i = 0; i < workoutArray.length(); i++) {
-                            JSONObject workoutJson = workoutArray.getJSONObject(i);
-                            Workout workout = new Workout(
-                                    workoutJson.getInt("id"),
-                                    workoutJson.optString("workoutName", "Workout " + (i + 1)),
-                                    workoutJson.getString("dateTracked"),
-                                    workoutJson.optJSONArray("activities").length()
-                            );
+                                Workout workout = new Workout(
+                                        workoutJson.getInt("id"),
+                                        "Workout " + workoutJson.getInt("id"),
+                                        workoutJson.getString("dateTracked"),
+                                        exerciseCount,
+                                        workoutJson.optDouble("totalWeight", 0.0)
+                                );
 
-                            // Set total weight if available
-                            if (workoutJson.has("totalWeight")) {
-                                workout.setTotalWeight(workoutJson.getDouble("totalWeight"));
-                            } else {
-                                calculateTotalWeight(workout, workoutJson);
+                                workoutsList.add(workout);
+                                workoutDatabase.saveWorkout(workout, true);
                             }
-
-                            workoutsList.add(workout);
-                            workoutDatabase.saveWorkout(workout, true);
                         }
-
                         updateWorkoutList();
                         updateStats();
                     } catch (Exception e) {
@@ -242,58 +220,27 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutAdapter
         requestQueue.add(request);
     }
 
-    private void calculateTotalWeight(Workout workout, JSONObject workoutJson) {
-        try {
-            double totalWeight = 0;
-            JSONArray activities = workoutJson.getJSONArray("activities");
-            for (int j = 0; j < activities.length(); j++) {
-                JSONObject activity = activities.getJSONObject(j);
-                totalWeight += activity.getDouble("weight") *
-                        activity.getInt("sets") *
-                        activity.getInt("reps");
-            }
-            workout.setTotalWeight(totalWeight);
-        } catch (Exception e) {
-            Log.e(TAG, "Error calculating total weight: " + e.getMessage());
-        }
-    }
-
     private void loadLocalWorkouts() {
-        List<Workout> localWorkouts = workoutDatabase.getAllWorkouts();
         workoutsList.clear();
-        workoutsList.addAll(localWorkouts);
+        workoutsList.addAll(workoutDatabase.getAllWorkouts());
         updateWorkoutList();
     }
 
     private void updateWorkoutList() {
-        if (workoutAdapter != null) {
-            workoutAdapter.notifyDataSetChanged();
-            updateEmptyState();
-        }
+        workoutAdapter.notifyDataSetChanged();
+        updateEmptyState();
     }
 
     private void updateEmptyState() {
         boolean isEmpty = workoutsList.isEmpty();
-        if (emptyStateView != null) {
-            emptyStateView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-        }
-        if (workoutRecyclerView != null) {
-            workoutRecyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-        }
-        if (workoutCountText != null) {
-            workoutCountText.setText(String.valueOf(workoutsList.size()));
-        }
+        emptyStateView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        workoutRecyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        workoutCountText.setText(String.valueOf(workoutsList.size()));
     }
 
     private void updateStats() {
-        if (workoutCountText != null) {
-            workoutCountText.setText(String.valueOf(workoutsList.size()));
-        }
-
         int streak = calculateStreak();
-        if (streakCountText != null) {
-            streakCountText.setText(String.valueOf(streak));
-        }
+        streakCountText.setText(String.valueOf(streak));
 
         if (streak >= 3) {
             notificationService.showWorkoutStreak(streak);

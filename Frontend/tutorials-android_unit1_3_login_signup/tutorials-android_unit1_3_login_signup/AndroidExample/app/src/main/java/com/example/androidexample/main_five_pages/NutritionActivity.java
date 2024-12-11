@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -40,7 +41,7 @@ public class NutritionActivity extends AppCompatActivity {
     private TextView caloriesRemaining;
     private ProgressBar caloriesProgress, proteinProgress, carbsProgress, fatProgress;
     private TextView breakfastCalories, lunchCalories, dinnerCalories, snacksCalories;
-    private Button addMealButton, viewHistoryButton;
+    private Button addMealButton, viewHistoryButton, createEmptyMealListButton;
     private ImageButton prevDateButton, nextDateButton;
     private TextView dateDisplay;
     private ProgressDialog loadingDialog;
@@ -102,6 +103,7 @@ public class NutritionActivity extends AppCompatActivity {
         prevDateButton = findViewById(R.id.prev_date_button);
         nextDateButton = findViewById(R.id.next_date_button);
         dateDisplay = findViewById(R.id.date_display);
+        createEmptyMealListButton = findViewById(R.id.create_empty_meal_list_button);
 
         if (caloriesProgress == null || caloriesRemaining == null) {
             Log.e(TAG, "Some views are not properly initialized.");
@@ -113,6 +115,7 @@ public class NutritionActivity extends AppCompatActivity {
         // Meal management buttons
         addMealButton.setOnClickListener(v -> showAddMealDialog());
         viewHistoryButton.setOnClickListener(v -> showMealHistory());
+        createEmptyMealListButton.setOnClickListener(v -> createEmptyMealList());
 
         // Date navigation
         prevDateButton.setOnClickListener(v -> navigateDate(-1));
@@ -132,7 +135,27 @@ public class NutritionActivity extends AppCompatActivity {
         findViewById(editId).setOnClickListener(v -> editMeal(mealType));
         findViewById(deleteId).setOnClickListener(v -> confirmDeleteMeal(mealType));
     }
+    private void createEmptyMealList() {
+        loadingDialog.show();
+        String userId = getUserId();
+        String date = getCurrentDate();
 
+        mealService.createEmptyMealList(userId, date, new MealService.MealServiceCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                loadingDialog.dismiss();
+                Toast.makeText(NutritionActivity.this, "Empty meal list created successfully!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Empty meal list response: " + response.toString());
+            }
+
+            @Override
+            public void onError(String error) {
+                loadingDialog.dismiss();
+                Toast.makeText(NutritionActivity.this, "Error creating empty meal list: " + error, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error creating empty meal list: " + error);
+            }
+        });
+    }
     private void navigateDate(int offset) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(currentDate);
