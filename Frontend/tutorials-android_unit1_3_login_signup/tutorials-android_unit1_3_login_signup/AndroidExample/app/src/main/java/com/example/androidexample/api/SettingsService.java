@@ -26,7 +26,7 @@ public class SettingsService {
     }
 
     public void getUserSettings(String username, SettingsCallback callback) {
-        String url = String.format("%s/users/%s/settings", BASE_URL, username);
+        String url = String.format("%s/settings/username/%s", BASE_URL, username);
         makeRequest(Request.Method.GET, url, null, callback);
     }
 

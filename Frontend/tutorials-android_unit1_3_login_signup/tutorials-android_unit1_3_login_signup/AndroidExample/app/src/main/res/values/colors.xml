@@ -17,5 +17,9 @@
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#B3FFFFFF</color>
     <color name="success">#4CAF50</color>
-
+    <color name="gold">#FFD700</color>
+    <color name="progress_color">#6366f1</color>
+    <color name="divider">#1FFFFFFF</color>
+    <color name="background_dark">#121212</color>
+    <color name="card_background">#1E1E1E</color>
 </resources>

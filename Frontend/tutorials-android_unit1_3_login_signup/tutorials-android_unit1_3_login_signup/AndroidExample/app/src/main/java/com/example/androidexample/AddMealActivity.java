@@ -19,6 +19,7 @@ import com.example.androidexample.api.FoodSearchResponse;
 import com.example.androidexample.api.MealService;
 import com.example.androidexample.api.USDAApiClient;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -213,18 +214,18 @@ public class AddMealActivity extends AppCompatActivity {
                 loadingDialog.dismiss();
                 try {
                     Log.d(TAG, "Got response for editing: " + response.toString());
-                    JSONObject mealData = response.getJSONObject(mealType.toLowerCase());
-                    Log.d(TAG, "Meal data for editing: " + mealData.toString());
+                    JSONArray mealList = response.getJSONArray("mealList");
 
-                    runOnUiThread(() -> {
-                        foodNameInput.setText(mealData.optString("foodName", ""));
-                        servingSizeInput.setText(mealData.optString("servingSize", ""));
-                        caloriesInput.setText(String.valueOf(mealData.optInt("calories", 0)));
-                        proteinInput.setText(String.valueOf(mealData.optInt("protein", 0)));
-                        carbsInput.setText(String.valueOf(mealData.optInt("carbs", 0)));
-                        fatInput.setText(String.valueOf(mealData.optInt("fat", 0)));
-                    });
+                    // Find the meal matching the specified mealType
+                    for (int i = 0; i < mealList.length(); i++) {
+                        JSONObject meal = mealList.getJSONObject(i);
+                        if (meal.getString("mealType").equalsIgnoreCase(mealType)) {
+                            populateFieldsForEditing(meal); // Populate fields with the selected meal
+                            return;
+                        }
+                    }
 
+                    showError("No meal found for " + mealType);
                 } catch (JSONException e) {
                     Log.e(TAG, "Error parsing meal data for editing: " + e.getMessage());
                     showError("Error loading meal data");
@@ -238,6 +239,26 @@ public class AddMealActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void populateFieldsForEditing(JSONObject meal) {
+        try {
+            foodNameInput.setText(meal.optString("foodName", ""));
+            servingSizeInput.setText(meal.optString("servingSize", ""));
+            caloriesInput.setText(String.valueOf(meal.optInt("calories", 0)));
+            proteinInput.setText(String.valueOf(meal.optInt("protein", 0)));
+            carbsInput.setText(String.valueOf(meal.optInt("carbs", 0)));
+            fatInput.setText(String.valueOf(meal.optInt("fat", 0)));
+
+            // Set the meal type in the spinner
+            String mealType = meal.optString("mealType", "").toLowerCase();
+            int spinnerPosition = ((ArrayAdapter) mealTypeSpinner.getAdapter()).getPosition(mealType.substring(0, 1).toUpperCase() + mealType.substring(1));
+            mealTypeSpinner.setSelection(spinnerPosition);
+        } catch (Exception e) {
+            Log.e(TAG, "Error populating fields for editing: " + e.getMessage());
+            showError("Error loading meal data");
+        }
+    }
+
 
     private void validateAndSaveMeal() {
         if (foodNameInput.getText().toString().trim().isEmpty()) {

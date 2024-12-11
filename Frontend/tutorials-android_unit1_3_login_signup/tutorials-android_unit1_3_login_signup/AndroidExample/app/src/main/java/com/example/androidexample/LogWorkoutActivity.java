@@ -55,7 +55,7 @@ public class LogWorkoutActivity extends AppCompatActivity implements ExerciseAda
     private NotificationService notificationService;
     private RequestQueue requestQueue;
     private final String BASE_URL = "http://coms-3090-058.class.las.iastate.edu:8080";
-    private final String userId = "billy123"; // Should come from SessionManager
+    private final String userId = "msbecker"; // Should come from SessionManager
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

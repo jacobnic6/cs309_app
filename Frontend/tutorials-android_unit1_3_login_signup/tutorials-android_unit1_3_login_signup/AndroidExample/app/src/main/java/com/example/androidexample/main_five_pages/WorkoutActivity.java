@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -178,32 +179,38 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutAdapter
     private void refreshWorkouts() {
         String url = String.format("%s/workout/%s", BASE_URL, userId);
 
-        JsonObjectRequest request = new JsonObjectRequest(
+        // Send a GET request to fetch workouts
+        JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
                 url,
                 null,
                 response -> {
                     try {
+                        // Clear the workouts list
                         workoutsList.clear();
-                        if (response.has("workouts")) {
-                            JSONArray workouts = response.getJSONArray("workouts");
-                            for (int i = 0; i < workouts.length(); i++) {
-                                JSONObject workoutJson = workouts.getJSONObject(i);
-                                JSONArray activities = workoutJson.optJSONArray("activities");
-                                int exerciseCount = activities != null ? activities.length() : 0;
 
-                                Workout workout = new Workout(
-                                        workoutJson.getInt("id"),
-                                        "Workout " + workoutJson.getInt("id"),
-                                        workoutJson.getString("dateTracked"),
-                                        exerciseCount,
-                                        workoutJson.optDouble("totalWeight", 0.0)
-                                );
+                        // Parse the response as a JSONArray
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject workoutJson = response.getJSONObject(i);
 
-                                workoutsList.add(workout);
-                                workoutDatabase.saveWorkout(workout, true);
-                            }
+                            JSONArray activities = workoutJson.optJSONArray("activities");
+                            int exerciseCount = activities != null ? activities.length() : 0;
+
+                            // Parse the workout data
+                            Workout workout = new Workout(
+                                    workoutJson.getInt("id"),
+                                    "Workout " + workoutJson.getInt("id"),
+                                    workoutJson.getString("dateTracked"),
+                                    exerciseCount,
+                                    workoutJson.optDouble("totalWeight", 0.0)
+                            );
+
+                            // Add the workout to the list
+                            workoutsList.add(workout);
+                            workoutDatabase.saveWorkout(workout, true);
                         }
+
+                        // Update the UI
                         updateWorkoutList();
                         updateStats();
                     } catch (Exception e) {
@@ -217,8 +224,10 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutAdapter
                 }
         );
 
+        // Add the request to the queue
         requestQueue.add(request);
     }
+
 
     private void loadLocalWorkouts() {
         workoutsList.clear();

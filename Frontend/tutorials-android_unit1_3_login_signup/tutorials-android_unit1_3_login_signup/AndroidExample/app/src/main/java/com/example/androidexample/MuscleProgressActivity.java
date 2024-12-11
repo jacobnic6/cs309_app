@@ -85,7 +85,7 @@ public class MuscleProgressActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        progressAdapter = new MuscleProgressAdapter(progressList);
+        progressAdapter = new MuscleProgressAdapter(progressList, true);
         measurementsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         measurementsRecyclerView.setAdapter(progressAdapter);
         updateEmptyState();
