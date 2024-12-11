@@ -47,6 +47,7 @@ public class Post {
 		this.postDateTime = LocalDateTime.now();
 	}
 
+	//
 	@JsonGetter("postedBy")
 	public String getPostedBy() {
 		return user.getUsername();
