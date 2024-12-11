@@ -271,11 +271,11 @@ public class UserServiceHandler extends ServiceHandler {
 
 		for (Friend friend : friendsByFirst)
 		{
-			friends.add(userRepository.findById(friend.getSecondUser().getId()));
+			friends.add(friend.getSecondUser());
 		}
 		for (Friend friend : friendsBySecond)
 		{
-			friends.add(userRepository.findById(friend.getFirstUser().getId()));
+			friends.add(friend.getFirstUser());
 		}
 		List<ProfileDto> userDtoList = new ArrayList<>();
 		for (User u : friends)

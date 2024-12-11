@@ -63,14 +63,14 @@ public class UserSettingsServiceHandler {
 	 * @return the string
 	 */
 //CREATE
-	public String createUserSettings(UserSettings settings) {
+	public UserSettings createUserSettings(UserSettings settings) {
 
 		if (settings == null)
 		{
-			return failure;
+			throw new IllegalArgumentException("Settings cannot be null.");
 		}
-		userSettingsRepository.saveAndFlush(settings);
-		return success;
+		return userSettingsRepository.saveAndFlush(settings);
+
 	}
 
 	/**

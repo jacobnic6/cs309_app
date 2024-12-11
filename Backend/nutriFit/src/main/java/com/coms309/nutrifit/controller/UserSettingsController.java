@@ -31,7 +31,7 @@ public class UserSettingsController {
 			description = "Takes input of a settings page and adds it to the db",
 			tags = {"Settings Management"})
 	@PostMapping(path = "/settings")
-	String createUser(@RequestBody UserSettings settings) {
+	public UserSettings createUserSettings(@RequestBody UserSettings settings) {
 
 		return settingsServiceHandler.createUserSettings(settings);
 	}

@@ -33,7 +33,7 @@ public class Friend {
 	 * The First user.
 	 */
 	@NotBlank
-	@ManyToOne(cascade = CascadeType.REMOVE)
+	@ManyToOne
 	@JoinColumn(referencedColumnName = "id")
 	private User firstUser;
 
@@ -41,7 +41,7 @@ public class Friend {
 	 * The Second user.
 	 */
 	@NotBlank
-	@ManyToOne(cascade = CascadeType.REMOVE)
+	@ManyToOne
 	@JoinColumn(referencedColumnName = "id")
 	private User secondUser;
 

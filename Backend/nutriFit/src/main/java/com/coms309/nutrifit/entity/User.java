@@ -20,6 +20,7 @@ import java.util.Map;
 /**
  * The type User.
  */
+
 @Entity
 @Getter
 @Setter
