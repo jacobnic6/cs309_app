@@ -134,15 +134,16 @@ public class ProfileServiceHandler {
 	 *
 	 * @return the string
 	 */
-	public String updateProfile(String username, Profile profile) {
+	public Profile updateProfile(String username, Profile profile) {
 		User user = userRepository.findByUsername(username);
 		if (user == null)
 		{
-			return "User not found";
+			throw new NullPointerException("User not found");
 		}
 		user.setProfile(profile);
-		userRepository.save(user);
-		return "Profile updated";
+		userRepository.saveAndFlush(user);
+
+		return profileRepository.findByName(username);
 	}
 
 	/**

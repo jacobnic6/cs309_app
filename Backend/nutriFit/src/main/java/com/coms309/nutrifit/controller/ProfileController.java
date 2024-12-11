@@ -111,9 +111,25 @@ public class ProfileController {
 	@Operation(summary = "Update a specific user profile",
 			description = "Finds and updates a specific profile by username")
 	@PutMapping("/{username}")
-	public String updateProfile(@PathVariable String username, @RequestBody Profile profile) {
+	public Profile updateProfile(@PathVariable String username, @RequestBody Profile profile) {
 
 		return profileServiceHandler.updateProfile(username, profile);
 	}
+
+//	/**
+//	 * Update profile string.
+//	 *
+//	 * @param username the username
+//	 * @param profile  the profile
+//	 *
+//	 * @return the string
+//	 */
+//	@Operation(summary = "Update a specific user profile",
+//			description = "Finds and updates a specific profile by username")
+//	@PutMapping("/{username}")
+//	public Profile updateProfile(@PathVariable String username, @RequestBody ProfileDto profile) {
+//
+//		return profileServiceHandler.updateProfile(username, profile);
+//	}
 
 }

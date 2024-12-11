@@ -25,15 +25,12 @@ import java.util.Map;
 public class Profile {
 
 	@Id
-	@Column(name = "user_id")
+	@Column(name = "user_id", updatable = false)
 	private int id;
 
 	@NotNull
 	@Column(name = "username", unique = true)
 	private String name;
-
-	//    @OneToMany(mappedBy = "profile")
-//    private List<UserMuscleProgress> muscleProgress;
 
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Map<String, UserMuscleProgress> muscleProgress;
@@ -47,11 +44,17 @@ public class Profile {
 	@Column(columnDefinition = "TEXT")
 	private String bio;
 
+	@Column(columnDefinition = "TEXT")
+	private String fitnessGoal;
+
 	@Column
 	private double weight;
 
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Workout> workouts;
+
+	@Column
+	private int age;
 
 	@Column
 	private int height;
@@ -66,9 +69,7 @@ public class Profile {
 	 * @param user the user
 	 */
 	public Profile(User user) {
-		if (user != null)
-		{
-		}
+
 		this.user = user;
 		this.name = user.getUsername();
 		if (user.getBodyWeights() != null && user.getBodyWeights().size() != 0)
