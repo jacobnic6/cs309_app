@@ -369,7 +369,7 @@ public class NutritionActivity extends AppCompatActivity {
     }
 
     private String getUserId() {
-        return "Bauer6445"; // Replace with actual user ID retrieval
+        return "msbecker"; // Replace with actual user ID retrieval
     }
 
     private String getCurrentDate() {

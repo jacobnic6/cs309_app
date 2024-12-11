@@ -340,7 +340,7 @@ public class AddMealActivity extends AppCompatActivity {
 
     private String getUserId() {
         // TODO: Implement actual user ID retrieval from your authentication system
-        return "Bauer6445"; // Updated to match your API
+        return "msbecker"; // Updated to match your API
     }
 
     private String getCurrentDate() {
