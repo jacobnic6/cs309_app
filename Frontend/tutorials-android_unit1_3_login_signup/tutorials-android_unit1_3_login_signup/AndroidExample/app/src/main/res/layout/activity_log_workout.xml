@@ -2,14 +2,31 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_background">
+    android:background="@color/dark_background"
+    tools:context=".LogWorkoutActivity">
+
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            app:titleTextColor="@color/text_primary"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -17,31 +34,53 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Workout Name Input -->
-            <com.google.android.material.textfield.TextInputLayout
+            <!-- Exercise Search Row -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="Workout Name"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                app:boxStrokeColor="@color/accent_color"
-                app:hintTextColor="@color/accent_color">
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/workout_name_edt"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/exercise_name_layout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="@color/text_primary"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:hint="Search Exercise"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxStrokeColor="@color/accent_color"
+                    app:hintTextColor="@color/accent_color"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/exercise_name_edt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textColor="@color/text_primary"
+                        android:imeOptions="actionSearch"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/search_exercise_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Search"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:contentDescription="Search for exercises"/>
+            </LinearLayout>
 
             <!-- Category Dropdown -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/category_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Exercise Category"
-                style="@style/Widget.FitnessApp.ExposedDropdownMenu">
+                android:hint="Category"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                app:boxStrokeColor="@color/accent_color"
+                app:hintTextColor="@color/accent_color">
 
                 <AutoCompleteTextView
                     android:id="@+id/category_spinner"
@@ -51,33 +90,15 @@
                     android:textColor="@color/text_primary"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Exercise Name Input -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="Exercise Name"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                app:boxStrokeColor="@color/accent_color"
-                app:hintTextColor="@color/accent_color">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/exercise_name_edt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="@color/text_primary"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Weight, Sets, Reps Row -->
+            <!-- Weight, Sets, and Reps Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="16dp">
 
-                <!-- Weight Input -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/weight_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -92,11 +113,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
-                        android:textColor="@color/text_primary"/>
+                        android:textColor="@color/text_primary"
+                        android:imeOptions="actionNext"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Sets Input -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/sets_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -111,11 +133,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:textColor="@color/text_primary"/>
+                        android:textColor="@color/text_primary"
+                        android:imeOptions="actionNext"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Reps Input -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/reps_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -129,7 +152,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:textColor="@color/text_primary"/>
+                        android:textColor="@color/text_primary"
+                        android:imeOptions="actionDone"/>
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
@@ -144,15 +168,30 @@
                 app:icon="@drawable/ic_add_exercise"
                 app:iconTint="@color/text_button"/>
 
-            <!-- Exercise List Title -->
-            <TextView
+            <!-- Exercise List Header -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Added Exercises"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Exercises"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/total_volume_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/accent_color"
+                    android:textSize="16sp"
+                    tools:text="Total: 1000 lbs"/>
+            </LinearLayout>
 
             <!-- Exercise List -->
             <androidx.recyclerview.widget.RecyclerView
@@ -161,18 +200,21 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginBottom="16dp"
-                android:visibility="gone"/>
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_exercise"/>
 
             <!-- Empty State -->
             <TextView
-                android:id="@+id/empty_state_text"
+                android:id="@+id/empty_state_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No exercises added yet"
+                android:text="No exercises added yet\nTap the search button to find exercises"
                 android:textColor="@color/text_secondary"
                 android:textAlignment="center"
+                android:lineSpacingExtra="4dp"
                 android:padding="32dp"
-                android:visibility="visible"/>
+                android:visibility="gone"
+                tools:visibility="visible"/>
 
             <!-- Save Workout Button -->
             <com.google.android.material.button.MaterialButton
@@ -186,4 +228,22 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <!-- Loading Overlay -->
+    <FrameLayout
+        android:id="@+id/loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"
+        tools:visibility="gone">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            app:indicatorColor="@color/accent_color"/>
+    </FrameLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

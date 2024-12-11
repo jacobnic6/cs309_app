@@ -55,6 +55,8 @@
         <activity
             android:name=".main_five_pages.SocialActivity"
             android:exported="false"/>
+        <activity android:name=".ExerciseSearchActivity"
+            android:exported="false"/>
         <activity
             android:name=".main_five_pages.UserProfileActivity"
             android:exported="false"/>

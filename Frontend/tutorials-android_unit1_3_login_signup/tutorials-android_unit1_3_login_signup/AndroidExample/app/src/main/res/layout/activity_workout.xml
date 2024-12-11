@@ -2,14 +2,17 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_background">
+    android:background="@color/dark_background"
+    tools:context=".main_five_pages.WorkoutActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- App Bar -->
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
@@ -35,9 +38,11 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <!-- Main Content -->
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:fillViewport="true"
             app:layout_constraintTop_toBottomOf="@id/appBarLayout"
             app:layout_constraintBottom_toTopOf="@id/bottom_navigation">
 
@@ -60,8 +65,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:padding="16dp">
+                        android:padding="16dp"
+                        android:baselineAligned="false">
 
+                        <!-- Total Workouts -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -75,7 +82,8 @@
                                 android:text="0"
                                 android:textColor="@color/accent_color"
                                 android:textSize="24sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                tools:text="12" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -84,6 +92,7 @@
                                 android:textColor="@color/text_secondary" />
                         </LinearLayout>
 
+                        <!-- Streak Counter -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -97,7 +106,8 @@
                                 android:text="0"
                                 android:textColor="@color/accent_color"
                                 android:textSize="24sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                tools:text="5" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -119,66 +129,91 @@
                     android:textColor="@color/text_button"
                     app:icon="@drawable/ic_add_workout"
                     app:iconGravity="textStart"
-                    app:iconTint="@color/text_button" />
+                    app:iconTint="@color/text_button"
+                    android:contentDescription="Start a new workout session" />
 
-                <!-- Workout List -->
-                <TextView
+                <!-- Workout List Section -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Recent Workouts"
-                    android:textColor="@color/text_primary"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                    android:orientation="vertical">
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <!-- Empty State -->
-                    <LinearLayout
-                        android:id="@+id/empty_state_view"
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="32dp"
-                        android:visibility="gone">
+                        android:text="Recent Workouts"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
-                        <ImageView
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:src="@drawable/ic_empty_state"
-                            android:alpha="0.7" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="No workouts yet"
-                            android:textColor="@color/text_primary"
-                            android:textSize="18sp"
-                            android:layout_marginTop="16dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Start your fitness journey by adding a workout"
-                            android:textColor="@color/text_secondary"
-                            android:layout_marginTop="8dp"
-                            android:textAlignment="center" />
-                    </LinearLayout>
-
-                    <!-- Workout List -->
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/workout_recycler_view"
+                    <!-- Workout List Container -->
+                    <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:paddingBottom="8dp" />
-                </FrameLayout>
+                        android:minHeight="200dp">
+
+                        <!-- Empty State -->
+                        <LinearLayout
+                            android:id="@+id/empty_state_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="32dp"
+                            android:visibility="gone"
+                            tools:visibility="visible">
+
+                            <ImageView
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:src="@drawable/ic_empty_state"
+                                android:alpha="0.7"
+                                android:contentDescription="No workouts illustration" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="No workouts yet"
+                                android:textColor="@color/text_primary"
+                                android:textSize="18sp"
+                                android:layout_marginTop="16dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Start your fitness journey by adding a workout"
+                                android:textColor="@color/text_secondary"
+                                android:layout_marginTop="8dp"
+                                android:textAlignment="center" />
+                        </LinearLayout>
+
+                        <!-- Workout List -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/workout_recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:paddingBottom="80dp"
+                            android:scrollbars="vertical"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:listitem="@layout/item_workout"
+                            tools:itemCount="3" />
+
+                        <!-- Loading Indicator -->
+                        <ProgressBar
+                            android:id="@+id/loading_indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </FrameLayout>
+                </LinearLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
+        <!-- Bottom Navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
@@ -191,6 +226,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Track Progress FAB -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/track_progress_fab"
         android:layout_width="wrap_content"
@@ -201,6 +237,9 @@
         android:text="Track Progress"
         android:textColor="@color/text_button"
         app:icon="@drawable/ic_track_progress"
-        app:iconTint="@color/text_button" />
+        app:iconTint="@color/text_button"
+        android:contentDescription="Track your progress"
+        android:layout_marginEnd="16dp"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
