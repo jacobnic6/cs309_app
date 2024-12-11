@@ -21,7 +21,7 @@ maven-build:
     refs:
       - main
     changes:
-      - Backend/*
+      - Backend/**/*
 
 maven-test:
   stage: maventest
@@ -36,7 +36,7 @@ maven-test:
     refs:
       - main
     changes:
-      - Backend/*
+      - Backend/**/*
 
 
 auto-deploy:
@@ -54,7 +54,7 @@ auto-deploy:
     refs:
       - main
     changes:
-      - Backend/*
+      - Backend/**/*
 
 android-build:
   image: afirefly/android-ci:java17
