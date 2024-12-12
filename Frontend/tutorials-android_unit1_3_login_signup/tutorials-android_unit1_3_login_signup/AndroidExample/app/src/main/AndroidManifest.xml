@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
@@ -38,9 +40,6 @@
             android:name=".WorkoutListActivity"
             android:exported="false"/>
         <activity
-            android:name=".main_five_pages.UserProfileActivity"
-            android:exported="false"/>
-        <activity
             android:name=".editUserActivity"
             android:exported="false"/>
         <activity
@@ -49,14 +48,34 @@
         <activity
             android:name=".main_five_pages.NutritionActivity"
             android:exported="false"/>
+        <activity
+            android:name=".nutrition.NutritionCalendarActivity"
+            android:exported="false" />
 
         <activity
             android:name=".main_five_pages.SocialActivity"
             android:exported="false"/>
+        <activity android:name=".ExerciseSearchActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".main_five_pages.UserProfileActivity"
+            android:exported="false"/>
+        <activity android:name=".Workout"
+            android:exported="false"/>
+        <activity android:name=".MuscleProgressActivity"
+            android:exported="false"/>
+        <activity android:name=".MuscleProgress"
+            android:exported="false"/>
+        <activity android:name=".FriendProfileActivity"
+            android:exported="false"/>
+
 
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

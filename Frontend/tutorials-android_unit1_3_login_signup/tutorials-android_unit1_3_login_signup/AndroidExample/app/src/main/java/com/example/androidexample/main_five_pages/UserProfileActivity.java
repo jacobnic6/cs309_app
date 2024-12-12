@@ -2,180 +2,362 @@ package com.example.androidexample.main_five_pages;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-
-
 import com.example.androidexample.R;
 import com.example.androidexample.VolleySingleton;
-import com.example.androidexample.main_five_pages.SettingsActivity;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.example.androidexample.WorkoutDatabase;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 public class UserProfileActivity extends AppCompatActivity {
-
-    private EditText weightInput;
-    private Button postWeightButton;
-    private TextView pastWeightsTextView;
-    //private LineChart weightChart;
-    private String url = "http://coms-3090-058.class.las.iastate.edu:8080/bodyweights/username";
-    // private String url = "http://3a3a3fa2-d4e1-4281-8a26-1ee024d50f35.mock.pstmn.io";
+    private EditText weightInput, heightInput, bioInput, ageInput, goalInput;
+    private Button postWeightButton, saveProfileButton;
+    private TextView pastWeightsTextView, usernameText, levelText;
+    private ImageView profileImage;
+    private RecyclerView muscleProgressRecycler;
+    private MuscleProgressAdapter muscleProgressAdapter;
+    private WorkoutDatabase workoutDatabase;
     private String username;
-    //private float xValue = 0;
 
-
+    private static final String BASE_URL = "http://coms-3090-058.class.las.iastate.edu:8080";
+    private String weightUrl;
+    private String profileUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userprofile);
 
+        workoutDatabase = new WorkoutDatabase(this);
         username = getIntent().getStringExtra("Username");
+        if (username == null) {
+            username = "msbecker";
+        }
 
-        weightInput = findViewById(R.id.weight_input);
-        postWeightButton = findViewById(R.id.post_weight_button);
-        //weightChart = findViewById(R.id.weight_chart);
-        pastWeightsTextView = findViewById(R.id.past_weights_textview);
+        weightUrl = BASE_URL + "/bodyweights/" + username;
+        profileUrl = BASE_URL + "/profile/" + username;
 
-
-        postWeightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                postWeight();
-            }
-        });
-
+        initializeViews();
+        setupRecyclerView();
+        setupClickListeners();
+        loadProfileData();
         getWeightData();
-
-        // The following is for switching to the other four "main pages of the app" - social, exercise, nutrition, and settings
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    int itemId = item.getItemId();
-
-                    if (itemId == R.id.social) {
-                        Intent intent = new Intent(UserProfileActivity.this, SocialActivity.class);
-                        intent.putExtra("Username", username);
-                        startActivity(intent);
-                        return true;
-                    } else if (itemId == R.id.workouts) {
-                        startActivity(new Intent(UserProfileActivity.this, WorkoutActivity.class));
-                        return true;
-                    } else if (itemId == R.id.profile) {
-                        startActivity(new Intent(UserProfileActivity.this, UserProfileActivity.class));
-                        return true;
-                    } else if (itemId == R.id.nutrition) {
-                        startActivity(new Intent(UserProfileActivity.this, NutritionActivity.class));
-                        return true;
-                    } else if (itemId == R.id.settings) {
-                        startActivity(new Intent(UserProfileActivity.this, SettingsActivity.class));
-                        return true;
-                    }
-                    return false;
-                }
-        });
     }
 
+    private void initializeViews() {
+        // Profile views
 
+        ageInput = findViewById(R.id.age_input);
+        heightInput = findViewById(R.id.height_input);
+        goalInput = findViewById(R.id.goal_input);
+        bioInput = findViewById(R.id.bio_input);
+        saveProfileButton = findViewById(R.id.save_profile_button);
+        levelText = findViewById(R.id.level_text);
 
-    private void postWeight() {
-        String weight = weightInput.getText().toString();
-        if (weight.isEmpty()) {
-            Toast.makeText(this, "Please enter a weight", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // Weight tracking views
+        weightInput = findViewById(R.id.weight_input);
+        postWeightButton = findViewById(R.id.post_weight_button);
+        pastWeightsTextView = findViewById(R.id.past_weights_textview);
 
-        JSONObject postBody = new JSONObject();
-        try {
-            postBody.put("username", username);
-            postBody.put("weight", weight);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        // User info views
+        usernameText = findViewById(R.id.username_text);
+        profileImage = findViewById(R.id.profile_image);
+        muscleProgressRecycler = findViewById(R.id.muscle_progress_recycler);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, postBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Toast.makeText(UserProfileActivity.this, "Weight posted successfully", Toast.LENGTH_SHORT).show();
-                        getWeightData();
-                        weightInput.setText("");
+        usernameText.setText(username);
+        setupBottomNavigation();
+    }
+
+    private void setupRecyclerView() {
+        muscleProgressAdapter = new MuscleProgressAdapter();
+        muscleProgressRecycler.setLayoutManager(new GridLayoutManager(this, 2));
+        muscleProgressRecycler.setAdapter(muscleProgressAdapter);
+    }
+
+    private void setupClickListeners() {
+        postWeightButton.setOnClickListener(v -> postWeight());
+        saveProfileButton.setOnClickListener(v -> updateProfile());
+    }
+
+    private void loadProfileData() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, profileUrl, null,
+                response -> {
+                    try {
+                        updateBasicProfile(response);
+                        if (response.has("muscleProgress")) {
+                            updateMuscleProgress(response.getJSONObject("muscleProgress"));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing profile data", Toast.LENGTH_SHORT).show();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(UserProfileActivity.this, "Error posting weight: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                error -> Toast.makeText(this, "Error loading profile: " + error.getMessage(),
+                        Toast.LENGTH_SHORT).show());
 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
 
-        private void getWeightData() {
-            StringRequest request = new StringRequest(Request.Method.GET, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONArray jsonArray = new JSONArray(response);
-                                StringBuilder weightsBuilder = new StringBuilder();
+    private void updateBasicProfile(JSONObject response) throws JSONException {
+        if (response.has("age")) ageInput.setText(String.valueOf(response.getInt("age")));
+        if (response.has("height")) heightInput.setText(String.valueOf(response.getInt("height")));
+        if (response.has("bio")) bioInput.setText(response.getString("bio"));
+        if (response.has("fitnessGoal")) goalInput.setText(response.getString("fitnessGoal"));
+        if (response.has("weight")) weightInput.setText(String.valueOf(response.getDouble("weight")));
+    }
 
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject dataPoint = jsonArray.getJSONObject(i);
-                                    float weight = (float) dataPoint.getDouble("weight");
-                                    weightsBuilder.append(weight);
+    public void updateMuscleProgress(JSONObject muscleProgress) throws JSONException {
+        List<MuscleProgressItem> progressItems = new ArrayList<>();
+        Iterator<String> keys = muscleProgress.keys();
 
-                                    if (i < jsonArray.length() - 1) {
-                                        weightsBuilder.append(", ");
-                                    }
-                                }
+        while (keys.hasNext()) {
+            String muscle = keys.next();
+            JSONObject stats = muscleProgress.getJSONObject(muscle);
 
-                                pastWeightsTextView.setText(weightsBuilder.toString()); // Set text to TextView
+            progressItems.add(new MuscleProgressItem(
+                    muscle,
+                    stats.getDouble("percentage"),
+                    stats.getInt("tier"),
+                    stats.getDouble("total_progress"),
+                    stats.getDouble("amount_to_next_tier")
+            ));
+        }
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Toast.makeText(com.example.androidexample.main_five_pages.UserProfileActivity.this, "Error parsing weight data", Toast.LENGTH_SHORT).show();
+        muscleProgressAdapter.updateItems(progressItems);
+        updateTotalLevel(progressItems);
+    }
+
+    private void updateTotalLevel(List<MuscleProgressItem> items) {
+        double totalProgress = 0;
+        for (MuscleProgressItem item : items) {
+            totalProgress += item.totalProgress;
+        }
+        int level = (int) Math.floor(totalProgress / 10);
+        levelText.setText("Level " + level);
+    }
+
+    private void postWeight() {
+        String weightStr = weightInput.getText().toString();
+        if (weightStr.isEmpty()) {
+            Toast.makeText(this, "Please enter a weight", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Parse weight as a number
+        double weight;
+        try {
+            weight = Double.parseDouble(weightStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Please enter a valid weight", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Get current date in required format
+        String weightDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                .format(new Date());
+
+        JSONObject postBody = new JSONObject();
+        try {
+            postBody.put("weight", weight);  // This will be sent as a number, not string
+            postBody.put("weightDate", weightDate);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, weightUrl, postBody,
+                response -> {
+                    Toast.makeText(UserProfileActivity.this,
+                            "Weight posted successfully", Toast.LENGTH_SHORT).show();
+                    getWeightData();
+                    weightInput.setText("");
+                },
+                error -> Toast.makeText(UserProfileActivity.this,
+                        "Error posting weight: " + error.getMessage(), Toast.LENGTH_SHORT).show());
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+    }
+
+    private void getWeightData() {
+        StringRequest request = new StringRequest(Request.Method.GET, weightUrl,
+                response -> {
+                    try {
+                        JSONArray jsonArray = new JSONArray(response);
+                        StringBuilder weightsBuilder = new StringBuilder();
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject dataPoint = jsonArray.getJSONObject(i);
+                            float weight = (float) dataPoint.getDouble("weight");
+                            weightsBuilder.append(weight);
+
+                            if (i < jsonArray.length() - 1) {
+                                weightsBuilder.append(", ");
                             }
                         }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(com.example.androidexample.main_five_pages.UserProfileActivity.this, "Error fetching weight data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
 
-            VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+                        pastWeightsTextView.setText(weightsBuilder.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(UserProfileActivity.this,
+                                "Error parsing weight data", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(UserProfileActivity.this,
+                        "Error fetching weight data: " + error.getMessage(), Toast.LENGTH_SHORT).show());
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+    }
+
+    private void updateProfile() {
+        JSONObject profileData = new JSONObject();
+        try {
+
+            profileData.put("age", Integer.parseInt(ageInput.getText().toString()));
+            profileData.put("height", Integer.parseInt(heightInput.getText().toString()));
+            profileData.put("fitnessGoal", goalInput.getText().toString());
+            profileData.put("bio", bioInput.getText().toString());
+        } catch (JSONException | NumberFormatException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Please check your inputs", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, profileUrl, profileData,
+                response -> Toast.makeText(UserProfileActivity.this,
+                        "Profile updated successfully", Toast.LENGTH_SHORT).show(),
+                error -> Toast.makeText(UserProfileActivity.this,
+                        "Error updating profile: " + error.getMessage(), Toast.LENGTH_SHORT).show());
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
+    }
+
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent intent;
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.social) {
+                intent = new Intent(this, SocialActivity.class);
+            } else if (itemId == R.id.workouts) {
+                intent = new Intent(this, WorkoutActivity.class);
+            } else if (itemId == R.id.profile) {
+                return true; // Already on profile
+            } else if (itemId == R.id.nutrition) {
+                intent = new Intent(this, NutritionActivity.class);
+            } else if (itemId == R.id.settings) {
+                intent = new Intent(this, SettingsActivity.class);
+            } else {
+                return false;
+            }
+
+            intent.putExtra("Username", username);
+            startActivity(intent);
+            return true;
+        });
+    }
+
+    // Inner classes
+    private static class MuscleProgressItem {
+        String muscleName;
+        double percentage;
+        int tier;
+        double totalProgress;
+        double amountToNextTier;
+
+        MuscleProgressItem(String muscleName, double percentage, int tier,
+                           double totalProgress, double amountToNextTier) {
+            this.muscleName = muscleName;
+            this.percentage = percentage;
+            this.tier = tier;
+            this.totalProgress = totalProgress;
+            this.amountToNextTier = amountToNextTier;
         }
     }
+
+    private static class MuscleProgressAdapter extends RecyclerView.Adapter<MuscleProgressAdapter.ViewHolder> {
+        private List<MuscleProgressItem> items = new ArrayList<>();
+
+        void updateItems(List<MuscleProgressItem> newItems) {
+            items = newItems;
+            notifyDataSetChanged();
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_muscle_progress, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            MuscleProgressItem item = items.get(position);
+            holder.muscleName.setText(item.muscleName);
+            holder.progressBar.setProgress((int) item.percentage);
+            holder.levelText.setText("Level " + (int)(item.totalProgress / 10));
+
+            // Set tier indicator (trophy)
+            holder.tierIndicator.setImageResource(
+                    item.tier > 0 ? R.drawable.ic_trophy_gold : R.drawable.ic_trophy_gray
+            );
+
+            // Calculate and display next milestone
+            String nextMilestone = String.format("%.1f to next level", item.amountToNextTier);
+            holder.measurementText.setText(nextMilestone);
+        }
+
+        @Override
+        public int getItemCount() {
+            return items.size();
+        }
+
+        static class ViewHolder extends RecyclerView.ViewHolder {
+            TextView muscleName;
+            ProgressBar progressBar;
+            ImageView tierIndicator;
+            TextView levelText;
+            TextView measurementText;
+
+            ViewHolder(@NonNull View view) {
+                super(view);
+                muscleName = view.findViewById(R.id.muscle_name);
+                progressBar = view.findViewById(R.id.progress_bar);
+                tierIndicator = view.findViewById(R.id.tier_indicator);
+                levelText = view.findViewById(R.id.level_text);
+                measurementText = view.findViewById(R.id.measurement_text);
+            }
+        }
+    }
+}
