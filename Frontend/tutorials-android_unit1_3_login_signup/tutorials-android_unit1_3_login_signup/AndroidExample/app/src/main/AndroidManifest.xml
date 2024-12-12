@@ -66,6 +66,8 @@
             android:exported="false"/>
         <activity android:name=".MuscleProgress"
             android:exported="false"/>
+        <activity android:name=".FriendProfileActivity"
+            android:exported="false"/>
 
 
         <activity

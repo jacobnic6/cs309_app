@@ -32,12 +32,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class UserProfileActivity extends AppCompatActivity {
-    private EditText weightInput, heightInput, bioInput, nameInput, ageInput, emailInput, goalInput;
+    private EditText weightInput, heightInput, bioInput, ageInput, goalInput;
     private Button postWeightButton, saveProfileButton;
     private TextView pastWeightsTextView, usernameText, levelText;
     private ImageView profileImage;
@@ -73,10 +76,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void initializeViews() {
         // Profile views
-        nameInput = findViewById(R.id.name_input);
+
         ageInput = findViewById(R.id.age_input);
         heightInput = findViewById(R.id.height_input);
-        emailInput = findViewById(R.id.email_input);
         goalInput = findViewById(R.id.goal_input);
         bioInput = findViewById(R.id.bio_input);
         saveProfileButton = findViewById(R.id.save_profile_button);
@@ -127,7 +129,6 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void updateBasicProfile(JSONObject response) throws JSONException {
-        if (response.has("name")) nameInput.setText(response.getString("name"));
         if (response.has("age")) ageInput.setText(String.valueOf(response.getInt("age")));
         if (response.has("height")) heightInput.setText(String.valueOf(response.getInt("height")));
         if (response.has("bio")) bioInput.setText(response.getString("bio"));
@@ -135,7 +136,7 @@ public class UserProfileActivity extends AppCompatActivity {
         if (response.has("weight")) weightInput.setText(String.valueOf(response.getDouble("weight")));
     }
 
-    private void updateMuscleProgress(JSONObject muscleProgress) throws JSONException {
+    public void updateMuscleProgress(JSONObject muscleProgress) throws JSONException {
         List<MuscleProgressItem> progressItems = new ArrayList<>();
         Iterator<String> keys = muscleProgress.keys();
 
@@ -166,22 +167,35 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void postWeight() {
-        String weight = weightInput.getText().toString();
-        if (weight.isEmpty()) {
+        String weightStr = weightInput.getText().toString();
+        if (weightStr.isEmpty()) {
             Toast.makeText(this, "Please enter a weight", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Parse weight as a number
+        double weight;
+        try {
+            weight = Double.parseDouble(weightStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Please enter a valid weight", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Get current date in required format
+        String weightDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                .format(new Date());
+
         JSONObject postBody = new JSONObject();
         try {
-            postBody.put("username", username);
-            postBody.put("weight", weight);
+            postBody.put("weight", weight);  // This will be sent as a number, not string
+            postBody.put("weightDate", weightDate);
         } catch (JSONException e) {
             e.printStackTrace();
             return;
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, weightUrl, postBody,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, weightUrl, postBody,
                 response -> {
                     Toast.makeText(UserProfileActivity.this,
                             "Weight posted successfully", Toast.LENGTH_SHORT).show();
@@ -227,10 +241,9 @@ public class UserProfileActivity extends AppCompatActivity {
     private void updateProfile() {
         JSONObject profileData = new JSONObject();
         try {
-            profileData.put("name", nameInput.getText().toString());
+
             profileData.put("age", Integer.parseInt(ageInput.getText().toString()));
             profileData.put("height", Integer.parseInt(heightInput.getText().toString()));
-            profileData.put("email", emailInput.getText().toString());
             profileData.put("fitnessGoal", goalInput.getText().toString());
             profileData.put("bio", bioInput.getText().toString());
         } catch (JSONException | NumberFormatException e) {

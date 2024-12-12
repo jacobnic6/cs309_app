@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private Button signupButton;
 
-    private String loginUrl = "http://coms-3090-058.class.las.iastate.edu:8080/users"; // Replace with your API endpoint
+    private String loginUrl = "http://coms-3090-058.class.las.iastate.edu:8080/users";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
