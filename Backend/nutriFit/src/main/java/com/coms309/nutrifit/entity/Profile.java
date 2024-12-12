@@ -33,7 +33,6 @@ public class Profile {
 	@Column(name = "username", unique = true)
 	private String name;
 
-	@JsonIgnore
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Map<String, UserMuscleProgress> muscleProgress;
 
