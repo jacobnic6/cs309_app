@@ -4,10 +4,6 @@ plugins {
 
 android {
 
-        lintOptions {
-            abortOnError false
-        }
-    
     namespace 'com.example.androidexample'
     compileSdk 34    // Keep at 33
 
