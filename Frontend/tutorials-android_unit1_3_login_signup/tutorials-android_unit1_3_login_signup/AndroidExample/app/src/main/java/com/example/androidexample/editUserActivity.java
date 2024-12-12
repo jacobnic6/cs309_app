@@ -67,7 +67,7 @@ public class editUserActivity extends AppCompatActivity {
                                     String id = jsonResponse.getString("id");
 
                                     // 2. PUT request to update user information
-                                    String finalPutUrl = putUrl.replace("{id}", id); // Replace {id} with actual ID
+                                    String finalPutUrl = putUrl.replace("1", id); // Replace {id} with actual ID
                                     JSONObject requestBody = new JSONObject();
                                     try {
                                         jsonResponse.put("username", username);

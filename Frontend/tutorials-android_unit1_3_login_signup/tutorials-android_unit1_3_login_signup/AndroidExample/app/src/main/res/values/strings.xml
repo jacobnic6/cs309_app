@@ -2,4 +2,7 @@
     <string name="app_name">AndroidExample</string>
     <string name="app_label">app_label</string>
     <string name="search_hint">search_hint</string>
+    <string name="age_format">Age: %d</string>
+    <string name="weight_format">Weight: %.1f lbs</string>
+    <string name="height_format">Height: %d\"</string>
 </resources>

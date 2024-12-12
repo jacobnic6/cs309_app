@@ -3,37 +3,136 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/dark_background">
 
-    <LinearLayout
-        android:id="@+id/upper_section"
-        android:layout_width="0dp"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/guideline">
 
-    <Button
-        android:id="@+id/delete_user_btn"
-        android:layout_width="337dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#FF6347"
-        android:text="Delete User"
-        android:textColor="#FFFFFF" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Visibility Settings"
+                android:textSize="20sp"
+                android:textColor="#D3D3D3"
+                android:layout_marginBottom="16dp"/>
 
-    <Button
-        android:id="@+id/edit_user_btn"
-        android:layout_width="337dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#FF6347"
-        android:text="Edit user"
-        android:textColor="#FFFFFF" />
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/profile_visibility_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Public Profile"
+                android:textColor="#D3D3D3"
+                app:thumbTint="#D3D3D3"
+                app:trackTint="#808080"
+                android:layout_marginBottom="8dp"/>
 
-    </LinearLayout>
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/biometric_visibility_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Public Biometric Data"
+                android:textColor="#D3D3D3"
+                app:thumbTint="#D3D3D3"
+                app:trackTint="#808080"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Measurement Units"
+                android:textSize="20sp"
+                android:textColor="#D3D3D3"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/measurement_units_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <RadioButton
+                    android:id="@+id/imperial_radio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Imperial (lbs, inches)"
+                    android:textColor="#D3D3D3"
+                    android:buttonTint="#D3D3D3"/>
+
+                <RadioButton
+                    android:id="@+id/metric_radio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Metric (kg, cm)"
+                    android:textColor="#D3D3D3"
+                    android:buttonTint="#D3D3D3"/>
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notifications"
+                android:textSize="20sp"
+                android:textColor="#D3D3D3"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/message_notifications_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Message Notifications"
+                android:textColor="#D3D3D3"
+                app:thumbTint="#D3D3D3"
+                app:trackTint="#808080"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/friend_request_notifications_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Friend Request Notifications"
+                android:textColor="#D3D3D3"
+                app:thumbTint="#D3D3D3"
+                app:trackTint="#808080"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/workout_reminders_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Workout Reminders"
+                android:textColor="#D3D3D3"
+                app:thumbTint="#D3D3D3"
+                app:trackTint="#808080"
+                android:layout_marginBottom="24dp"/>
+
+            <Button
+                android:id="@+id/edit_user_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edit User Profile"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/delete_user_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delete User"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#FF5252"/>
+
+        </LinearLayout>
+    </ScrollView>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -48,10 +147,8 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

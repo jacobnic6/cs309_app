@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkoutListActivity extends AppCompatActivity implements WorkoutAdapter.OnWorkoutClickListener {
+public abstract class WorkoutListActivity extends AppCompatActivity implements WorkoutAdapter.WorkoutClickListener {
     private RecyclerView workoutListRecyclerView;
     private FloatingActionButton addWorkoutFab;
     private View emptyStateText;
@@ -81,7 +81,7 @@ public class WorkoutListActivity extends AppCompatActivity implements WorkoutAda
                                     workout.getJSONArray("exercises").length()
                             );
                             workouts.add(fetchedWorkout);
-                            workoutDatabase.saveWorkout(fetchedWorkout);
+                            workoutDatabase.saveWorkout(fetchedWorkout,true);
                         }
                         updateWorkoutList(workouts);
                     } catch (Exception e) {
@@ -109,18 +109,18 @@ public class WorkoutListActivity extends AppCompatActivity implements WorkoutAda
     }
 
     @Override
-    public void onWorkoutClick(int workoutId) {
+    public void onWorkoutClick(Workout workout) {  // Changed from int workoutId
         Intent intent = new Intent(this, LogWorkoutActivity.class);
-        intent.putExtra("WORKOUT_ID", workoutId);
+        intent.putExtra("WORKOUT_ID", workout.getId());
         startActivity(intent);
     }
 
     @Override
-    public void onDeleteWorkout(int workoutId) {
-        workoutDatabase.deleteWorkout(workoutId);
+    public void onDeleteClick(Workout workout) {  // Changed from onDeleteWorkout
+        workoutDatabase.deleteWorkout(workout.getId());
         fetchWorkoutsFromLocalDatabase();
 
-        String deleteUrl = BASE_URL + "/workout/id" + workoutId;
+        String deleteUrl = BASE_URL + "/workout/id" + workout.getId();
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, deleteUrl,
                 response -> {
                     Toast.makeText(this, "Workout deleted successfully", Toast.LENGTH_SHORT).show();

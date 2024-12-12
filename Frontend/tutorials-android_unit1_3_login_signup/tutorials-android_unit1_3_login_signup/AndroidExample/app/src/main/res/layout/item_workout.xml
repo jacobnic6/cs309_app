@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
+    android:layout_marginHorizontal="4dp"
     android:layout_marginVertical="4dp"
+    app:cardBackgroundColor="@color/dark_surface"
     app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardElevation="2dp"
+    app:strokeColor="@color/card_stroke"
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,43 +23,49 @@
             android:id="@+id/workout_name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/delete_button"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toStartOf="@id/delete_button"
+            tools:text="Upper Body Workout"/>
 
         <TextView
             android:id="@+id/workout_date_text"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
             android:layout_marginTop="4dp"
-            android:textColor="@android:color/darker_gray"
-            app:layout_constraintEnd_toStartOf="@id/delete_button"
+            app:layout_constraintTop_toBottomOf="@id/workout_name_text"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/workout_name_text" />
+            tools:text="2024-03-15"/>
 
         <TextView
             android:id="@+id/exercise_count_text"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@android:color/darker_gray"
-            app:layout_constraintEnd_toStartOf="@id/delete_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/workout_date_text" />
+            android:textColor="@color/accent_color"
+            android:textSize="14sp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toTopOf="@id/workout_date_text"
+            app:layout_constraintBottom_toBottomOf="@id/workout_date_text"
+            app:layout_constraintStart_toEndOf="@id/workout_date_text"
+            tools:text="5 exercises"/>
 
         <ImageButton
             android:id="@+id/delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Delete Workout"
-            android:padding="8dp"
             android:src="@drawable/ic_delete"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@android:color/darker_gray" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/error"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

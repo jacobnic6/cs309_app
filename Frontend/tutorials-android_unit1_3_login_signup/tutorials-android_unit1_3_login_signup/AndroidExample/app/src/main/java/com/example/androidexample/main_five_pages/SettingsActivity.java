@@ -1,45 +1,37 @@
 package com.example.androidexample.main_five_pages;
 
-
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-
-
+import com.android.volley.toolbox.Volley;
 import com.example.androidexample.DeleteUserActivity;
 import com.example.androidexample.R;
-import com.example.androidexample.VolleySingleton;
+import com.example.androidexample.SessionManager;
+import com.example.androidexample.api.SettingsService;
 import com.example.androidexample.editUserActivity;
-import com.example.androidexample.main_five_pages.SettingsActivity;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
-
-
-import org.json.JSONArray;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.ArrayList;
-public class SettingsActivity extends AppCompatActivity {
 
+public class SettingsActivity extends AppCompatActivity {
+    private static final String TAG = "SettingsActivity";
+
+    private SettingsService settingsService;
+    private String username;
+
+    // UI Elements
+    private SwitchMaterial profileVisibilitySwitch;
+    private SwitchMaterial biometricVisibilitySwitch;
+    private SwitchMaterial messageNotificationsSwitch;
+    private SwitchMaterial friendRequestNotificationsSwitch;
+    private SwitchMaterial workoutRemindersSwitch;
+    private RadioGroup measurementUnitsGroup;
     private Button editUserButton;
     private Button deleteUserButton;
 
@@ -48,51 +40,127 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        username = getIntent().getStringExtra("Username");
+        if (username == null || username.isEmpty()) {
+            username = SessionManager.getInstance(this).getUsername();
+        }
+
+        settingsService = new SettingsService(Volley.newRequestQueue(this));
+
+        initializeViews();
+        setupClickListeners();
+        loadUserSettings();
+        setupBottomNavigation();
+    }
+
+    private void initializeViews() {
+        profileVisibilitySwitch = findViewById(R.id.profile_visibility_switch);
+        biometricVisibilitySwitch = findViewById(R.id.biometric_visibility_switch);
+        messageNotificationsSwitch = findViewById(R.id.message_notifications_switch);
+        friendRequestNotificationsSwitch = findViewById(R.id.friend_request_notifications_switch);
+        workoutRemindersSwitch = findViewById(R.id.workout_reminders_switch);
+        measurementUnitsGroup = findViewById(R.id.measurement_units_group);
         editUserButton = findViewById(R.id.edit_user_btn);
         deleteUserButton = findViewById(R.id.delete_user_btn);
+    }
 
-        editUserButton.setOnClickListener(new View.OnClickListener() {
+    private void setupClickListeners() {
+        editUserButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, editUserActivity.class);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        });
+
+        deleteUserButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DeleteUserActivity.class);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        });
+
+        profileVisibilitySwitch.setOnCheckedChangeListener((button, isChecked) -> saveSettings());
+        biometricVisibilitySwitch.setOnCheckedChangeListener((button, isChecked) -> saveSettings());
+        messageNotificationsSwitch.setOnCheckedChangeListener((button, isChecked) -> saveSettings());
+        friendRequestNotificationsSwitch.setOnCheckedChangeListener((button, isChecked) -> saveSettings());
+        workoutRemindersSwitch.setOnCheckedChangeListener((button, isChecked) -> saveSettings());
+        measurementUnitsGroup.setOnCheckedChangeListener((group, checkedId) -> saveSettings());
+    }
+
+    private void loadUserSettings() {
+        settingsService.getUserSettings(username, new SettingsService.SettingsCallback() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, editUserActivity.class);
-                startActivity(intent);
+            public void onSuccess(JSONObject response) {
+                try {
+                    profileVisibilitySwitch.setChecked(response.getString("profile_visibility").equals("PUBLIC"));
+                    biometricVisibilitySwitch.setChecked(response.getString("biometric_visibility").equals("PUBLIC"));
+                    messageNotificationsSwitch.setChecked(response.getBoolean("message_notifications"));
+                    friendRequestNotificationsSwitch.setChecked(response.getBoolean("friend_request_notifications"));
+                    workoutRemindersSwitch.setChecked(response.getBoolean("workout_reminders_enabled"));
+
+                    boolean isImperial = response.getString("measurement_units").equals("IMPERIAL");
+                    measurementUnitsGroup.check(isImperial ? R.id.imperial_radio : R.id.metric_radio);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing settings", e);
+                    Toast.makeText(SettingsActivity.this, "Error loading settings", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "Error loading settings: " + error);
+                Toast.makeText(SettingsActivity.this, "Error loading settings", Toast.LENGTH_SHORT).show();
             }
         });
-        deleteUserButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, DeleteUserActivity.class);
-                startActivity(intent);
+    }
+
+    private void saveSettings() {
+        try {
+            JSONObject settings = new JSONObject();
+            settings.put("profile_visibility", profileVisibilitySwitch.isChecked() ? "PUBLIC" : "PRIVATE");
+            settings.put("biometric_visibility", biometricVisibilitySwitch.isChecked() ? "PUBLIC" : "PRIVATE");
+            settings.put("message_notifications", messageNotificationsSwitch.isChecked());
+            settings.put("friend_request_notifications", friendRequestNotificationsSwitch.isChecked());
+            settings.put("workout_reminders_enabled", workoutRemindersSwitch.isChecked());
+            settings.put("measurement_units",
+                    measurementUnitsGroup.getCheckedRadioButtonId() == R.id.imperial_radio ? "IMPERIAL" : "METRIC");
+
+            settingsService.updateUserSettings(username, settings, new SettingsService.SettingsCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Toast.makeText(SettingsActivity.this, "Settings saved", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.e(TAG, "Error saving settings: " + error);
+                    Toast.makeText(SettingsActivity.this, "Error saving settings", Toast.LENGTH_SHORT).show();
                 }
             });
+        } catch (JSONException e) {
+            Log.e(TAG, "Error creating settings JSON", e);
+            Toast.makeText(this, "Error saving settings", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-        // The following is for switching to the other four "main pages of the app" - social, exercise, nutrition, and settings
+    private void setupBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
-
-        {
-            @Override
-            public boolean onNavigationItemSelected (@NonNull MenuItem item){
-                int itemId = item.getItemId();
-
-                if (itemId == R.id.social) {
-                    startActivity(new Intent(SettingsActivity.this, SocialActivity.class));
-                    return true;
-                } else if (itemId == R.id.workouts) {
-                    startActivity(new Intent(SettingsActivity.this, WorkoutActivity.class));
-                    return true;
-                } else if (itemId == R.id.profile) {
-                    startActivity(new Intent(SettingsActivity.this, UserProfileActivity.class));
-                    return true;
-                } else if (itemId == R.id.nutrition) {
-                    startActivity(new Intent(SettingsActivity.this, NutritionActivity.class));
-                    return true;
-                } else if (itemId == R.id.settings) {
-                    startActivity(new Intent(SettingsActivity.this, SettingsActivity.class));
-                    return true;
-                }
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent intent;
+            if (item.getItemId() == R.id.social) {
+                intent = new Intent(this, SocialActivity.class);
+            } else if (item.getItemId() == R.id.workouts) {
+                intent = new Intent(this, WorkoutActivity.class);
+            } else if (item.getItemId() == R.id.profile) {
+                intent = new Intent(this, UserProfileActivity.class);
+            } else if (item.getItemId() == R.id.nutrition) {
+                intent = new Intent(this, NutritionActivity.class);
+            } else if (item.getItemId() == R.id.settings) {
+                return true;
+            } else {
                 return false;
             }
+            intent.putExtra("Username", username);
+            startActivity(intent);
+            return true;
         });
     }
 }
