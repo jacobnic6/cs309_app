@@ -4,18 +4,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.toolbox.Volley;
 import com.example.androidexample.AddMealActivity;
 import com.example.androidexample.R;
 import com.example.androidexample.api.MealService;
+import com.example.androidexample.utils.CalorieCalculator;
+import com.example.androidexample.utils.NutritionGoals;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +54,12 @@ public class NutritionActivity extends AppCompatActivity {
     private ImageButton prevDateButton, nextDateButton;
     private TextView dateDisplay;
     private ProgressDialog loadingDialog;
+    private NutritionGoals nutritionGoals;
+    private Button setNutritionGoalsButton;
+    private static final String PREFS_NAME = "NutritionPrefs";
+    private static final String KEY_ACTIVITY_LEVEL = "activityLevel";
+    private static final String KEY_FITNESS_GOAL = "fitnessGoal";
+    private static final String KEY_CALORIES_GOAL = "caloriesGoal";
 
     // Nutrition Goals
     private final int DAILY_CALORIES_GOAL = 2000;
@@ -104,6 +119,7 @@ public class NutritionActivity extends AppCompatActivity {
         nextDateButton = findViewById(R.id.next_date_button);
         dateDisplay = findViewById(R.id.date_display);
         createEmptyMealListButton = findViewById(R.id.create_empty_meal_list_button);
+        setNutritionGoalsButton = findViewById(R.id.set_nutrition_goals_button);
 
         if (caloriesProgress == null || caloriesRemaining == null) {
             Log.e(TAG, "Some views are not properly initialized.");
@@ -116,7 +132,7 @@ public class NutritionActivity extends AppCompatActivity {
         addMealButton.setOnClickListener(v -> showAddMealDialog());
         viewHistoryButton.setOnClickListener(v -> showMealHistory());
         createEmptyMealListButton.setOnClickListener(v -> createEmptyMealList());
-
+        setNutritionGoalsButton.setOnClickListener(v -> showNutritionGoalsDialog());
         // Date navigation
         prevDateButton.setOnClickListener(v -> navigateDate(-1));
         nextDateButton.setOnClickListener(v -> navigateDate(1));
@@ -134,6 +150,172 @@ public class NutritionActivity extends AppCompatActivity {
 
         findViewById(editId).setOnClickListener(v -> editMeal(mealType));
         findViewById(deleteId).setOnClickListener(v -> confirmDeleteMeal(mealType));
+    }
+    private void showNutritionGoalsDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_set_nutrition_goals, null);
+        EditText weightInput = dialogView.findViewById(R.id.weight_input);
+        Spinner activitySpinner = dialogView.findViewById(R.id.activity_level_spinner);
+        Spinner goalSpinner = dialogView.findViewById(R.id.goal_spinner);
+        TextView caloriesText = dialogView.findViewById(R.id.calories_goal_text);
+        TextView proteinText = dialogView.findViewById(R.id.protein_goal_text);
+        TextView carbsText = dialogView.findViewById(R.id.carbs_goal_text);
+        TextView fatText = dialogView.findViewById(R.id.fat_goal_text);
+
+        // Setup spinners
+        setupActivitySpinner(activitySpinner);
+        setupGoalSpinner(goalSpinner);
+
+        // Load current values
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String currentActivity = prefs.getString(KEY_ACTIVITY_LEVEL,
+                CalorieCalculator.ActivityLevel.MODERATE_ACTIVITY.name());
+        String currentGoal = prefs.getString(KEY_FITNESS_GOAL,
+                CalorieCalculator.Goal.MAINTAIN.name());
+
+        // Set current values
+        activitySpinner.setSelection(getActivityLevelPosition(currentActivity));
+        goalSpinner.setSelection(getGoalPosition(currentGoal));
+
+        // Setup weight change listener
+        weightInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateNutritionPreview(s.toString(),
+                        (CalorieCalculator.ActivityLevel) activitySpinner.getSelectedItem(),
+                        (CalorieCalculator.Goal) goalSpinner.getSelectedItem(),
+                        caloriesText, proteinText, carbsText, fatText);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Setup spinner change listeners
+        activitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                updateNutritionPreview(weightInput.getText().toString(),
+                        (CalorieCalculator.ActivityLevel) activitySpinner.getSelectedItem(),
+                        (CalorieCalculator.Goal) goalSpinner.getSelectedItem(),
+                        caloriesText, proteinText, carbsText, fatText);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        goalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                updateNutritionPreview(weightInput.getText().toString(),
+                        (CalorieCalculator.ActivityLevel) activitySpinner.getSelectedItem(),
+                        (CalorieCalculator.Goal) goalSpinner.getSelectedItem(),
+                        caloriesText, proteinText, carbsText, fatText);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        // Create and show dialog
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Set Nutrition Goals")
+                .setView(dialogView)
+                .setPositiveButton("Save", (dialogInterface, i) -> {
+                    if (weightInput.getText().toString().isEmpty()) {
+                        Toast.makeText(this, "Please enter your weight", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    saveNutritionGoals(
+                            Double.parseDouble(weightInput.getText().toString()),
+                            (CalorieCalculator.ActivityLevel) activitySpinner.getSelectedItem(),
+                            (CalorieCalculator.Goal) goalSpinner.getSelectedItem()
+                    );
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        dialog.show();
+    }
+
+    private void setupActivitySpinner(Spinner spinner) {
+        ArrayAdapter<CalorieCalculator.ActivityLevel> adapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
+                        CalorieCalculator.ActivityLevel.values());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+    }
+
+    private void setupGoalSpinner(Spinner spinner) {
+        ArrayAdapter<CalorieCalculator.Goal> adapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
+                        CalorieCalculator.Goal.values());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+    }
+
+    private void updateNutritionPreview(String weightStr,
+                                        CalorieCalculator.ActivityLevel activity,
+                                        CalorieCalculator.Goal goal,
+                                        TextView caloriesText,
+                                        TextView proteinText,
+                                        TextView carbsText,
+                                        TextView fatText) {
+        try {
+            if (!weightStr.isEmpty()) {
+                double weight = Double.parseDouble(weightStr);
+                NutritionGoals preview = CalorieCalculator.calculateNutritionGoals(weight, activity, goal);
+
+                caloriesText.setText(String.format("Daily Calories: %d",
+                        preview.getDailyCaloriesGoal()));
+                proteinText.setText(String.format("Protein: %dg",
+                        preview.getProteinGoal()));
+                carbsText.setText(String.format("Carbs: %dg",
+                        preview.getCarbsGoal()));
+                fatText.setText(String.format("Fat: %dg",
+                        preview.getFatGoal()));
+            }
+        } catch (NumberFormatException e) {
+            // Ignore invalid input
+        }
+    }
+
+    private void saveNutritionGoals(double weight,
+                                    CalorieCalculator.ActivityLevel activity,
+                                    CalorieCalculator.Goal goal) {
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString(KEY_ACTIVITY_LEVEL, activity.name());
+        editor.putString(KEY_FITNESS_GOAL, goal.name());
+
+        nutritionGoals = CalorieCalculator.calculateNutritionGoals(weight, activity, goal);
+        editor.putInt(KEY_CALORIES_GOAL, nutritionGoals.getDailyCaloriesGoal());
+        editor.apply();
+
+        Toast.makeText(this, "Nutrition goals updated!", Toast.LENGTH_SHORT).show();
+        updateNutritionDisplays();
+    }
+
+    private int getActivityLevelPosition(String activityLevel) {
+        CalorieCalculator.ActivityLevel[] levels = CalorieCalculator.ActivityLevel.values();
+        for (int i = 0; i < levels.length; i++) {
+            if (levels[i].name().equals(activityLevel)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private int getGoalPosition(String goal) {
+        CalorieCalculator.Goal[] goals = CalorieCalculator.Goal.values();
+        for (int i = 0; i < goals.length; i++) {
+            if (goals[i].name().equals(goal)) {
+                return i;
+            }
+        }
+        return 0;
     }
     private void createEmptyMealList() {
         loadingDialog.show();
