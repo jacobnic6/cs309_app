@@ -173,7 +173,7 @@ public class SocialActivity extends AppCompatActivity implements FriendAdapter.O
     }
 
     private void addFriend(String userId, String friendUsername) {
-        String url = BASE_URL + "/friends/" + 6 + "/add";
+        String url = BASE_URL + "/friends/" + 8 + "/add";
 
         JSONObject postBody = new JSONObject();
         try {
@@ -257,7 +257,7 @@ public class SocialActivity extends AppCompatActivity implements FriendAdapter.O
                 } else {
                     return false;
                 }
-                intent.putExtra("Username", username);
+                intent.putExtra("8", username);
                 startActivity(intent);
                 return true;
             }
