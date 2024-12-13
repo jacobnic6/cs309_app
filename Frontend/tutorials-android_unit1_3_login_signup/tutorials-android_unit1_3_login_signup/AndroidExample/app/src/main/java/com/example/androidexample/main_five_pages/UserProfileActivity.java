@@ -244,7 +244,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
             profileData.put("age", Integer.parseInt(ageInput.getText().toString()));
             profileData.put("height", Integer.parseInt(heightInput.getText().toString()));
-            profileData.put("fitnessGoal", goalInput.getText().toString());
+            profileData.put("fitness_goal", goalInput.getText().toString());
             profileData.put("bio", bioInput.getText().toString());
         } catch (JSONException | NumberFormatException e) {
             e.printStackTrace();
