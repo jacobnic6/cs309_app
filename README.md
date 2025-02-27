@@ -6,6 +6,9 @@ A comprehensive fitness and nutrition tracking application that helps users achi
 
 Nutri Fit is a mobile application designed to support users in their fitness journey by providing tools to track workouts, monitor nutrition, connect with friends, and visualize progress. The app features a user-friendly interface with specialized sections for exercise planning, meal tracking, social interactions, and personalized settings.
 
+## Demo Video
+- https://www.youtube.com/watch?v=p2J0F4reZrk&list=PL6BdlkdKLEB9U0F4VMXt6Ck7DX6TAdupE&index=30
+
 ## Features
 
 ### Workout Management
