@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"coms309"},{"l":"coms309.controllers"},{"l":"coms309.people"},{"l":"coms309.repos"},{"l":"coms309.services"}];updateSearchResults();

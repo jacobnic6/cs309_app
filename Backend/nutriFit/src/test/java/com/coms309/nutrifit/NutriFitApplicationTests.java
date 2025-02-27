@@ -10,12 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class NutriFitApplicationTests {
 
-	/**
-	 * Context loads.
-	 */
-	@Test
-	void contextLoads() {
+    /**
+     * Context loads.
+     */
+    @Test
+    void contextLoads() {
 
-	}
+    }
 
 }
